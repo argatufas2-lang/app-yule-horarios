@@ -63,9 +63,9 @@
                     const tipoLower = (t.tipo || '').toLowerCase();
                     const descLower = (t.descripcion || '').toLowerCase();
 
-                    if (tipoLower.includes('recreo') || descLower.includes('recreo') || descLower.includes('atseden')) {
+                    if (timeRange.includes('11:00') && timeRange.includes('11:30') || tipoLower.includes('recreo') || descLower.includes('recreo') || descLower.includes('atseden')) {
                         type = 'recreo';
-                    } else if (tipoLower.includes('comedor') || descLower.includes('comedor') || descLower.includes('bazkaria')) {
+                    } else if (timeRange.includes('14:00') && timeRange.includes('15:00') || tipoLower.includes('comedor') || descLower.includes('comedor') || descLower.includes('bazkaria')) {
                         type = 'comedor';
                     } else if (tipoLower.includes('guardia') || descLower.includes('zaintza') || tipoLower.includes('presencia')) {
                         type = 'presencia';
@@ -89,14 +89,14 @@
 
     function fallbackTimeSlots() {
         timeSlots = [
-            { orden: 0, time: '09:00 - 09:30', label: '1ª Franja', type: 'lectiva' },
-            { orden: 1, time: '09:30 - 10:30', label: '2ª Franja', type: 'lectiva' },
-            { orden: 2, time: '10:30 - 11:00', label: 'Atsedenaldia / Recreo', type: 'recreo' },
-            { orden: 3, time: '11:00 - 12:00', label: '3ª Franja', type: 'lectiva' },
-            { orden: 4, time: '12:00 - 13:00', label: '4ª Franja', type: 'lectiva' },
-            { orden: 5, time: '13:00 - 14:30', label: 'Bazkaria / Comedor', type: 'comedor' },
-            { orden: 6, time: '14:30 - 15:30', label: '5ª Franja', type: 'lectiva' },
-            { orden: 7, time: '15:30 - 16:30', label: '6ª Franja', type: 'lectiva' }
+            { orden: 0, time: '09:00 - 10:00', label: '1ª Franja', type: 'lectiva' },
+            { orden: 1, time: '10:00 - 11:00', label: '2ª Franja', type: 'lectiva' },
+            { orden: 2, time: '11:00 - 11:30', label: 'ATSEDENALDIA / RECREO', type: 'recreo' },
+            { orden: 3, time: '11:30 - 12:30', label: '3ª Franja', type: 'lectiva' },
+            { orden: 4, time: '12:30 - 14:00', label: '4ª Franja', type: 'lectiva' },
+            { orden: 5, time: '14:00 - 15:00', label: 'BAZKARIA / COMEDOR', type: 'comedor' },
+            { orden: 6, time: '15:00 - 16:00', label: '5ª Franja', type: 'lectiva' },
+            { orden: 7, time: '16:00 - 17:00', label: '6ª Franja', type: 'lectiva' }
         ];
     }
 
@@ -485,24 +485,24 @@
 
                         <!-- Tramos Horarios Consultados de Supabase -->
                         {#each timeSlots as slot}
-                            {#if slot.type === 'recreo'}
-                                <!-- Fila Recreo (Fondo Ámbar Suave) -->
-                                <tr class="bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 font-medium">
-                                    <td class="p-2 border-r border-amber-200 dark:border-amber-900/50 bg-amber-100/60 dark:bg-amber-900/40 font-semibold text-xs whitespace-nowrap text-amber-900 dark:text-amber-300">
-                                        {slot.time}
+                            {#if slot.type === 'recreo' || slot.time.includes('11:00 - 11:30')}
+                                <!-- Fila Recreo (Fondo Verde Claro Apagado) -->
+                                <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium">
+                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-xs whitespace-nowrap text-emerald-950 dark:text-emerald-200">
+                                        11:00 - 11:30
                                     </td>
-                                    <td colspan="5" class="p-2 text-center text-xs tracking-wider uppercase font-bold text-amber-800 dark:text-amber-300">
-                                        ☕ Atsedenaldia / Recreo
+                                    <td colspan="5" class="p-2 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200">
+                                        ATSEDENALDIA / RECREO
                                     </td>
                                 </tr>
-                            {:else if slot.type === 'comedor'}
-                                <!-- Fila Comedor (Fondo Naranja Suave) -->
-                                <tr class="bg-orange-50 dark:bg-orange-950/30 text-orange-900 dark:text-orange-200 font-medium">
-                                    <td class="p-2 border-r border-orange-200 dark:border-orange-900/50 bg-orange-100/60 dark:bg-orange-900/40 font-semibold text-xs whitespace-nowrap text-orange-900 dark:text-orange-300">
-                                        {slot.time}
+                            {:else if slot.type === 'comedor' || slot.time.includes('14:00 - 15:00')}
+                                <!-- Fila Comedor (Fondo Verde Claro Apagado) -->
+                                <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium">
+                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-xs whitespace-nowrap text-emerald-950 dark:text-emerald-200">
+                                        14:00 - 15:00
                                     </td>
-                                    <td colspan="5" class="p-2 text-center text-xs tracking-wider uppercase font-bold text-orange-800 dark:text-orange-300">
-                                        🍽️ Bazkaria / Comedor
+                                    <td colspan="5" class="p-2 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200">
+                                        BAZKARIA / COMEDOR
                                     </td>
                                 </tr>
                             {:else if slot.type === 'presencia'}
@@ -526,15 +526,21 @@
                                     {#each daysOfWeek as day}
                                         {@const sessionKey = `${day.id}_${slot.orden}`}
                                         {@const session = teacherScheduleGrid[selectedEntityId]?.[sessionKey]}
-                                        <td class="p-1.5 border-r border-slate-200 dark:border-gray-700 h-16 align-middle hover:bg-sky-50/50 dark:hover:bg-sky-950/30 transition-colors cursor-pointer">
+                                        <td class="p-1.5 border-r border-slate-200 dark:border-gray-700 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer">
                                             {#if session}
-                                                <div class="bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 rounded-lg p-1.5 shadow-xs">
-                                                    <span class="block font-bold text-sky-900 dark:text-sky-200 text-xs">{session.actividad}</span>
+                                                <div class="flex flex-col items-center justify-center space-y-0.5">
+                                                    <span class="block font-black text-slate-900 dark:text-gray-100 text-xs uppercase tracking-wide">
+                                                        {session.actividad.toUpperCase()}
+                                                    </span>
                                                     {#if session.clase}
-                                                        <span class="block text-[11px] font-semibold text-sky-700 dark:text-sky-300">{session.clase}</span>
+                                                        <span class="block text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase">
+                                                            {session.clase.toUpperCase()}
+                                                        </span>
                                                     {/if}
                                                     {#if session.aula}
-                                                        <span class="block text-[10px] text-sky-600 dark:text-sky-400">{session.aula}</span>
+                                                        <span class="block text-[10px] font-semibold text-slate-500 dark:text-gray-400 uppercase">
+                                                            {session.aula.toUpperCase()}
+                                                        </span>
                                                     {/if}
                                                 </div>
                                             {:else}
