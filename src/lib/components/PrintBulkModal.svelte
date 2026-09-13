@@ -11,14 +11,17 @@
 
     let selectedIds: string[] = [];
 
+    // Al abrir el modal con elementos cargados, inicializar con todos seleccionados
     $: if (isOpen && items.length > 0 && selectedIds.length === 0) {
         selectedIds = items.map(item => item.id);
     }
 
+    // 1. Marcar estrictamente todas las casillas
     function selectAll() {
         selectedIds = items.map(item => item.id);
     }
 
+    // 2. Desmarcar estrictamente todas las casillas
     function deselectAll() {
         selectedIds = [];
     }
@@ -80,7 +83,7 @@
                 </button>
             </div>
 
-            <!-- Acciones de Selección Rápidas (Dos botones independientes) -->
+            <!-- Acciones de Selección Rápidas (Dos botones independientes y deterministas) -->
             <div class="px-5 py-2.5 bg-slate-100/70 dark:bg-gray-700/50 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between text-xs">
                 <span class="font-semibold text-slate-700 dark:text-gray-300">
                     Seleccionados: <strong class="text-sky-700 dark:text-sky-400">{selectedIds.length}</strong> / {items.length}
