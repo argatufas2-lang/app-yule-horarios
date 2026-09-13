@@ -31,6 +31,13 @@
         selectedCiclo = ciclo;
         dispatch('selectCiclo', ciclo);
     }
+
+    function handleImageError(event: Event) {
+        const target = event.target as HTMLElement;
+        if (target) {
+            target.style.display = 'none';
+        }
+    }
 </script>
 
 <header class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 shadow-xs">
@@ -38,7 +45,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between border-b border-slate-100 dark:border-gray-700/60">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-xs overflow-hidden">
-                <img src="/logo.png" alt="Ganivet Logo" class="w-full h-full object-cover" on:error={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }} />
+                <img src="/logo.png" alt="Ganivet Logo" class="w-full h-full object-cover" on:error={handleImageError} />
                 <span class="text-lg">🏫</span>
             </div>
             <div>
