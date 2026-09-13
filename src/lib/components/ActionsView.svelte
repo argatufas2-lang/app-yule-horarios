@@ -309,13 +309,18 @@
     $: currentTeacher = profesoresDisponibles.find(p => p.id === selectedEntityId) || profesoresDisponibles[0];
     $: currentClassroom = aulasDisponibles.find(a => a.id === selectedEntityId) || aulasDisponibles[0];
 
+    // Evaluación de si el profesor actual tiene jornada completa
+    $: isJornadaCompleta = activeTab === 'profesorado' && currentTeacher?.jornada 
+        ? formatJornada(currentTeacher.jornada) === 'JC'
+        : false;
+
     // Al cambiar de pestaña
     async function handleTabChange(tab: 'profesorado' | 'aulas') {
         activeTab = tab;
         await loadDataForCurrentTab();
     }
 
-    // Días de la semana en Euskera alineados a Base 0 (0 = Astelehena / Lunes)
+    // Días de la semana en Euskera alineados a Base 0 (0 = Astelehena / Lunes, 2 = Asteazkena / Miércoles)
     const daysOfWeek = [
         { id: 0, name: 'Astelehena' },
         { id: 1, name: 'Asteartea' },
@@ -517,7 +522,7 @@
                                 📌 Presencia / Zaintza
                             </td>
                             {#each daysOfWeek as day}
-                                <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-xs font-semibold text-sky-800 dark:text-sky-300 bg-slate-50 dark:bg-slate-800/60 print:p-0.5 print:text-[8px] print:border-r print:border-black">
+                                <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-xs font-semibold text-sky-800 dark:text-sky-300 bg-slate-50 dark:bg-slate-800/60 print:p-0.5 print:text-[9px] print:border-r print:border-black">
                                     09:00 - 16:30 (4h 30m)
                                 </td>
                             {/each}
@@ -538,15 +543,21 @@
                                     {/each}
                                 </tr>
                             {:else if slot.type === 'comedor' || slot.time.includes('14:00 - 15:00')}
-                                <!-- Fila Comedor -->
+                                <!-- Fila Comedor / Formación en Miércoles Tarde para Jornada Completa -->
                                 <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium border-b-2 border-slate-300 dark:border-gray-600 print:border-b print:border-black">
                                     <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-emerald-200/60 dark:bg-emerald-900/60 font-bold text-base whitespace-nowrap text-emerald-950 dark:text-emerald-200 print:p-0.5 print:text-[9px] print:border-r print:border-black">
                                         14:00 - 15:00
                                     </td>
                                     {#each daysOfWeek as day}
-                                        <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40 print:p-0.5 print:text-[8px] print:border-r print:border-black">
-                                            BAZKARIA
-                                        </td>
+                                        {#if day.id === 2 && isJornadaCompleta}
+                                            <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-center text-xs tracking-wider uppercase font-extrabold text-purple-900 dark:text-purple-200 bg-purple-100/80 dark:bg-purple-950/50 print:p-0.5 print:text-[8px] print:border-r print:border-black">
+                                                FORMAKUNTZA
+                                            </td>
+                                        {:else}
+                                            <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40 print:p-0.5 print:text-[8px] print:border-r print:border-black">
+                                                BAZKARIA
+                                            </td>
+                                        {/if}
                                     {/each}
                                 </tr>
                             {:else if slot.type === 'presencia'}
@@ -574,7 +585,14 @@
                                             class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer relative print:p-0.5 print:h-9 print:border-r print:border-black"
                                             title={showDebug ? `[DEBUG] Día: ${day.id} | Tramo: ${slot.orden} | Asignatura: ${session?.actividad || 'Ninguna'} | Grupo: ${session?.clase || 'Ninguno'} | SesionID: ${session?.id || 'N/A'}` : ''}
                                         >
-                                            {#if session}
+                                            {#if day.id === 2 && isJornadaCompleta && (slot.time.includes('12:30') || slot.time.includes('13:00'))}
+                                                <!-- Regla de Formación para Miércoles Tarde (13:00 - 14:00) en Jornada Completa -->
+                                                <div class="flex flex-col items-center justify-center space-y-0.5 bg-purple-100/80 dark:bg-purple-950/50 p-1 rounded-md">
+                                                    <span class="block font-black text-purple-900 dark:text-purple-200 text-xs sm:text-sm uppercase tracking-wide print:text-[9px]">
+                                                        FORMAKUNTZA
+                                                    </span>
+                                                </div>
+                                            {:else if session}
                                                 <div class="flex flex-col items-center justify-center space-y-0.5">
                                                     <span class="block font-black text-slate-900 dark:text-gray-100 text-sm uppercase tracking-wide print:text-[9px]">
                                                         {session.actividad.toUpperCase()}
