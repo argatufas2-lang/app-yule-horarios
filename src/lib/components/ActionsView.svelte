@@ -1,7 +1,18 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import ActionToolbar from './ActionToolbar.svelte';
-    import { supabase } from '$lib/services/supabaseClient';
+    import { daysOfWeek } from '$lib/constants/calendar';
+    import { formatJornada } from '$lib/utils/formatters';
+    import {
+        fetchTotalProfesorado,
+        fetchTimeSlots,
+        fetchProfesores,
+        fetchAulas,
+        fetchSessionsForEntity,
+        type TimeSlotItem,
+        type EntityOption,
+        type GridSessionCell
+    } from '$lib/services/scheduleService';
 
     // Estados de navegación y selección
     export let selectedCurso: string = '2026-2027';
@@ -11,8 +22,8 @@
     let showDebug: boolean = false; // Estado para conmutar el panel de depuración
 
     // Listados dinámicos obtenidos de Supabase
-    export let profesoresDisponibles: { id: string; nombre: string; rol?: string; jornada?: string; labelText?: string }[] = [];
-    export let aulasDisponibles: { id: string; nombre: string; edificio?: string; capacidad?: string; labelText?: string }[] = [];
+    export let profesoresDisponibles: EntityOption[] = [];
+    export let aulasDisponibles: EntityOption[] = [];
     export let totalProfesoradoCount: number = 0;
 
     export let selectedEntityId: string = '';
@@ -20,257 +31,20 @@
     let loading: boolean = false;
     let loadingSessions: boolean = false;
 
-    // Tramos horarios y Sesiones dinámicas de Supabase
-    let timeSlots: { orden: number; time: string; label: string; type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' }[] = [];
-    let teacherScheduleGrid: Record<string, Record<string, { id?: string; actividad: string; clase?: string; aula?: string; rawData?: any }>> = {};
-
-    // Helper para formatear la jornada visualmente (JC o fracción)
-    function formatJornada(jornadaRaw?: string | null): string {
-        if (!jornadaRaw) return 'JC';
-        const jLower = jornadaRaw.toLowerCase().trim();
-        if (jLower.includes('completa') || jLower.includes('100') || jLower.includes('1/1') || jLower === 'jc' || jLower === 'completo') {
-            return 'JC';
-        }
-        return jornadaRaw;
-    }
-
-    // Helper para formatear el rol visualmente (Tutor / Especialista)
-    function formatRol(perfilRaw?: string | null): string {
-        if (!perfilRaw) return 'Especialista';
-        const pLower = perfilRaw.toLowerCase().trim();
-        if (pLower.includes('tutor') || pLower.includes('tutoretza')) {
-            return 'Tutor';
-        }
-        return 'Especialista';
-    }
-
-    // Consultar el total global de profesores en Supabase
-    async function fetchTotalProfesorado() {
-        try {
-            const { count, error } = await supabase
-                .from('profesores')
-                .select('*', { count: 'exact', head: true })
-                .eq('curso_escolar', selectedCurso);
-
-            if (!error && count !== null) {
-                totalProfesoradoCount = count;
-            }
-        } catch (e) {
-            console.error('Error al consultar el recuento total de profesorado:', e);
-        }
-    }
-
-    // Consultar tramos horarios de Supabase
-    async function fetchTimeSlots() {
-        try {
-            const { data, error } = await supabase
-                .from('tramos_horarios_primaria')
-                .select('*')
-                .order('orden', { ascending: true });
-
-            if (error) {
-                console.error('Error al cargar tramos horarios de Supabase:', error.message);
-                fallbackTimeSlots();
-                return;
-            }
-
-            if (data && data.length > 0) {
-                timeSlots = data.map((t: { hora_inicio?: string; hora_fin?: string; tipo?: string; descripcion?: string; orden?: number; id: number }) => {
-                    const horaInicio = t.hora_inicio ? t.hora_inicio.slice(0, 5) : '';
-                    const horaFin = t.hora_fin ? t.hora_fin.slice(0, 5) : '';
-                    const timeRange = `${horaInicio} - ${horaFin}`;
-                    
-                    let type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' = 'lectiva';
-                    const tipoLower = (t.tipo || '').toLowerCase();
-                    const descLower = (t.descripcion || '').toLowerCase();
-
-                    if ((timeRange.includes('11:00') && timeRange.includes('11:30')) || tipoLower.includes('recreo') || descLower.includes('recreo') || descLower.includes('atseden')) {
-                        type = 'recreo';
-                    } else if ((timeRange.includes('14:00') && timeRange.includes('15:00')) || tipoLower.includes('comedor') || descLower.includes('comedor') || descLower.includes('bazkaria')) {
-                        type = 'comedor';
-                    } else if (tipoLower.includes('guardia') || descLower.includes('zaintza') || tipoLower.includes('presencia')) {
-                        type = 'presencia';
-                    }
-
-                    return {
-                        orden: t.orden ?? 0,
-                        time: timeRange,
-                        label: t.descripcion || `Franja ${t.orden ?? 0}`,
-                        type
-                    };
-                });
-            } else {
-                fallbackTimeSlots();
-            }
-        } catch (e) {
-            console.error('Error al obtener tramos horarios:', e);
-            fallbackTimeSlots();
-        }
-    }
-
-    function fallbackTimeSlots() {
-        timeSlots = [
-            { orden: 0, time: '09:00 - 09:30', label: '1ª Franja', type: 'lectiva' },
-            { orden: 1, time: '09:30 - 10:30', label: '2ª Franja', type: 'lectiva' },
-            { orden: 2, time: '10:30 - 11:00', label: '3ª Franja', type: 'lectiva' },
-            { orden: 3, time: '11:00 - 11:30', label: 'ATSEDENALDIA', type: 'recreo' },
-            { orden: 4, time: '11:30 - 12:30', label: '4ª Franja', type: 'lectiva' },
-            { orden: 5, time: '12:30 - 13:00', label: '5ª Franja', type: 'lectiva' },
-            { orden: 6, time: '13:00 - 14:00', label: '6ª Franja', type: 'lectiva' },
-            { orden: 7, time: '14:00 - 15:00', label: 'BAZKARIA', type: 'comedor' },
-            { orden: 8, time: '15:00 - 16:00', label: '7ª Franja', type: 'lectiva' },
-            { orden: 9, time: '16:00 - 17:00', label: '8ª Franja', type: 'lectiva' }
-        ];
-    }
-
-    // Consultar profesores desde Supabase ordenados strictly de la A a la Z
-    async function fetchProfesores(curso: string) {
-        loading = true;
-        try {
-            const { data, error } = await supabase
-                .from('profesores')
-                .select('*')
-                .eq('curso_escolar', curso)
-                .order('nombre', { ascending: true });
-
-            if (error) {
-                console.error('Error al cargar profesores desde Supabase:', error.message);
-                return;
-            }
-
-            if (data && data.length > 0) {
-                const mapped = data.map((p: { id: string | number; nombre: string; jornada?: string; perfil?: string }) => {
-                    const nombreFormatted = p.nombre ? p.nombre.toUpperCase() : '';
-                    const jornadaFormatted = formatJornada(p.jornada);
-                    const rolFormatted = formatRol(p.perfil);
-
-                    return {
-                        id: String(p.id),
-                        nombre: p.nombre,
-                        rol: p.perfil || 'Especialista',
-                        jornada: p.jornada || 'Jornada completa',
-                        labelText: `${nombreFormatted} - ${jornadaFormatted} - ${rolFormatted}`
-                    };
-                });
-
-                mapped.sort((a: { nombre: string }, b: { nombre: string }) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-                profesoresDisponibles = mapped;
-            } else {
-                profesoresDisponibles = [];
-            }
-        } catch (err) {
-            console.error('Error de red/servidor al obtener profesores:', err);
-        } finally {
-            loading = false;
-        }
-    }
-
-    // Consultar aulas/grupos desde Supabase ordenados alfabéticamente
-    async function fetchAulas(curso: string) {
-        loading = true;
-        try {
-            const { data, error } = await supabase
-                .from('aulas')
-                .select('*')
-                .eq('curso_escolar', curso)
-                .order('name', { ascending: true });
-
-            if (error) {
-                console.error('Error al cargar aulas desde Supabase:', error.message);
-                return;
-            }
-
-            if (data && data.length > 0) {
-                const mapped = data.map((a: { id: string | number; name?: string; nombre?: string; code?: string; edificio?: string; capacidad?: string }) => {
-                    const aulaNombre = a.name || a.nombre || a.code || `Aula ${a.id}`;
-                    return {
-                        id: String(a.id),
-                        nombre: aulaNombre,
-                        edificio: a.edificio || 'Edificio Principal',
-                        capacidad: a.capacidad || 'Estándar',
-                        labelText: aulaNombre.toUpperCase()
-                    };
-                });
-
-                mapped.sort((a: { nombre: string }, b: { nombre: string }) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-                aulasDisponibles = mapped;
-            } else {
-                aulasDisponibles = [];
-            }
-        } catch (err) {
-            console.error('Error de red/servidor al obtener aulas:', err);
-        } finally {
-            loading = false;
-        }
-    }
-
-    // Consultar las sesiones reales del profesor o aula seleccionada
-    async function fetchSessionsForEntity(entityId: string) {
-        if (!entityId) return;
-        loadingSessions = true;
-
-        try {
-            const selectedProfesorObj = profesoresDisponibles.find(p => p.id === entityId);
-            const profesorNombre = selectedProfesorObj?.nombre;
-
-            let query = supabase
-                .from('sesiones')
-                .select('*')
-                .eq('curso_escolar', selectedCurso);
-
-            if (activeTab === 'profesorado') {
-                if (profesorNombre) {
-                    query = query.eq('profesor_nombre', profesorNombre);
-                } else {
-                    query = query.eq('professor_id', entityId);
-                }
-            } else {
-                query = query.eq('classroom_id', entityId);
-            }
-
-            const { data, error } = await query;
-
-            if (error) {
-                console.error('Error al consultar sesiones:', error.message);
-                return;
-            }
-
-            const grid: Record<string, Record<string, { id?: string; actividad: string; clase?: string; aula?: string; rawData?: any }>> = {
-                [entityId]: {}
-            };
-
-            if (data && data.length > 0) {
-                data.forEach((s: { id?: string | number; dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
-                    const rawDia = s.dia ?? s.day_of_week ?? 0;
-                    const dia = Number(rawDia);
-                    const franja = Number(s.franja ?? s.tramo_id ?? s.orden ?? 0);
-                    const key = `${dia}_${franja}`;
-
-                    grid[entityId][key] = {
-                        id: s.id ? String(s.id) : undefined,
-                        actividad: s.actividad || s.group_name || 'Asignatura',
-                        clase: s.clase || s.grupo || '',
-                        aula: s.aula || '',
-                        rawData: s
-                    };
-                });
-            }
-
-            teacherScheduleGrid = grid;
-        } catch (e) {
-            console.error('Error procesando sesiones:', e);
-        } finally {
-            loadingSessions = false;
-        }
-    }
+    // Tramos horarios y Sesiones dinámicas
+    let timeSlots: TimeSlotItem[] = [];
+    let teacherScheduleGrid: Record<string, Record<string, GridSessionCell>> = {};
 
     // Cargar los datos correspondientes según la pestaña y el curso activo
     async function loadDataForCurrentTab() {
-        await fetchTotalProfesorado();
-        await fetchTimeSlots();
+        totalProfesoradoCount = await fetchTotalProfesorado(selectedCurso);
+        timeSlots = await fetchTimeSlots();
 
         if (activeTab === 'profesorado') {
-            await fetchProfesores(selectedCurso);
+            loading = true;
+            profesoresDisponibles = await fetchProfesores(selectedCurso);
+            loading = false;
+
             if (profesoresDisponibles.length > 0) {
                 const exists = profesoresDisponibles.some(p => p.id === selectedEntityId);
                 if (!exists) selectedEntityId = profesoresDisponibles[0].id;
@@ -278,7 +52,10 @@
                 selectedEntityId = '';
             }
         } else {
-            await fetchAulas(selectedCurso);
+            loading = true;
+            aulasDisponibles = await fetchAulas(selectedCurso);
+            loading = false;
+
             if (aulasDisponibles.length > 0) {
                 const exists = aulasDisponibles.some(a => a.id === selectedEntityId);
                 if (!exists) selectedEntityId = aulasDisponibles[0].id;
@@ -288,8 +65,20 @@
         }
 
         if (selectedEntityId) {
-            await fetchSessionsForEntity(selectedEntityId);
+            await loadSessionsForEntity(selectedEntityId);
         }
+    }
+
+    async function loadSessionsForEntity(entityId: string) {
+        if (!entityId) return;
+        loadingSessions = true;
+        teacherScheduleGrid = await fetchSessionsForEntity(
+            entityId,
+            activeTab,
+            selectedCurso,
+            profesoresDisponibles
+        );
+        loadingSessions = false;
     }
 
     onMount(() => {
@@ -298,7 +87,7 @@
 
     // Reaccionar ante el cambio de profesor/aula seleccionada
     $: if (selectedEntityId) {
-        fetchSessionsForEntity(selectedEntityId);
+        loadSessionsForEntity(selectedEntityId);
     }
 
     // Lista dinámica para el selector según la pestaña
@@ -320,15 +109,6 @@
         activeTab = tab;
         await loadDataForCurrentTab();
     }
-
-    // Días de la semana en Euskera alineados a Base 0 (0 = Astelehena / Lunes, 2 = Asteazkena / Miércoles, 4 = Ostirala / Viernes)
-    const daysOfWeek = [
-        { id: 0, name: 'Astelehena' },
-        { id: 1, name: 'Asteartea' },
-        { id: 2, name: 'Asteazkena' },
-        { id: 3, name: 'Osteguna' },
-        { id: 4, name: 'Ostirala' }
-    ];
 
     // Manejadores de eventos de ActionToolbar
     async function handleSelectCurso(event: CustomEvent<string>) {
