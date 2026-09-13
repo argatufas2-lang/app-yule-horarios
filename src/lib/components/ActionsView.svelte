@@ -17,6 +17,11 @@
     export let selectedEntityId: string = '';
 
     let loading: boolean = false;
+    let loadingSessions: boolean = false;
+
+    // Tramos horarios y Sesiones dinámicas de Supabase
+    let timeSlots: { orden: number; time: string; label: string; type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' }[] = [];
+    let teacherScheduleGrid: Record<string, Record<number, { actividad: string; clase?: string; aula?: string }>> = {};
 
     // Consultar el total global de profesores en Supabase
     async function fetchTotalProfesorado() {
@@ -32,6 +37,67 @@
         } catch (e) {
             console.error('Error al consultar el recuento total de profesorado:', e);
         }
+    }
+
+    // Consultar tramos horarios de Supabase
+    async function fetchTimeSlots() {
+        try {
+            const { data, error } = await supabase
+                .from('tramos_horarios_primaria')
+                .select('*')
+                .order('orden', { ascending: true });
+
+            if (error) {
+                console.error('Error al cargar tramos horarios de Supabase:', error.message);
+                fallbackTimeSlots();
+                return;
+            }
+
+            if (data && data.length > 0) {
+                timeSlots = data.map((t) => {
+                    const horaInicio = t.hora_inicio ? t.hora_inicio.slice(0, 5) : '';
+                    const horaFin = t.hora_fin ? t.hora_fin.slice(0, 5) : '';
+                    const timeRange = `${horaInicio} - ${horaFin}`;
+                    
+                    let type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' = 'lectiva';
+                    const tipoLower = (t.tipo || '').toLowerCase();
+                    const descLower = (t.descripcion || '').toLowerCase();
+
+                    if (tipoLower.includes('recreo') || descLower.includes('recreo') || descLower.includes('atseden')) {
+                        type = 'recreo';
+                    } else if (tipoLower.includes('comedor') || descLower.includes('comedor') || descLower.includes('bazkaria')) {
+                        type = 'comedor';
+                    } else if (tipoLower.includes('guardia') || descLower.includes('zaintza') || tipoLower.includes('presencia')) {
+                        type = 'presencia';
+                    }
+
+                    return {
+                        orden: t.orden ?? t.id,
+                        time: timeRange,
+                        label: t.descripcion || `${t.orden}ª Franja`,
+                        type
+                    };
+                });
+            } else {
+                fallbackTimeSlots();
+            }
+        } catch (e) {
+            console.error('Error al obtener tramos horarios:', e);
+            fallbackTimeSlots();
+        }
+    }
+
+    function fallbackTimeSlots() {
+        timeSlots = [
+            { orden: 0, time: '09:00 - 09:30', label: '1ª Franja', type: 'lectiva' },
+            { orden: 1, time: '09:30 - 10:30', label: '2ª Franja', type: 'lectiva' },
+            { orden: 2, time: '10:30 - 11:00', label: 'Atsedenaldia / Recreo', type: 'recreo' },
+            { orden: 3, time: '11:00 - 12:00', label: '3ª Franja', type: 'lectiva' },
+            { orden: 4, time: '12:00 - 13:00', label: '4ª Franja', type: 'lectiva' },
+            { orden: 5, time: '13:00 - 14:30', label: 'Bazkaria / Comedor', type: 'comedor' },
+            { orden: 6, time: '14:30 - 15:30', label: '5ª Franja', type: 'lectiva' },
+            { orden: 7, time: '15:30 - 16:30', label: '6ª Franja', type: 'lectiva' }
+        ];
     }
 
     // Consultar profesores desde Supabase
@@ -97,9 +163,68 @@
         }
     }
 
+    // Consultar las sesiones reales del profesor o aula seleccionada
+    async function fetchSessionsForEntity(entityId: string) {
+        if (!entityId) return;
+        loadingSessions = true;
+
+        try {
+            const selectedProfesorObj = profesoresDisponibles.find(p => p.id === entityId);
+            const profesorNombre = selectedProfesorObj?.nombre;
+
+            let query = supabase
+                .from('sesiones')
+                .select('*')
+                .eq('curso_escolar', selectedCurso);
+
+            if (activeTab === 'profesorado') {
+                if (profesorNombre) {
+                    query = query.eq('profesor_nombre', profesorNombre);
+                } else {
+                    query = query.eq('professor_id', entityId);
+                }
+            } else {
+                query = query.eq('classroom_id', entityId);
+            }
+
+            const { data, error } = await query;
+
+            if (error) {
+                console.error('Error al consultar sesiones:', error.message);
+                return;
+            }
+
+            const grid: Record<string, Record<number, { actividad: string; clase?: string; aula?: string }>> = {
+                [entityId]: {}
+            };
+
+            if (data && data.length > 0) {
+                data.forEach((s) => {
+                    const dia = s.dia ?? s.day_of_week ?? 1;
+                    const franja = s.franja ?? s.tramo_id ?? s.orden ?? 0;
+                    const key = `${dia}_${franja}`;
+
+                    grid[entityId][key as any] = {
+                        actividad: s.actividad || s.group_name || 'Asignatura',
+                        clase: s.clase || s.grupo || '',
+                        aula: s.aula || ''
+                    };
+                });
+            }
+
+            teacherScheduleGrid = grid;
+        } catch (e) {
+            console.error('Error procesando sesiones:', e);
+        } finally {
+            loadingSessions = false;
+        }
+    }
+
     // Cargar los datos correspondientes según la pestaña y el curso activo
     async function loadDataForCurrentTab() {
         await fetchTotalProfesorado();
+        await fetchTimeSlots();
+
         if (activeTab === 'profesorado') {
             await fetchProfesores(selectedCurso);
             if (profesoresDisponibles.length > 0) {
@@ -117,11 +242,20 @@
                 selectedEntityId = '';
             }
         }
+
+        if (selectedEntityId) {
+            await fetchSessionsForEntity(selectedEntityId);
+        }
     }
 
     onMount(() => {
         loadDataForCurrentTab();
     });
+
+    // Reaccionar ante el cambio de profesor/aula seleccionada
+    $: if (selectedEntityId) {
+        fetchSessionsForEntity(selectedEntityId);
+    }
 
     // Lista dinámica para el selector según la pestaña
     $: selectorOptions = activeTab === 'profesorado' 
@@ -138,61 +272,14 @@
         await loadDataForCurrentTab();
     }
 
-    // Días de la semana almacenados/mostrados en euskera
+    // Días de la semana únicamente en Euskera
     const daysOfWeek = [
-        { id: 1, name: 'Astelehena', short: 'Lunes' },
-        { id: 2, name: 'Asteartea', short: 'Martes' },
-        { id: 3, name: 'Asteazkena', short: 'Miércoles' },
-        { id: 4, name: 'Osteguna', short: 'Jueves' },
-        { id: 5, name: 'Ostirala', short: 'Viernes' }
+        { id: 1, name: 'Astelehena' },
+        { id: 2, name: 'Asteartea' },
+        { id: 3, name: 'Asteazkena' },
+        { id: 4, name: 'Osteguna' },
+        { id: 5, name: 'Ostirala' }
     ];
-
-    // 10 franjas horarias principales completas
-    const timeSlots = [
-        { orden: 1, time: '09:00 - 10:00', label: '1ª Franja', type: 'lectiva' },
-        { orden: 2, time: '10:00 - 11:00', label: '2ª Franja', type: 'lectiva' },
-        { orden: 3, time: '11:00 - 11:30', label: 'Atsedenaldia / Recreo', type: 'recreo' },
-        { orden: 4, time: '11:30 - 12:30', label: '3ª Franja', type: 'lectiva' },
-        { orden: 5, time: '12:30 - 13:30', label: '4ª Franja', type: 'lectiva' },
-        { orden: 6, time: '13:30 - 14:30', label: 'Bazkaria / Comedor', type: 'comedor' },
-        { orden: 7, time: '14:30 - 15:30', label: '5ª Franja', type: 'lectiva' },
-        { orden: 8, time: '15:30 - 16:30', label: '6ª Franja', type: 'lectiva' },
-        { orden: 9, time: '16:30 - 17:30', label: '7ª Franja', type: 'lectiva' },
-        { orden: 10, time: '17:30 - 18:30', label: 'Zaintza / Guardias', type: 'presencia' }
-    ];
-
-    // Matriz de horario para Profesores (ID -> Franja)
-    const teacherScheduleGrid: Record<string, Record<number, { actividad: string; clase?: string; aula?: string }>> = {
-        '1': {
-            1: { actividad: 'Euskera', clase: 'LH 2A', aula: 'Aula 201' },
-            2: { actividad: 'Gaztelania', clase: 'LH 2A', aula: 'Aula 201' },
-            4: { actividad: 'Ingelesa', clase: 'LH 3B', aula: 'Aula Idiomas' },
-            7: { actividad: 'Tutoretza', clase: 'LH 2A', aula: 'Aula 201' },
-            8: { actividad: 'Koordinazioa', clase: 'Irakasleak', aula: 'Mintegia' }
-        },
-        '2': {
-            1: { actividad: 'Matematika', clase: 'LH 4A', aula: 'Aula 401' },
-            2: { actividad: 'Ingurunea', clase: 'LH 4A', aula: 'Aula 401' },
-            4: { actividad: 'Gaztelania', clase: 'LH 4A', aula: 'Aula 401' },
-            7: { actividad: 'Gorputz Hezkuntza', clase: 'LH 4A', aula: 'Gimnasio' }
-        }
-    };
-
-    // Matriz de horario para Aulas y Grupos (ID -> Franja)
-    const classroomScheduleGrid: Record<string, Record<number, { actividad: string; profesor?: string; grupo?: string }>> = {
-        'a2': {
-            1: { actividad: 'Euskera', profesor: 'ALBA', grupo: 'LH 2A' },
-            2: { actividad: 'Gaztelania', profesor: 'ALBA', grupo: 'LH 2A' },
-            4: { actividad: 'Matematika', profesor: 'MIKEL', grupo: 'LH 2A' },
-            7: { actividad: 'Tutoretza', profesor: 'ALBA', grupo: 'LH 2A' }
-        },
-        'a3': {
-            7: { actividad: 'Gorputz Hezkuntza', profesor: 'MIKEL', grupo: 'LH 4A' }
-        },
-        'a4': {
-            4: { actividad: 'Ingelesa', profesor: 'ALBA', grupo: 'LH 3B' }
-        }
-    };
 
     // Manejadores de eventos de ActionToolbar
     async function handleSelectCurso(event: CustomEvent<string>) {
@@ -256,7 +343,7 @@
     <!-- Área de Contenido Principal Ampliada -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-4 space-y-4">
         
-        <!-- Pestañas y Selector Unificados en una sola línea horizontal -->
+        <!-- Pestañas y Selector Unificados -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
             
             <!-- Pestañas Principales a la izquierda -->
@@ -375,11 +462,10 @@
                 <table class="w-full border-collapse text-center text-xs md:text-sm">
                     <thead>
                         <tr class="bg-sky-100 dark:bg-sky-950/70 text-sky-950 dark:text-sky-100 border-b border-sky-200 dark:border-sky-800 font-bold">
-                            <th class="p-3 border-r border-sky-200 dark:border-sky-800 w-36 font-extrabold text-sky-900 dark:text-sky-200">Hora / Ordua</th>
+                            <th class="p-3 border-r border-sky-200 dark:border-sky-800 w-36 font-extrabold text-sky-900 dark:text-sky-200">Ordua</th>
                             {#each daysOfWeek as day}
                                 <th class="p-3 border-r border-sky-200 dark:border-sky-800 min-w-[140px]">
                                     <span class="block text-sm font-bold text-sky-900 dark:text-sky-100">{day.name}</span>
-                                    <span class="block text-[11px] text-sky-700 dark:text-sky-300 font-medium">{day.short}</span>
                                 </th>
                             {/each}
                         </tr>
@@ -397,7 +483,7 @@
                             {/each}
                         </tr>
 
-                        <!-- 10 Franjas Horarias -->
+                        <!-- Tramos Horarios Consultados de Supabase -->
                         {#each timeSlots as slot}
                             {#if slot.type === 'recreo'}
                                 <!-- Fila Recreo (Fondo Ámbar Suave) -->
@@ -438,41 +524,23 @@
                                         {slot.time}
                                     </td>
                                     {#each daysOfWeek as day}
-                                        {#if activeTab === 'profesorado'}
-                                            {@const session = teacherScheduleGrid[selectedEntityId]?.[slot.orden]}
-                                            <td class="p-1.5 border-r border-slate-200 dark:border-gray-700 h-16 align-middle hover:bg-sky-50/50 dark:hover:bg-sky-950/30 transition-colors cursor-pointer">
-                                                {#if session}
-                                                    <div class="bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 rounded-lg p-1.5 shadow-xs">
-                                                        <span class="block font-bold text-sky-900 dark:text-sky-200 text-xs">{session.actividad}</span>
-                                                        {#if session.clase}
-                                                            <span class="block text-[11px] font-semibold text-sky-700 dark:text-sky-300">{session.clase}</span>
-                                                        {/if}
-                                                        {#if session.aula}
-                                                            <span class="block text-[10px] text-sky-600 dark:text-sky-400">{session.aula}</span>
-                                                        {/if}
-                                                    </div>
-                                                {:else}
-                                                    <span class="text-xs text-slate-300 dark:text-gray-600 font-light">+ Añadir</span>
-                                                {/if}
-                                            </td>
-                                        {:else}
-                                            {@const classroomSession = classroomScheduleGrid[selectedEntityId]?.[slot.orden]}
-                                            <td class="p-1.5 border-r border-slate-200 dark:border-gray-700 h-16 align-middle hover:bg-amber-50/50 dark:hover:bg-amber-950/30 transition-colors cursor-pointer">
-                                                {#if classroomSession}
-                                                    <div class="bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 rounded-lg p-1.5 shadow-xs">
-                                                        <span class="block font-bold text-amber-900 dark:text-amber-200 text-xs">{classroomSession.actividad}</span>
-                                                        {#if classroomSession.profesor}
-                                                            <span class="block text-[11px] font-semibold text-amber-800 dark:text-amber-300">Prof: {classroomSession.profesor}</span>
-                                                        {/if}
-                                                        {#if classroomSession.grupo}
-                                                            <span class="block text-[10px] text-amber-600 dark:text-amber-400">Grupo: {classroomSession.grupo}</span>
-                                                        {/if}
-                                                    </div>
-                                                {:else}
-                                                    <span class="text-xs text-slate-300 dark:text-gray-600 font-light">+ Añadir</span>
-                                                {/if}
-                                            </td>
-                                        {/if}
+                                        {@const sessionKey = `${day.id}_${slot.orden}`}
+                                        {@const session = teacherScheduleGrid[selectedEntityId]?.[sessionKey]}
+                                        <td class="p-1.5 border-r border-slate-200 dark:border-gray-700 h-16 align-middle hover:bg-sky-50/50 dark:hover:bg-sky-950/30 transition-colors cursor-pointer">
+                                            {#if session}
+                                                <div class="bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 rounded-lg p-1.5 shadow-xs">
+                                                    <span class="block font-bold text-sky-900 dark:text-sky-200 text-xs">{session.actividad}</span>
+                                                    {#if session.clase}
+                                                        <span class="block text-[11px] font-semibold text-sky-700 dark:text-sky-300">{session.clase}</span>
+                                                    {/if}
+                                                    {#if session.aula}
+                                                        <span class="block text-[10px] text-sky-600 dark:text-sky-400">{session.aula}</span>
+                                                    {/if}
+                                                </div>
+                                            {:else}
+                                                <span class="text-xs text-slate-300 dark:text-gray-600 font-light">+ Añadir</span>
+                                            {/if}
+                                        </td>
                                     {/each}
                                 </tr>
                             {/if}
