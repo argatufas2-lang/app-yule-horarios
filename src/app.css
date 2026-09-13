@@ -2,18 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Sombreado diagonal suave con línea horizontal central para horas inhabilitadas */
 .cell-disabled-striped {
-    background-color: #f8fafc;
-    background-image: 
-        /* Línea horizontal central flotante que no llega de extremo a extremo */
-        linear-gradient(to right, transparent 15%, #cbd5e1 15%, #cbd5e1 85%, transparent 85%),
-        /* Patrón de líneas diagonales suaves */
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 10px,
-            #e2e8f0 10px,
-            #e2e8f0 11px
-        );
-    background-position: center;
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(148, 163, 184, 0.08),
+        rgba(148, 163, 184, 0.08) 10px,
+        rgba(100, 116, 139, 0.15) 10px,
+        rgba(100, 116, 139, 0.15) 20px
+    );
+    position: relative;
+}
+
+.dark .cell-disabled-striped {
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(51, 65, 85, 0.2),
+        rgba(51, 65, 85, 0.2) 10px,
+        rgba(71, 85, 105, 0.35) 10px,
+        rgba(71, 85, 105, 0.35) 20px
+    );
+}
+
+/* Línea horizontal central que cruza la celda sin tocar los extremos */
+.cell-disabled-striped::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 15%;
+    right: 15%;
+    height: 2px;
+    background-color: rgba(100, 116, 139, 0.4);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.dark .cell-disabled-striped::after {
+    background-color: rgba(148, 163, 184, 0.4);
 }
