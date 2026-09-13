@@ -45,9 +45,8 @@
     <!-- 1. Cabecera Principal (Logotipo Oficial + Título + Selección de Ciclo) -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 dark:border-gray-700/60">
         <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-xs overflow-hidden border border-sky-500 shrink-0">
-                <img src="/logo.png" alt="Ganivet Logo" class="w-full h-full object-cover" on:error={handleImageError} />
-                <span class="text-2xl">🏫</span>
+            <div class="h-10 flex items-center justify-center overflow-hidden shrink-0">
+                <img src="/Logo.png" alt="Ganivet Logo" class="h-10 w-auto max-w-[180px] object-contain" on:error={handleImageError} />
             </div>
             <div>
                 <h1 class="text-2xl font-extrabold text-slate-900 dark:text-gray-100 tracking-tight font-sans">
