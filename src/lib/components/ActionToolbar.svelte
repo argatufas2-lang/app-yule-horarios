@@ -42,7 +42,43 @@
 
 <header class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 shadow-xs">
     
-    <!-- 1. Barra Superior de Contexto con fondo amarillo/pastel muy sutil -->
+    <!-- 1. Cabecera Principal (Logotipo Oficial + Título + Selección de Ciclo) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 dark:border-gray-700/60">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-xs overflow-hidden border border-sky-500 shrink-0">
+                <img src="/logo.png" alt="Ganivet Logo" class="w-full h-full object-cover" on:error={handleImageError} />
+                <span class="text-2xl">🏫</span>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-gray-100 tracking-tight font-sans">
+                    Gestión de Horarios
+                </h1>
+                <p class="text-xs text-slate-500 dark:text-gray-400 font-medium">
+                    Colegio Público Ganivet / Ganivet Ikastetxea
+                </p>
+            </div>
+        </div>
+
+        <!-- Botones de Alternancia de Ciclo (Esquina Superior Derecha) -->
+        <div class="flex items-center bg-slate-100 dark:bg-gray-700 p-1 rounded-full border border-slate-200 dark:border-gray-600 shadow-xs">
+            <button
+                type="button"
+                on:click={() => toggleCiclo('HH')}
+                class="px-4 py-1.5 text-xs font-bold rounded-full transition-all {selectedCiclo === 'HH' ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
+            >
+                Infantil (HH)
+            </button>
+            <button
+                type="button"
+                on:click={() => toggleCiclo('LH')}
+                class="px-4 py-1.5 text-xs font-bold rounded-full transition-all {selectedCiclo === 'LH' ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
+            >
+                Primaria (LH)
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Barra Superior de Contexto con fondo amarillo/pastel muy sutil -->
     <div class="bg-amber-50/80 dark:bg-amber-950/20 px-4 sm:px-6 lg:px-8 py-2 border-b border-amber-200/60 dark:border-amber-900/30 text-xs text-slate-700 dark:text-gray-300 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-4">
             <span class="inline-flex items-center gap-1.5 font-semibold text-slate-800 dark:text-gray-200">
@@ -57,42 +93,6 @@
             <span class="inline-flex items-center gap-1 font-medium">
                 👥 Total Profesorado: <strong class="text-sky-800 dark:text-sky-300 bg-white dark:bg-gray-800 px-2.5 py-0.5 rounded-full border border-sky-200 dark:border-sky-800 font-bold">{totalProfesorado}</strong>
             </span>
-        </div>
-
-        <!-- Botones de Alternancia de Ciclo (Esquina Superior Derecha) -->
-        <div class="flex items-center bg-white dark:bg-gray-800 p-1 rounded-full border border-amber-200 dark:border-amber-900/40 shadow-xs">
-            <button
-                type="button"
-                on:click={() => toggleCiclo('HH')}
-                class="px-3 py-1 text-xs font-semibold rounded-full transition-all {selectedCiclo === 'HH' ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
-            >
-                Infantil (HH)
-            </button>
-            <button
-                type="button"
-                on:click={() => toggleCiclo('LH')}
-                class="px-3 py-1 text-xs font-semibold rounded-full transition-all {selectedCiclo === 'LH' ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
-            >
-                Primaria (LH)
-            </button>
-        </div>
-    </div>
-
-    <!-- 2. Cabecera Principal (Logotipo y Título) -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between border-b border-slate-100 dark:border-gray-700/60">
-        <div class="flex items-center space-x-3">
-            <div class="w-12 h-12 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-xs overflow-hidden border border-sky-500">
-                <img src="/logo.png" alt="Ganivet Logo" class="w-full h-full object-cover" on:error={handleImageError} />
-                <span class="text-2xl">🏫</span>
-            </div>
-            <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-gray-100 tracking-tight font-sans">
-                    Gestión de Horarios
-                </h1>
-                <p class="text-xs text-slate-500 dark:text-gray-400 font-medium">
-                    Colegio Público Ganivet / Ganivet Ikastetxea
-                </p>
-            </div>
         </div>
     </div>
 
