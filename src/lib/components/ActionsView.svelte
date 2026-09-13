@@ -396,49 +396,49 @@
             </div>
         </div>
 
-        <!-- Tarjeta de Perfil de la Entidad Centrada con Logo del Colegio -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 flex flex-col items-center justify-center text-center">
+        <!-- Tarjeta de Perfil Alineada Horizontalmente (Logo -> Nombre -> Etiquetas) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 flex items-center justify-center">
             {#if activeTab === 'profesorado'}
-                <!-- Información Centrada del Profesor -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <div class="flex flex-wrap items-center justify-center gap-4 text-center sm:text-left">
+                    <!-- 1. Logo -->
                     <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0">
                         <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain" on:error={handleImageError} />
                     </div>
-                    <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <h2 class="text-xl font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-tight">
-                            {currentTeacher?.nombre ? currentTeacher.nombre.toUpperCase() : (loading ? 'CARGANDO PROFESORADO...' : 'SIN PROFESORADO DISPONIBLE')}
-                        </h2>
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-1.5">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200/60 dark:border-sky-800">
-                                Primaria (LH)
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800">
-                                {currentTeacher?.rol || 'Especialista'}
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800">
-                                {currentTeacher?.jornada || 'Jornada completa'}
-                            </span>
-                        </div>
+                    <!-- 2. Nombre Grande -->
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight">
+                        {currentTeacher?.nombre ? currentTeacher.nombre.toUpperCase() : (loading ? 'CARGANDO PROFESORADO...' : 'SIN PROFESORADO DISPONIBLE')}
+                    </h2>
+                    <!-- 3. Etiquetas -->
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200/60 dark:border-sky-800">
+                            Primaria (LH)
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800">
+                            {currentTeacher?.rol || 'Especialista'}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800">
+                            {currentTeacher?.jornada || 'Jornada completa'}
+                        </span>
                     </div>
                 </div>
             {:else}
-                <!-- Información Centrada del Aula/Grupo -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <div class="flex flex-wrap items-center justify-center gap-4 text-center sm:text-left">
+                    <!-- 1. Logo -->
                     <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0">
                         <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain" on:error={handleImageError} />
                     </div>
-                    <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <h2 class="text-xl font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-tight">
-                            {currentClassroom?.nombre ? currentClassroom.nombre.toUpperCase() : (loading ? 'CARGANDO AULAS...' : 'SIN AULAS DISPONIBLES')}
-                        </h2>
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-1.5">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200/60">
-                                {currentClassroom?.edificio || 'Edificio Principal'}
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300 border border-slate-200">
-                                Capacidad: {currentClassroom?.capacidad || 'Estándar'}
-                            </span>
-                        </div>
+                    <!-- 2. Nombre Grande -->
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight">
+                        {currentClassroom?.nombre ? currentClassroom.nombre.toUpperCase() : (loading ? 'CARGANDO AULAS...' : 'SIN AULAS DISPONIBLES')}
+                    </h2>
+                    <!-- 3. Etiquetas -->
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200/60">
+                            {currentClassroom?.edificio || 'Edificio Principal'}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300 border border-slate-200">
+                            Capacidad: {currentClassroom?.capacidad || 'Estándar'}
+                        </span>
                     </div>
                 </div>
             {/if}
