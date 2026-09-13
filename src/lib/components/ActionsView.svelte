@@ -456,28 +456,28 @@
             {/if}
         </div>
 
-        <!-- Cuadrícula de Horarios Principal -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 overflow-hidden">
+        <!-- Cuadrícula de Horarios Principal con Bordes Marcados y Tipografía Más Grande -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border-2 border-slate-300 dark:border-gray-600 overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full border-collapse text-center text-xs md:text-sm">
+                <table class="w-full border-collapse border-2 border-slate-300 dark:border-gray-600 text-center text-xs md:text-sm">
                     <thead>
-                        <tr class="bg-sky-100 dark:bg-sky-950/70 text-sky-950 dark:text-sky-100 border-b border-sky-200 dark:border-sky-800 font-bold">
-                            <th class="p-3 border-r border-sky-200 dark:border-sky-800 w-36 font-extrabold text-sky-900 dark:text-sky-200 text-sm">Ordua</th>
+                        <tr class="bg-sky-100 dark:bg-sky-950/70 text-sky-950 dark:text-sky-100 border-b-2 border-slate-300 dark:border-gray-600 font-bold">
+                            <th class="p-3 border-r-2 border-slate-300 dark:border-gray-600 w-40 font-extrabold text-sky-900 dark:text-sky-200 text-base">Ordua</th>
                             {#each daysOfWeek as day}
-                                <th class="p-3 border-r border-sky-200 dark:border-sky-800 min-w-[140px]">
-                                    <span class="block text-base font-extrabold text-sky-900 dark:text-sky-100">{day.name}</span>
+                                <th class="p-3 border-r-2 border-slate-300 dark:border-gray-600 min-w-[140px]">
+                                    <span class="block text-lg font-black text-sky-900 dark:text-sky-100 tracking-wide">{day.name}</span>
                                 </th>
                             {/each}
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-gray-700">
+                    <tbody class="divide-y-2 divide-slate-300 dark:divide-gray-600">
                         <!-- Fila Superior de Presencia Delimitada -->
-                        <tr class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-gray-700">
-                            <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-200/60 dark:bg-gray-700 font-bold text-sm text-slate-700 dark:text-slate-200 whitespace-nowrap">
+                        <tr class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b-2 border-slate-300 dark:border-gray-600">
+                            <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-slate-200/70 dark:bg-gray-700 font-bold text-base text-slate-800 dark:text-slate-100 whitespace-nowrap">
                                 📌 Presencia / Zaintza
                             </td>
                             {#each daysOfWeek as day}
-                                <td class="p-2 border-r border-slate-200 dark:border-gray-700 text-xs font-semibold text-sky-800 dark:text-sky-300 bg-slate-50 dark:bg-slate-800/60">
+                                <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-xs font-semibold text-sky-800 dark:text-sky-300 bg-slate-50 dark:bg-slate-800/60">
                                     09:00 - 16:30 (4h 30m)
                                 </td>
                             {/each}
@@ -487,50 +487,50 @@
                         {#each timeSlots as slot}
                             {#if slot.type === 'recreo' || slot.time.includes('11:00 - 11:30')}
                                 <!-- Fila Recreo (Celdas Independientes por Día) -->
-                                <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium">
-                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-sm whitespace-nowrap text-emerald-950 dark:text-emerald-200">
+                                <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium border-b-2 border-slate-300 dark:border-gray-600">
+                                    <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-emerald-200/60 dark:bg-emerald-900/60 font-bold text-base whitespace-nowrap text-emerald-950 dark:text-emerald-200">
                                         11:00 - 11:30
                                     </td>
                                     {#each daysOfWeek as day}
-                                        <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40">
+                                        <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40">
                                             ATSEDENALDIA
                                         </td>
                                     {/each}
                                 </tr>
                             {:else if slot.type === 'comedor' || slot.time.includes('14:00 - 15:00')}
                                 <!-- Fila Comedor (Celdas Independientes por Día) -->
-                                <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium">
-                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-sm whitespace-nowrap text-emerald-950 dark:text-emerald-200">
+                                <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium border-b-2 border-slate-300 dark:border-gray-600">
+                                    <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-emerald-200/60 dark:bg-emerald-900/60 font-bold text-base whitespace-nowrap text-emerald-950 dark:text-emerald-200">
                                         14:00 - 15:00
                                     </td>
                                     {#each daysOfWeek as day}
-                                        <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40">
+                                        <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40">
                                             BAZKARIA
                                         </td>
                                     {/each}
                                 </tr>
                             {:else if slot.type === 'presencia'}
                                 <!-- Fila Guardias / Presencia Complementaria -->
-                                <tr class="bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200">
-                                    <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-100/80 dark:bg-gray-700/50 font-bold text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                                <tr class="bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 border-b-2 border-slate-300 dark:border-gray-600">
+                                    <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-slate-100/80 dark:bg-gray-700/50 font-bold text-base text-slate-700 dark:text-slate-200 whitespace-nowrap">
                                         {slot.time}
                                     </td>
                                     {#each daysOfWeek as day}
-                                        <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-100/50 dark:bg-slate-700/30 text-xs italic text-slate-400 dark:text-gray-400">
+                                        <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-slate-100/50 dark:bg-slate-700/30 text-xs italic text-slate-400 dark:text-gray-400">
                                             {activeTab === 'profesorado' ? 'Guardia / Zaintza' : 'Libre / Libre'}
                                         </td>
                                     {/each}
                                 </tr>
                             {:else}
                                 <!-- Franjas Lectivas -->
-                                <tr>
-                                    <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-700/30 font-bold text-sm text-slate-600 dark:text-gray-300 whitespace-nowrap">
+                                <tr class="border-b-2 border-slate-300 dark:border-gray-600">
+                                    <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/30 font-bold text-base text-slate-700 dark:text-gray-200 whitespace-nowrap">
                                         {slot.time}
                                     </td>
                                     {#each daysOfWeek as day}
                                         {@const sessionKey = `${day.id}_${slot.orden}`}
                                         {@const session = teacherScheduleGrid[selectedEntityId]?.[sessionKey]}
-                                        <td class="p-1.5 border-r border-slate-200 dark:border-gray-700 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer">
+                                        <td class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer">
                                             {#if session}
                                                 <div class="flex flex-col items-center justify-center space-y-0.5">
                                                     <span class="block font-black text-slate-900 dark:text-gray-100 text-sm uppercase tracking-wide">
