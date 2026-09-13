@@ -16,13 +16,13 @@
         selectedIds = items.map(item => item.id);
     }
 
-    // 1. Marcar estrictamente todas las casillas
-    function selectAll() {
+    // Selecciona todos los IDs disponibles
+    function seleccionarTodo() {
         selectedIds = items.map(item => item.id);
     }
 
-    // 2. Desmarcar estrictamente todas las casillas
-    function deselectAll() {
+    // Vacía el array de IDs seleccionados
+    function deseleccionarTodo() {
         selectedIds = [];
     }
 
@@ -83,7 +83,7 @@
                 </button>
             </div>
 
-            <!-- Acciones de Selección Rápidas (Dos botones independientes y deterministas) -->
+            <!-- Acciones de Selección Rápidas (Dos botones independientes) -->
             <div class="px-5 py-2.5 bg-slate-100/70 dark:bg-gray-700/50 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between text-xs">
                 <span class="font-semibold text-slate-700 dark:text-gray-300">
                     Seleccionados: <strong class="text-sky-700 dark:text-sky-400">{selectedIds.length}</strong> / {items.length}
@@ -92,14 +92,14 @@
                 <div class="flex items-center gap-2">
                     <button 
                         type="button" 
-                        on:click={selectAll}
+                        on:click={seleccionarTodo}
                         class="px-2.5 py-1 rounded bg-sky-50 hover:bg-sky-100 text-sky-700 dark:bg-sky-950 dark:hover:bg-sky-900 dark:text-sky-300 font-bold border border-sky-200 dark:border-sky-800 transition-colors"
                     >
                         Seleccionar todo
                     </button>
                     <button 
                         type="button" 
-                        on:click={deselectAll}
+                        on:click={deseleccionarTodo}
                         class="px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-gray-200 font-bold border border-slate-300 dark:border-gray-500 transition-colors"
                     >
                         Deseleccionar todo
