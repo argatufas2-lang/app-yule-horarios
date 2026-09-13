@@ -62,16 +62,18 @@
     @media print {
         @page {
             size: A4 landscape;
-            margin: 0;
+            margin: 4mm 6mm;
         }
 
         :global(body) {
             background-color: #ffffff !important;
             color: #000000 !important;
             margin: 0 !important;
-            padding: 10mm !important;
+            padding: 0 !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            height: 100vh !important;
+            overflow: hidden !important;
         }
 
         :global(.print-area) {
@@ -81,8 +83,11 @@
             padding: 0 !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: center !important;
-            min-height: 180mm !important;
+            justify-content: space-between !important;
+            height: 100% !important;
+            max-height: 190mm !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
     }
 </style>
