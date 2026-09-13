@@ -20,7 +20,7 @@ export interface ActividadRecord {
 export interface AulaRecord {
     id: string;
     code: string | null;
-    name: string;
+    nombre: string;
     edificio?: string | null;
     capacidad?: string | null;
     curso_escolar: string | null;
@@ -120,7 +120,7 @@ export async function getAdminAulas(curso: string): Promise<AulaRecord[]> {
         .from('aulas')
         .select('*')
         .eq('curso_escolar', curso)
-        .order('name', { ascending: true });
+        .order('nombre', { ascending: true });
 
     if (error) throw new Error(`Error al cargar aulas: ${error.message}`);
     return data || [];

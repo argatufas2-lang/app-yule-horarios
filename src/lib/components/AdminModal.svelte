@@ -41,7 +41,7 @@
     // Campos temporales para Nuevo / Edición
     let newProfesor = { nombre: '', perfil: 'Especialista', jornada: 'Jornada completa' };
     let newActividad = { nombre: '', categoria: 'General', es_lectiva: true };
-    let newAula = { name: '', code: '', edificio: 'Principal', capacidad: '30' };
+    let newAula = { nombre: '', code: '', edificio: 'Principal', capacidad: '30' };
 
     $: if (isOpen && selectedCurso) {
         loadData();
@@ -60,7 +60,7 @@
             }
         } catch (e: any) {
             errorMessage = e.message || 'Error al cargar datos';
-        } finally {
+        } fontally {
             loading = false;
         }
     }
@@ -166,16 +166,16 @@
 
     // --- ACCIONES AULAS ---
     async function handleCreateAula() {
-        if (!newAula.name.trim()) return;
+        if (!newAula.nombre.trim()) return;
         try {
             await createAdminAula({
-                name: newAula.name,
-                code: newAula.code || newAula.name,
+                nombre: newAula.nombre,
+                code: newAula.code || newAula.nombre,
                 edificio: newAula.edificio,
                 capacidad: newAula.capacidad,
                 curso_escolar: selectedCurso
             });
-            newAula = { name: '', code: '', edificio: 'Principal', capacidad: '30' };
+            newAula = { nombre: '', code: '', edificio: 'Principal', capacidad: '30' };
             showSuccess('Aula creada con éxito');
             await loadData();
         } catch (e: any) {
@@ -186,7 +186,7 @@
     async function handleUpdateAula(a: AulaRecord) {
         try {
             await updateAdminAula(a.id, {
-                name: a.name,
+                nombre: a.nombre,
                 code: a.code,
                 edificio: a.edificio,
                 capacidad: a.capacidad
@@ -390,7 +390,7 @@
                     <div class="bg-slate-50 dark:bg-gray-900/60 p-4 rounded-xl border border-slate-200 dark:border-gray-700 flex flex-wrap items-end gap-3">
                         <div class="flex-1 min-w-[150px]">
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Nombre Aula</label>
-                            <input type="text" bind:value={newAula.name} placeholder="Ej. LH 1A" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
+                            <input type="text" bind:value={newAula.nombre} placeholder="Ej. LH 1A" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
                         </div>
                         <div class="w-32">
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Código</label>
@@ -419,7 +419,7 @@
                             {#each aulas as au}
                                 <tr class="hover:bg-slate-50 dark:hover:bg-gray-700/50">
                                     {#if editingId === au.id}
-                                        <td class="p-2"><input type="text" bind:value={au.name} class="w-full p-1 border rounded text-xs" /></td>
+                                        <td class="p-2"><input type="text" bind:value={au.nombre} class="w-full p-1 border rounded text-xs" /></td>
                                         <td class="p-2"><input type="text" bind:value={au.code} class="w-full p-1 border rounded text-xs" /></td>
                                         <td class="p-2"><input type="text" bind:value={au.edificio} class="w-full p-1 border rounded text-xs" /></td>
                                         <td class="p-2 text-center space-x-1">
@@ -427,12 +427,12 @@
                                             <button type="button" on:click={() => editingId = null} class="px-2 py-1 bg-slate-300 text-slate-800 rounded font-bold text-[10px]">Cancelar</button>
                                         </td>
                                     {:else}
-                                        <td class="p-2.5 border border-slate-200 dark:border-gray-600 font-semibold">{au.name}</td>
-                                        <td class="p-2.5 border border-slate-200 dark:border-gray-600">{au.code || au.name}</td>
+                                        <td class="p-2.5 border border-slate-200 dark:border-gray-600 font-semibold">{au.nombre}</td>
+                                        <td class="p-2.5 border border-slate-200 dark:border-gray-600">{au.code || au.nombre}</td>
                                         <td class="p-2.5 border border-slate-200 dark:border-gray-600">{au.edificio || 'Principal'}</td>
                                         <td class="p-2.5 border border-slate-200 dark:border-gray-600 text-center space-x-1">
                                             <button type="button" on:click={() => editingId = au.id} class="text-sky-600 hover:text-sky-800 font-bold">✏️</button>
-                                            <button type="button" on:click={() => handleDeleteAula(au.id, au.name)} class="text-red-600 hover:text-red-800 font-bold">🗑️</button>
+                                            <button type="button" on:click={() => handleDeleteAula(au.id, au.nombre)} class="text-red-600 hover:text-red-800 font-bold">🗑️</button>
                                         </td>
                                     {/if}
                                 </tr>
