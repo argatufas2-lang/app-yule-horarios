@@ -43,7 +43,7 @@
 <header class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 shadow-xs">
     
     <!-- 1. Cabecera Principal Centrada con Título Más Grande -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col items-center justify-center text-center border-b border-slate-100 dark:border-gray-700/60">
+    <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-5 flex flex-col items-center justify-center text-center border-b border-slate-100 dark:border-gray-700/60">
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
             <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0">
                 <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain" on:error={handleImageError} />
@@ -57,9 +57,9 @@
         </p>
     </div>
 
-    <!-- 2. Barra Superior de Contexto de Ancho Contenido con Selección de Ciclo a la Derecha -->
-    <div class="py-2 px-4 border-b border-amber-200/60 dark:border-amber-900/30 bg-amber-50/80 dark:bg-amber-950/20">
-        <div class="max-w-4xl mx-auto text-xs text-slate-700 dark:text-gray-300 flex flex-wrap items-center justify-between gap-3">
+    <!-- 2. Barra Superior de Contexto Alineada con el Bloque Inferior -->
+    <div class="py-2 border-b border-amber-200/60 dark:border-amber-900/30 bg-amber-50/80 dark:bg-amber-950/20">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 text-xs text-slate-700 dark:text-gray-300 flex flex-wrap items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-3">
                 <span class="inline-flex items-center gap-1.5 font-semibold text-slate-800 dark:text-gray-200">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
@@ -95,9 +95,9 @@
         </div>
     </div>
 
-    <!-- 3. Barra de Acciones Corporativa Compacta -->
-    <div class="py-2.5 px-4 bg-slate-50/60 dark:bg-gray-800/50">
-        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
+    <!-- 3. Barra de Acciones Corporativa Alineada con el Bloque Inferior -->
+    <div class="py-2.5 bg-slate-50/60 dark:bg-gray-800/50">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 flex flex-wrap items-center justify-between gap-2.5">
             
             <!-- Desplegable de Curso -->
             <div class="flex items-center space-x-1.5 shrink-0">
