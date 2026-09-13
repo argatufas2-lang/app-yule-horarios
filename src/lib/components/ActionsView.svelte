@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import ActionToolbar from './ActionToolbar.svelte';
+    import { supabase } from '$lib/services/supabaseClient';
 
     // Estados de navegación y selección
     export let selectedCurso: string = '2026-2027';
@@ -7,22 +9,101 @@
     
     let activeTab: 'profesorado' | 'aulas' = 'profesorado';
 
-    // Listado de Profesores
-    export let profesoresDisponibles: { id: string; nombre: string; rol?: string; jornada?: string }[] = [
-        { id: '1', nombre: 'ALBA (2/3 - Especialista)', rol: 'Especialista', jornada: '2/3 (Parcial)' },
-        { id: '2', nombre: 'MIKEL (Completa - Tutor HH/LH)', rol: 'Tutor', jornada: 'Completa' },
-        { id: '3', nombre: 'ANE (1/2 - Pedagogía Terapéutica)', rol: 'PT', jornada: '1/2 (Parcial)' }
-    ];
+    // Listados dinámicos obtenidos de Supabase
+    export let profesoresDisponibles: { id: string; nombre: string; rol?: string; jornada?: string }[] = [];
+    export let aulasDisponibles: { id: string; nombre: string; edificio?: string; capacidad?: string }[] = [];
 
-    // Listado de Aulas y Grupos
-    export let aulasDisponibles: { id: string; nombre: string; edificio?: string; capacidad?: string }[] = [
-        { id: 'a1', nombre: 'LH 1A - Aula 101', edificio: 'Edificio Principal', capacidad: '25 alumnos' },
-        { id: 'a2', nombre: 'LH 2A - Aula 201', edificio: 'Edificio Principal', capacidad: '24 alumnos' },
-        { id: 'a3', nombre: 'Gela Handia - Gimnasio', edificio: 'Pabellón Deportivo', capacidad: 'Especial' },
-        { id: 'a4', nombre: 'Ingelesa Gelan - Aula Idiomas', edificio: 'Planta 2', capacidad: '20 alumnos' }
-    ];
+    export let selectedEntityId: string = '';
 
-    export let selectedEntityId: string = '1';
+    let loading: boolean = false;
+
+    // Consultar profesores desde Supabase
+    async function fetchProfesores(curso: string) {
+        loading = true;
+        try {
+            const { data, error } = await supabase
+                .from('profesores')
+                .select('*')
+                .eq('curso_escolar', curso)
+                .order('orden', { ascending: true, nullsFirst: false });
+
+            if (error) {
+                console.error('Error al cargar profesores desde Supabase:', error.message);
+                return;
+            }
+
+            if (data && data.length > 0) {
+                profesoresDisponibles = data.map((p) => ({
+                    id: String(p.id),
+                    nombre: p.nombre,
+                    rol: p.perfil || 'Especialista',
+                    jornada: p.jornada || 'Completa'
+                }));
+            } else {
+                profesoresDisponibles = [];
+            }
+        } catch (err) {
+            console.error('Error de red/servidor al obtener profesores:', err);
+        } finally {
+            loading = false;
+        }
+    }
+
+    // Consultar aulas/grupos desde Supabase
+    async function fetchAulas(curso: string) {
+        loading = true;
+        try {
+            const { data, error } = await supabase
+                .from('aulas')
+                .select('*')
+                .eq('curso_escolar', curso);
+
+            if (error) {
+                console.error('Error al cargar aulas desde Supabase:', error.message);
+                return;
+            }
+
+            if (data && data.length > 0) {
+                aulasDisponibles = data.map((a) => ({
+                    id: String(a.id),
+                    nombre: a.name || a.nombre || a.code || `Aula ${a.id}`,
+                    edificio: a.edificio || 'Edificio Principal',
+                    capacidad: a.capacidad || 'Estándar'
+                }));
+            } else {
+                aulasDisponibles = [];
+            }
+        } catch (err) {
+            console.error('Error de red/servidor al obtener aulas:', err);
+        } finally {
+            loading = false;
+        }
+    }
+
+    // Cargar los datos correspondientes según la pestaña y el curso activo
+    async function loadDataForCurrentTab() {
+        if (activeTab === 'profesorado') {
+            await fetchProfesores(selectedCurso);
+            if (profesoresDisponibles.length > 0) {
+                const exists = profesoresDisponibles.some(p => p.id === selectedEntityId);
+                if (!exists) selectedEntityId = profesoresDisponibles[0].id;
+            } else {
+                selectedEntityId = '';
+            }
+        } else {
+            await fetchAulas(selectedCurso);
+            if (aulasDisponibles.length > 0) {
+                const exists = aulasDisponibles.some(a => a.id === selectedEntityId);
+                if (!exists) selectedEntityId = aulasDisponibles[0].id;
+            } else {
+                selectedEntityId = '';
+            }
+        }
+    }
+
+    onMount(() => {
+        loadDataForCurrentTab();
+    });
 
     // Lista dinámica para el selector según la pestaña
     $: selectorOptions = activeTab === 'profesorado' 
@@ -33,10 +114,10 @@
     $: currentTeacher = profesoresDisponibles.find(p => p.id === selectedEntityId) || profesoresDisponibles[0];
     $: currentClassroom = aulasDisponibles.find(a => a.id === selectedEntityId) || aulasDisponibles[0];
 
-    // Al cambiar de pestaña, resetear la selección al primer elemento de esa categoría
-    function handleTabChange(tab: 'profesorado' | 'aulas') {
+    // Al cambiar de pestaña
+    async function handleTabChange(tab: 'profesorado' | 'aulas') {
         activeTab = tab;
-        selectedEntityId = tab === 'profesorado' ? profesoresDisponibles[0].id : aulasDisponibles[0].id;
+        await loadDataForCurrentTab();
     }
 
     // Días de la semana
@@ -94,9 +175,10 @@
     };
 
     // Manejadores de eventos de ActionToolbar
-    function handleSelectCurso(event: CustomEvent<string>) {
+    async function handleSelectCurso(event: CustomEvent<string>) {
         selectedCurso = event.detail;
         console.log('Curso seleccionado:', selectedCurso);
+        await loadDataForCurrentTab();
     }
 
     function handleSelectEntity(event: CustomEvent<string>) {
@@ -179,7 +261,9 @@
                         {currentTeacher?.nombre ? currentTeacher.nombre.charAt(0) : 'P'}
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{currentTeacher?.nombre}</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                            {currentTeacher?.nombre || (loading ? 'Cargando profesores...' : 'Sin profesores disponibles')}
+                        </h2>
                         <div class="flex flex-wrap items-center gap-2 mt-1">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
                                 {currentTeacher?.rol || 'Especialista'}
@@ -212,7 +296,9 @@
                         🏫
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{currentClassroom?.nombre}</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                            {currentClassroom?.nombre || (loading ? 'Cargando aulas...' : 'Sin aulas disponibles')}
+                        </h2>
                         <div class="flex flex-wrap items-center gap-2 mt-1">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
                                 {currentClassroom?.edificio || 'Edificio Principal'}
