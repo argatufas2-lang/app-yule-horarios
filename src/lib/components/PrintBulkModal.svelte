@@ -16,13 +16,13 @@
         selectedIds = items.map(item => item.id);
     }
 
-    // Selecciona todos los IDs disponibles
-    function seleccionarTodo() {
+    // Función exclusiva para marcar todos los checkboxes
+    function handleSelectAll() {
         selectedIds = items.map(item => item.id);
     }
 
-    // Vacía el array de IDs seleccionados
-    function deseleccionarTodo() {
+    // Función exclusiva para vaciar por completo la selección
+    function handleDeselectAll() {
         selectedIds = [];
     }
 
@@ -92,14 +92,14 @@
                 <div class="flex items-center gap-2">
                     <button 
                         type="button" 
-                        on:click={seleccionarTodo}
+                        on:click={handleSelectAll}
                         class="px-2.5 py-1 rounded bg-sky-50 hover:bg-sky-100 text-sky-700 dark:bg-sky-950 dark:hover:bg-sky-900 dark:text-sky-300 font-bold border border-sky-200 dark:border-sky-800 transition-colors"
                     >
                         Seleccionar todo
                     </button>
                     <button 
                         type="button" 
-                        on:click={deseleccionarTodo}
+                        on:click={handleDeselectAll}
                         class="px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-700 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-gray-200 font-bold border border-slate-300 dark:border-gray-500 transition-colors"
                     >
                         Deseleccionar todo
