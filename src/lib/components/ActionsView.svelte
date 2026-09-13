@@ -23,24 +23,24 @@
     let timeSlots: { orden: number; time: string; label: string; type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' }[] = [];
     let teacherScheduleGrid: Record<string, Record<number, { actividad: string; clase?: string; aula?: string }>> = {};
 
-    // Helper para formatear la jornada (JC o fracción)
+    // Helper para formatear la jornada visualmente (JC o fracción)
     function formatJornada(jornadaRaw?: string | null): string {
         if (!jornadaRaw) return 'JC';
-        const jLower = jornadaRaw.toLowerCase();
-        if (jLower.includes('completa') || jLower.includes('100') || jLower.includes('1/1') || jLower === 'jc') {
+        const jLower = jornadaRaw.toLowerCase().trim();
+        if (jLower.includes('completa') || jLower.includes('100') || jLower.includes('1/1') || jLower === 'jc' || jLower === 'completo') {
             return 'JC';
         }
         return jornadaRaw;
     }
 
-    // Helper para formatear el rol (Tutor / Especialista)
+    // Helper para formatear el rol visualmente (Tutor / Especialista)
     function formatRol(perfilRaw?: string | null): string {
         if (!perfilRaw) return 'Especialista';
-        const pLower = perfilRaw.toLowerCase();
+        const pLower = perfilRaw.toLowerCase().trim();
         if (pLower.includes('tutor') || pLower.includes('tutoretza')) {
             return 'Tutor';
         }
-        return perfilRaw;
+        return 'Especialista';
     }
 
     // Consultar el total global de profesores en Supabase
@@ -150,7 +150,7 @@
                     };
                 });
 
-                // Garantizar ordenación alfabética ascendente estricta
+                // Garantizar ordenación alfabética ascendente estricta (A-Z)
                 mapped.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
                 profesoresDisponibles = mapped;
             } else {
