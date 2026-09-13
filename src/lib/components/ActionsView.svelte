@@ -318,6 +318,13 @@
     function handleImportarAsc() {
         console.log('Acción: Importar PDF aSc');
     }
+
+    function handleImageError(event: Event) {
+        const target = event.target as HTMLElement;
+        if (target) {
+            target.style.display = 'none';
+        }
+    }
 </script>
 
 <div class="flex flex-col min-h-screen bg-slate-50 dark:bg-gray-900 transition-colors">
@@ -389,19 +396,19 @@
             </div>
         </div>
 
-        <!-- Tarjeta de Perfil de la Entidad -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Tarjeta de Perfil de la Entidad Centrada con Logo del Colegio -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 flex flex-col items-center justify-center text-center">
             {#if activeTab === 'profesorado'}
-                <!-- Información del Profesor -->
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 flex items-center justify-center font-extrabold text-lg border border-sky-200 dark:border-sky-700 shadow-xs shrink-0">
-                        {currentTeacher?.nombre ? currentTeacher.nombre.charAt(0).toUpperCase() : 'P'}
+                <!-- Información Centrada del Profesor -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0">
+                        <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain" on:error={handleImageError} />
                     </div>
-                    <div>
-                        <h2 class="text-lg font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-tight">
+                    <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h2 class="text-xl font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-tight">
                             {currentTeacher?.nombre ? currentTeacher.nombre.toUpperCase() : (loading ? 'CARGANDO PROFESORADO...' : 'SIN PROFESORADO DISPONIBLE')}
                         </h2>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-1.5">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200/60 dark:border-sky-800">
                                 Primaria (LH)
                             </span>
@@ -414,29 +421,17 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="flex items-center gap-3 text-xs text-slate-600 dark:text-gray-300 bg-slate-50 dark:bg-gray-700/50 p-3 rounded-lg border border-slate-100 dark:border-gray-700">
-                    <div>
-                        <span class="block text-[10px] text-slate-400 font-medium">Lectivas asignadas:</span>
-                        <strong class="text-slate-800 dark:text-gray-100 font-bold">14h 00m / 15h 00m</strong>
-                    </div>
-                    <div class="h-6 w-px bg-slate-200 dark:bg-gray-600"></div>
-                    <div>
-                        <span class="block text-[10px] text-slate-400 font-medium">Balance total:</span>
-                        <strong class="text-emerald-600 dark:text-emerald-400 font-bold">+0h 30m</strong>
-                    </div>
-                </div>
             {:else}
-                <!-- Información del Aula/Grupo -->
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold text-xl border border-amber-200 dark:border-amber-700 shadow-xs shrink-0">
-                        🏫
+                <!-- Información Centrada del Aula/Grupo -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0">
+                        <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain" on:error={handleImageError} />
                     </div>
-                    <div>
-                        <h2 class="text-lg font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-tight">
+                    <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h2 class="text-xl font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-tight">
                             {currentClassroom?.nombre ? currentClassroom.nombre.toUpperCase() : (loading ? 'CARGANDO AULAS...' : 'SIN AULAS DISPONIBLES')}
                         </h2>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-1.5">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200/60">
                                 {currentClassroom?.edificio || 'Edificio Principal'}
                             </span>
@@ -444,13 +439,6 @@
                                 Capacidad: {currentClassroom?.capacidad || 'Estándar'}
                             </span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 text-xs text-slate-600 dark:text-gray-300 bg-slate-50 dark:bg-gray-700/50 p-3 rounded-lg border border-slate-100 dark:border-gray-700">
-                    <div>
-                        <span class="block text-[10px] text-slate-400 font-medium">Ocupación lectiva:</span>
-                        <strong class="text-sky-600 dark:text-sky-400 font-bold">85% Ocupada</strong>
                     </div>
                 </div>
             {/if}
