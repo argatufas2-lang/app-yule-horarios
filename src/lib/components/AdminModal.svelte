@@ -35,6 +35,12 @@
     let actividades: ActividadRecord[] = [];
     let aulas: AulaRecord[] = [];
 
+    // Opciones estándar para selectores desplegables
+    const opcionesPerfil = ['Tutor', 'Especialista', 'Consultor', 'Orientador', 'PT', 'AL'];
+    const opcionesJornada = ['Jornada completa', '2/3 de jornada', '1/2 jornada', '1/3 de jornada'];
+    const opcionesCategoria = ['General', 'Lectiva', 'No Lectiva', 'Complementaria', 'Guardia'];
+    const opcionesEdificio = ['Principal', 'Secundario', 'Gimnasio', 'Exterior'];
+
     // Formulario de edición/creación
     let editingId: string | number | null = null;
 
@@ -128,7 +134,7 @@
             await createAdminActividad({
                 nombre: newActividad.nombre,
                 categoria: newActividad.categoria,
-                es_lectiva: newActividad.es_lectiva,
+                es_lectiva: Boolean(newActividad.es_lectiva),
                 curso_escolar: selectedCurso
             });
             newActividad = { nombre: '', categoria: 'General', es_lectiva: true };
@@ -144,7 +150,7 @@
             await updateAdminActividad(a.id, {
                 nombre: a.nombre,
                 categoria: a.categoria,
-                es_lectiva: a.es_lectiva
+                es_lectiva: Boolean(a.es_lectiva)
             });
             editingId = null;
             showSuccess('Asignatura actualizada');
@@ -282,13 +288,21 @@
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Nombre</label>
                             <input type="text" bind:value={newProfesor.nombre} placeholder="Nombre completo" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
                         </div>
-                        <div class="w-40">
+                        <div class="w-44">
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Perfil</label>
-                            <input type="text" bind:value={newProfesor.perfil} placeholder="Tutor / Especialista" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
+                            <select bind:value={newProfesor.perfil} class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-semibold">
+                                {#each opcionesPerfil as item}
+                                    <option value={item}>{item}</option>
+                                {/each}
+                            </select>
                         </div>
-                        <div class="w-40">
+                        <div class="w-44">
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Jornada</label>
-                            <input type="text" bind:value={newProfesor.jornada} placeholder="Jornada completa" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
+                            <select bind:value={newProfesor.jornada} class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-semibold">
+                                {#each opcionesJornada as item}
+                                    <option value={item}>{item}</option>
+                                {/each}
+                            </select>
                         </div>
                         <button type="button" on:click={handleCreateProfesor} class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors">
                             + Añadir
@@ -300,8 +314,8 @@
                         <thead class="bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-200 uppercase font-bold">
                             <tr>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600">Nombre</th>
-                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-36">Perfil</th>
-                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-36">Jornada</th>
+                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-44">Perfil</th>
+                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-44">Jornada</th>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-28 text-center">Acciones</th>
                             </tr>
                         </thead>
@@ -309,9 +323,27 @@
                             {#each profesores as p}
                                 <tr class="hover:bg-slate-50 dark:hover:bg-gray-700/50">
                                     {#if editingId === p.id}
-                                        <td class="p-2"><input type="text" bind:value={p.nombre} class="w-full p-1 border rounded text-xs" /></td>
-                                        <td class="p-2"><input type="text" bind:value={p.perfil} class="w-full p-1 border rounded text-xs" /></td>
-                                        <td class="p-2"><input type="text" bind:value={p.jornada} class="w-full p-1 border rounded text-xs" /></td>
+                                        <td class="p-2"><input type="text" bind:value={p.nombre} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white" /></td>
+                                        <td class="p-2">
+                                            <select bind:value={p.perfil} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white font-medium">
+                                                {#each opcionesPerfil as item}
+                                                    <option value={item}>{item}</option>
+                                                {/each}
+                                                {#if p.perfil && !opcionesPerfil.includes(p.perfil)}
+                                                    <option value={p.perfil}>{p.perfil}</option>
+                                                {/if}
+                                            </select>
+                                        </td>
+                                        <td class="p-2">
+                                            <select bind:value={p.jornada} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white font-medium">
+                                                {#each opcionesJornada as item}
+                                                    <option value={item}>{item}</option>
+                                                {/each}
+                                                {#if p.jornada && !opcionesJornada.includes(p.jornada)}
+                                                    <option value={p.jornada}>{p.jornada}</option>
+                                                {/if}
+                                            </select>
+                                        </td>
                                         <td class="p-2 text-center space-x-1">
                                             <button type="button" on:click={() => handleUpdateProfesor(p)} class="px-2 py-1 bg-sky-600 text-white rounded font-bold text-[10px]">Guardar</button>
                                             <button type="button" on:click={() => editingId = null} class="px-2 py-1 bg-slate-300 text-slate-800 rounded font-bold text-[10px]">Cancelar</button>
@@ -337,13 +369,17 @@
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Nombre Asignatura</label>
                             <input type="text" bind:value={newActividad.nombre} placeholder="Ej. Matemáticas" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
                         </div>
-                        <div class="w-40">
+                        <div class="w-44">
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Categoría</label>
-                            <input type="text" bind:value={newActividad.categoria} placeholder="Troncal / Optativa" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
+                            <select bind:value={newActividad.categoria} class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-semibold">
+                                {#each opcionesCategoria as item}
+                                    <option value={item}>{item}</option>
+                                {/each}
+                            </select>
                         </div>
-                        <div class="flex items-center space-x-2 h-9 px-2">
-                            <input type="checkbox" id="esLectiva" bind:checked={newActividad.es_lectiva} />
-                            <label for="esLectiva" class="text-xs font-bold text-slate-700 dark:text-gray-300">Lectiva</label>
+                        <div class="flex items-center space-x-2 h-9 px-3 bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-600 rounded-lg">
+                            <input type="checkbox" id="esLectivaNew" bind:checked={newActividad.es_lectiva} class="w-4 h-4 rounded text-sky-600 focus:ring-sky-500" />
+                            <label for="esLectivaNew" class="text-xs font-bold text-slate-700 dark:text-gray-300 cursor-pointer select-none">Es Lectiva</label>
                         </div>
                         <button type="button" on:click={handleCreateActividad} class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors">
                             + Añadir
@@ -355,7 +391,7 @@
                         <thead class="bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-200 uppercase font-bold">
                             <tr>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600">Asignatura</th>
-                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-36">Categoría</th>
+                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-44">Categoría</th>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-28 text-center">Es Lectiva</th>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-28 text-center">Acciones</th>
                             </tr>
@@ -364,9 +400,20 @@
                             {#each actividades as a}
                                 <tr class="hover:bg-slate-50 dark:hover:bg-gray-700/50">
                                     {#if editingId === a.id}
-                                        <td class="p-2"><input type="text" bind:value={a.nombre} class="w-full p-1 border rounded text-xs" /></td>
-                                        <td class="p-2"><input type="text" bind:value={a.categoria} class="w-full p-1 border rounded text-xs" /></td>
-                                        <td class="p-2 text-center"><input type="checkbox" bind:checked={a.es_lectiva} /></td>
+                                        <td class="p-2"><input type="text" bind:value={a.nombre} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white" /></td>
+                                        <td class="p-2">
+                                            <select bind:value={a.categoria} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white font-medium">
+                                                {#each opcionesCategoria as item}
+                                                    <option value={item}>{item}</option>
+                                                {/each}
+                                                {#if a.categoria && !opcionesCategoria.includes(a.categoria)}
+                                                    <option value={a.categoria}>{a.categoria}</option>
+                                                {/if}
+                                            </select>
+                                        </td>
+                                        <td class="p-2 text-center">
+                                            <input type="checkbox" bind:checked={a.es_lectiva} class="w-4 h-4 rounded text-sky-600 focus:ring-sky-500 cursor-pointer" />
+                                        </td>
                                         <td class="p-2 text-center space-x-1">
                                             <button type="button" on:click={() => handleUpdateActividad(a)} class="px-2 py-1 bg-sky-600 text-white rounded font-bold text-[10px]">Guardar</button>
                                             <button type="button" on:click={() => editingId = null} class="px-2 py-1 bg-slate-300 text-slate-800 rounded font-bold text-[10px]">Cancelar</button>
@@ -374,7 +421,13 @@
                                     {:else}
                                         <td class="p-2.5 border border-slate-200 dark:border-gray-600 font-semibold">{a.nombre}</td>
                                         <td class="p-2.5 border border-slate-200 dark:border-gray-600">{a.categoria || 'General'}</td>
-                                        <td class="p-2.5 border border-slate-200 dark:border-gray-600 text-center">{a.es_lectiva ? '✅ Sí' : '❌ No'}</td>
+                                        <td class="p-2.5 border border-slate-200 dark:border-gray-600 text-center font-bold">
+                                            {#if a.es_lectiva}
+                                                <span class="text-emerald-600 dark:text-emerald-400">✅ Sí</span>
+                                            {:else}
+                                                <span class="text-slate-400">❌ No</span>
+                                            {/if}
+                                        </td>
                                         <td class="p-2.5 border border-slate-200 dark:border-gray-600 text-center space-x-1">
                                             <button type="button" on:click={() => editingId = a.id} class="text-sky-600 hover:text-sky-800 font-bold">✏️</button>
                                             <button type="button" on:click={() => handleDeleteActividad(a.id, a.nombre)} class="text-red-600 hover:text-red-800 font-bold">🗑️</button>
@@ -396,9 +449,13 @@
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Código</label>
                             <input type="text" bind:value={newAula.code} placeholder="LH1A" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
                         </div>
-                        <div class="w-36">
+                        <div class="w-40">
                             <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-gray-300 mb-1">Edificio</label>
-                            <input type="text" bind:value={newAula.edificio} placeholder="Principal" class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white" />
+                            <select bind:value={newAula.edificio} class="w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-semibold">
+                                {#each opcionesEdificio as item}
+                                    <option value={item}>{item}</option>
+                                {/each}
+                            </select>
                         </div>
                         <button type="button" on:click={handleCreateAula} class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors">
                             + Añadir
@@ -411,7 +468,7 @@
                             <tr>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600">Nombre</th>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-32">Código</th>
-                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-36">Edificio</th>
+                                <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-40">Edificio</th>
                                 <th class="p-2.5 border border-slate-200 dark:border-gray-600 w-28 text-center">Acciones</th>
                             </tr>
                         </thead>
@@ -419,9 +476,18 @@
                             {#each aulas as au}
                                 <tr class="hover:bg-slate-50 dark:hover:bg-gray-700/50">
                                     {#if editingId === au.id}
-                                        <td class="p-2"><input type="text" bind:value={au.nombre} class="w-full p-1 border rounded text-xs" /></td>
-                                        <td class="p-2"><input type="text" bind:value={au.code} class="w-full p-1 border rounded text-xs" /></td>
-                                        <td class="p-2"><input type="text" bind:value={au.edificio} class="w-full p-1 border rounded text-xs" /></td>
+                                        <td class="p-2"><input type="text" bind:value={au.nombre} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white" /></td>
+                                        <td class="p-2"><input type="text" bind:value={au.code} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white" /></td>
+                                        <td class="p-2">
+                                            <select bind:value={au.edificio} class="w-full p-1 border rounded text-xs dark:bg-gray-800 dark:text-white font-medium">
+                                                {#each opcionesEdificio as item}
+                                                    <option value={item}>{item}</option>
+                                                {/each}
+                                                {#if au.edificio && !opcionesEdificio.includes(au.edificio)}
+                                                    <option value={au.edificio}>{au.edificio}</option>
+                                                {/if}
+                                            </select>
+                                        </td>
                                         <td class="p-2 text-center space-x-1">
                                             <button type="button" on:click={() => handleUpdateAula(au)} class="px-2 py-1 bg-sky-600 text-white rounded font-bold text-[10px]">Guardar</button>
                                             <button type="button" on:click={() => editingId = null} class="px-2 py-1 bg-slate-300 text-slate-800 rounded font-bold text-[10px]">Cancelar</button>
