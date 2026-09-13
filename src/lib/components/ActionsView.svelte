@@ -63,9 +63,9 @@
                     const tipoLower = (t.tipo || '').toLowerCase();
                     const descLower = (t.descripcion || '').toLowerCase();
 
-                    if (timeRange.includes('11:00') && timeRange.includes('11:30') || tipoLower.includes('recreo') || descLower.includes('recreo') || descLower.includes('atseden')) {
+                    if ((timeRange.includes('11:00') && timeRange.includes('11:30')) || tipoLower.includes('recreo') || descLower.includes('recreo') || descLower.includes('atseden')) {
                         type = 'recreo';
-                    } else if (timeRange.includes('14:00') && timeRange.includes('15:00') || tipoLower.includes('comedor') || descLower.includes('comedor') || descLower.includes('bazkaria')) {
+                    } else if ((timeRange.includes('14:00') && timeRange.includes('15:00')) || tipoLower.includes('comedor') || descLower.includes('comedor') || descLower.includes('bazkaria')) {
                         type = 'comedor';
                     } else if (tipoLower.includes('guardia') || descLower.includes('zaintza') || tipoLower.includes('presencia')) {
                         type = 'presencia';
@@ -91,10 +91,10 @@
         timeSlots = [
             { orden: 0, time: '09:00 - 10:00', label: '1ª Franja', type: 'lectiva' },
             { orden: 1, time: '10:00 - 11:00', label: '2ª Franja', type: 'lectiva' },
-            { orden: 2, time: '11:00 - 11:30', label: 'ATSEDENALDIA / RECREO', type: 'recreo' },
+            { orden: 2, time: '11:00 - 11:30', label: 'ATSEDENALDIA', type: 'recreo' },
             { orden: 3, time: '11:30 - 12:30', label: '3ª Franja', type: 'lectiva' },
             { orden: 4, time: '12:30 - 14:00', label: '4ª Franja', type: 'lectiva' },
-            { orden: 5, time: '14:00 - 15:00', label: 'BAZKARIA / COMEDOR', type: 'comedor' },
+            { orden: 5, time: '14:00 - 15:00', label: 'BAZKARIA', type: 'comedor' },
             { orden: 6, time: '15:00 - 16:00', label: '5ª Franja', type: 'lectiva' },
             { orden: 7, time: '16:00 - 17:00', label: '6ª Franja', type: 'lectiva' }
         ];
@@ -462,10 +462,10 @@
                 <table class="w-full border-collapse text-center text-xs md:text-sm">
                     <thead>
                         <tr class="bg-sky-100 dark:bg-sky-950/70 text-sky-950 dark:text-sky-100 border-b border-sky-200 dark:border-sky-800 font-bold">
-                            <th class="p-3 border-r border-sky-200 dark:border-sky-800 w-36 font-extrabold text-sky-900 dark:text-sky-200">Ordua</th>
+                            <th class="p-3 border-r border-sky-200 dark:border-sky-800 w-36 font-extrabold text-sky-900 dark:text-sky-200 text-sm">Ordua</th>
                             {#each daysOfWeek as day}
                                 <th class="p-3 border-r border-sky-200 dark:border-sky-800 min-w-[140px]">
-                                    <span class="block text-sm font-bold text-sky-900 dark:text-sky-100">{day.name}</span>
+                                    <span class="block text-base font-extrabold text-sky-900 dark:text-sky-100">{day.name}</span>
                                 </th>
                             {/each}
                         </tr>
@@ -473,7 +473,7 @@
                     <tbody class="divide-y divide-slate-200 dark:divide-gray-700">
                         <!-- Fila Superior de Presencia Delimitada -->
                         <tr class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-gray-700">
-                            <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-200/60 dark:bg-gray-700 font-bold text-xs text-slate-700 dark:text-slate-200 whitespace-nowrap">
+                            <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-200/60 dark:bg-gray-700 font-bold text-sm text-slate-700 dark:text-slate-200 whitespace-nowrap">
                                 📌 Presencia / Zaintza
                             </td>
                             {#each daysOfWeek as day}
@@ -486,29 +486,33 @@
                         <!-- Tramos Horarios Consultados de Supabase -->
                         {#each timeSlots as slot}
                             {#if slot.type === 'recreo' || slot.time.includes('11:00 - 11:30')}
-                                <!-- Fila Recreo (Fondo Verde Claro Apagado) -->
+                                <!-- Fila Recreo (Celdas Independientes por Día) -->
                                 <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium">
-                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-xs whitespace-nowrap text-emerald-950 dark:text-emerald-200">
+                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-sm whitespace-nowrap text-emerald-950 dark:text-emerald-200">
                                         11:00 - 11:30
                                     </td>
-                                    <td colspan="5" class="p-2 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200">
-                                        ATSEDENALDIA / RECREO
-                                    </td>
+                                    {#each daysOfWeek as day}
+                                        <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40">
+                                            ATSEDENALDIA
+                                        </td>
+                                    {/each}
                                 </tr>
                             {:else if slot.type === 'comedor' || slot.time.includes('14:00 - 15:00')}
-                                <!-- Fila Comedor (Fondo Verde Claro Apagado) -->
+                                <!-- Fila Comedor (Celdas Independientes por Día) -->
                                 <tr class="bg-emerald-100/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 font-medium">
-                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-xs whitespace-nowrap text-emerald-950 dark:text-emerald-200">
+                                    <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 bg-emerald-200/50 dark:bg-emerald-900/50 font-bold text-sm whitespace-nowrap text-emerald-950 dark:text-emerald-200">
                                         14:00 - 15:00
                                     </td>
-                                    <td colspan="5" class="p-2 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200">
-                                        BAZKARIA / COMEDOR
-                                    </td>
+                                    {#each daysOfWeek as day}
+                                        <td class="p-2 border-r border-emerald-200 dark:border-emerald-900/50 text-center text-xs tracking-wider uppercase font-extrabold text-emerald-900 dark:text-emerald-200 bg-emerald-100/70 dark:bg-emerald-950/40">
+                                            BAZKARIA
+                                        </td>
+                                    {/each}
                                 </tr>
                             {:else if slot.type === 'presencia'}
                                 <!-- Fila Guardias / Presencia Complementaria -->
                                 <tr class="bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200">
-                                    <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-100/80 dark:bg-gray-700/50 font-semibold text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                                    <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-100/80 dark:bg-gray-700/50 font-bold text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
                                         {slot.time}
                                     </td>
                                     {#each daysOfWeek as day}
@@ -520,7 +524,7 @@
                             {:else}
                                 <!-- Franjas Lectivas -->
                                 <tr>
-                                    <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-700/30 font-semibold text-xs text-slate-600 dark:text-gray-300 whitespace-nowrap">
+                                    <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-700/30 font-bold text-sm text-slate-600 dark:text-gray-300 whitespace-nowrap">
                                         {slot.time}
                                     </td>
                                     {#each daysOfWeek as day}
@@ -529,22 +533,20 @@
                                         <td class="p-1.5 border-r border-slate-200 dark:border-gray-700 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer">
                                             {#if session}
                                                 <div class="flex flex-col items-center justify-center space-y-0.5">
-                                                    <span class="block font-black text-slate-900 dark:text-gray-100 text-xs uppercase tracking-wide">
+                                                    <span class="block font-black text-slate-900 dark:text-gray-100 text-sm uppercase tracking-wide">
                                                         {session.actividad.toUpperCase()}
                                                     </span>
                                                     {#if session.clase}
-                                                        <span class="block text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase">
+                                                        <span class="block text-xs font-bold text-slate-700 dark:text-gray-300 uppercase">
                                                             {session.clase.toUpperCase()}
                                                         </span>
                                                     {/if}
                                                     {#if session.aula}
-                                                        <span class="block text-[10px] font-semibold text-slate-500 dark:text-gray-400 uppercase">
+                                                        <span class="block text-[11px] font-semibold text-slate-500 dark:text-gray-400 uppercase">
                                                             {session.aula.toUpperCase()}
                                                         </span>
                                                     {/if}
                                                 </div>
-                                            {:else}
-                                                <span class="text-xs text-slate-300 dark:text-gray-600 font-light">+ Añadir</span>
                                             {/if}
                                         </td>
                                     {/each}
