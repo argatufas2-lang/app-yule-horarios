@@ -62,7 +62,7 @@
     @media print {
         @page {
             size: A4 landscape;
-            margin: 8mm;
+            margin: 12mm 10mm;
         }
 
         :global(body) {
@@ -75,8 +75,12 @@
         :global(.print-area) {
             width: 100% !important;
             max-width: 100% !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
             padding: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            min-height: 185mm !important;
         }
     }
 </style>
