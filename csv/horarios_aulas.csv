@@ -1,0 +1,818 @@
+aula,dia,franja,contenido
+1A,Astelehena,9:00 - 9:30,TANTAI
+1A,Asteartea,9:00 - 9:30,TANTAI
+1A,Asteazkena,9:00 - 9:30,TANTAI
+1A,Osteguna,9:00 - 9:30,TANTAI
+1A,Ostirala,9:00 - 9:30,"TANTAI
+IKER PT"
+1A,Astelehena,9:30 - 10:15,"EUSKARA
+IKER PT"
+1A,Asteartea,9:30 - 10:15,MATEMATIKA
+1A,Asteazkena,9:30 - 10:15,"INGELESA
+AMAIA"
+1A,Osteguna,9:30 - 10:15,MATEMATIKA
+1A,Ostirala,9:30 - 10:15,EUSKARA
+1A,Astelehena,10:15 - 11:00,"INGELESA
+AMAIA"
+1A,Asteartea,10:15 - 11:00,MATEMATIKA
+1A,Asteazkena,10:15 - 11:00,EUSKARA
+1A,Osteguna,10:15 - 11:00,"EUSKARA
+IKER PT"
+1A,Ostirala,10:15 - 11:00,MATEMATIKA
+1A,Astelehena,11:00 - 11:30,ATSEDENALDIA
+1A,Astelehena,11:30 - 12:15,GAZTE
+1A,Asteartea,11:30 - 12:15,LIBURUTEGIA
+1A,Asteazkena,11:30 - 12:15,INGURU
+1A,Osteguna,11:30 - 12:15,"MUSIKA
+MUSIKA"
+1A,Ostirala,11:30 - 12:15,GAZTE
+1A,Astelehena,12:15 - 13:00,INGURU
+1A,Asteartea,12:15 - 13:00,"INGELESA
+AMAIA"
+1A,Asteazkena,12:15 - 13:00,"GAZTE
+IKER PT"
+1A,Osteguna,12:15 - 13:00,"HF
+MARKEL"
+1A,Ostirala,12:15 - 13:00,GAZTE
+1A,Astelehena,13:00 - 15:00,BAZKARIA
+1A,Astelehena,15:00 - 15:45,TUTORETZA
+1A,Asteartea,15:00 - 15:45,"HF
+MARKEL"
+1A,Osteguna,15:00 - 15:45,INGURU
+1A,Ostirala,15:00 - 15:45,"HF
+MARKEL"
+1A,Astelehena,15:45 - 16:30,PLASTIKA
+1A,Asteartea,15:45 - 16:30,"INGURU
+IKER PT"
+1A,Osteguna,15:45 - 16:30,JOLAS AUTONOMOA
+1A,Ostirala,15:45 - 16:30,JOLAS AUTONOMOA
+1B,Astelehena,9:00 - 9:30,TANTAI
+1B,Asteartea,9:00 - 9:30,"TANTAI
+IKER PT"
+1B,Asteazkena,9:00 - 9:30,TANTAI
+1B,Osteguna,9:00 - 9:30,"TANTAI
+IKER PT"
+1B,Ostirala,9:00 - 9:30,TANTAI
+1B,Astelehena,9:30 - 10:15,EUSKARA
+1B,Asteartea,9:30 - 10:15,MATEMATIKA
+1B,Asteazkena,9:30 - 10:15,"EUSKARA
+IKER PT"
+1B,Osteguna,9:30 - 10:15,MATEMATIKA
+1B,Ostirala,9:30 - 10:15,"EUSKARA
+IKER PT"
+1B,Astelehena,10:15 - 11:00,MATEMATIKA
+1B,Asteartea,10:15 - 11:00,MATEMATIKA
+1B,Asteazkena,10:15 - 11:00,"INGELESA
+AMAIA"
+1B,Osteguna,10:15 - 11:00,EUSKARA
+1B,Ostirala,10:15 - 11:00,"INGELESA
+AMAIA"
+1B,Astelehena,11:00 - 11:30,ATSEDENALDIA
+1B,Astelehena,11:30 - 12:15,"GAZTE
+IKER PT"
+1B,Asteartea,11:30 - 12:15,"INGELESA
+AMAIA"
+1B,Asteazkena,11:30 - 12:15,"INGURU
+IKER PT"
+1B,Osteguna,11:30 - 12:15,"HF
+MARKEL"
+1B,Ostirala,11:30 - 12:15,GAZTE
+1B,Astelehena,12:15 - 13:00,"INGURU
+IKER PT"
+1B,Asteartea,12:15 - 13:00,LIBURUTEGIA
+1B,Asteazkena,12:15 - 13:00,GAZTE
+1B,Osteguna,12:15 - 13:00,"MUSIKA
+MUSIKA"
+1B,Ostirala,12:15 - 13:00,"GAZTE
+IKER PT"
+1B,Astelehena,13:00 - 15:00,BAZKARIA
+1B,Astelehena,15:00 - 15:45,TUTORETZA
+1B,Asteartea,15:00 - 15:45,INGURU
+1B,Osteguna,15:00 - 15:45,"INGURU
+IKER PT"
+1B,Ostirala,15:00 - 15:45,JOLAS AUTONOMOA
+1B,Astelehena,15:45 - 16:30,PLASTIKA
+1B,Asteartea,15:45 - 16:30,"HF
+MARKEL"
+1B,Osteguna,15:45 - 16:30,JOLAS AUTONOMOA
+1B,Ostirala,15:45 - 16:30,"HF
+MARKEL"
+2A,Astelehena,9:00 - 9:30,TANTAI
+2A,Asteartea,9:00 - 9:30,TANTAI
+2A,Asteazkena,9:00 - 9:30,TANTAI
+2A,Osteguna,9:00 - 9:30,TANTAI
+2A,Ostirala,9:00 - 9:30,TANTAI
+2A,Astelehena,9:30 - 10:15,"INGELESA
+ALBA"
+2A,Asteartea,9:30 - 10:15,EUSKARA
+2A,Asteazkena,9:30 - 10:15,EUSKARA
+2A,Osteguna,9:30 - 10:15,MATEMATIKA
+2A,Ostirala,9:30 - 10:15,"EUSKARA
+EDURNE · Laguntza"
+2A,Astelehena,10:15 - 11:00,EUSKARA
+2A,Asteartea,10:15 - 11:00,"MUSIKA
+MUSIKA"
+2A,Asteazkena,10:15 - 11:00,"INGELESA
+ALBA"
+2A,Osteguna,10:15 - 11:00,MATEMATIKA
+2A,Ostirala,10:15 - 11:00,MATEMATIKA
+2A,Astelehena,11:00 - 11:30,ATSEDENALDIA
+2A,Astelehena,11:30 - 12:15,GAZTE
+2A,Asteartea,11:30 - 12:15,MATEMATIKA
+2A,Asteazkena,11:30 - 12:15,GAZTE
+2A,Osteguna,11:30 - 12:15,"INGURU
+EDURNE · Laguntza"
+2A,Ostirala,11:30 - 12:15,INGURU
+2A,Astelehena,12:15 - 13:00,"INGURU
+EDURNE · Laguntza"
+2A,Asteartea,12:15 - 13:00,INGURU
+2A,Asteazkena,12:15 - 13:00,GAZTE
+2A,Osteguna,12:15 - 13:00,LIBURUTEGIA
+2A,Ostirala,12:15 - 13:00,"HF
+EDURNE"
+2A,Astelehena,13:00 - 15:00,BAZKARIA
+2A,Astelehena,15:00 - 15:45,"HF
+EDURNE"
+2A,Asteartea,15:00 - 15:45,GAZTE
+2A,Osteguna,15:00 - 15:45,"INGELESA
+ALBA"
+2A,Ostirala,15:00 - 15:45,JOLAS AUTONOMOA
+2A,Astelehena,15:45 - 16:30,TUTORETZA
+2A,Asteartea,15:45 - 16:30,PLASTIKA
+2A,Osteguna,15:45 - 16:30,"HF
+EDURNE"
+2A,Ostirala,15:45 - 16:30,JOLAS AUTONOMOA
+2B,Astelehena,9:00 - 9:30,TANTAI
+2B,Asteartea,9:00 - 9:30,TANTAI
+2B,Asteazkena,9:00 - 9:30,TANTAI
+2B,Osteguna,9:00 - 9:30,TANTAI
+2B,Ostirala,9:00 - 9:30,TANTAI
+2B,Astelehena,9:30 - 10:15,EUSKARA
+2B,Asteartea,9:30 - 10:15,EUSKARA
+2B,Asteazkena,9:30 - 10:15,"INGELESA
+ALBA"
+2B,Osteguna,9:30 - 10:15,MATEMATIKA
+2B,Ostirala,9:30 - 10:15,"EUSKARA
+EDURNE · Laguntza"
+2B,Astelehena,10:15 - 11:00,MATEMATIKA
+2B,Asteartea,10:15 - 11:00,"INGELESA
+ALBA"
+2B,Asteazkena,10:15 - 11:00,EUSKARA
+2B,Osteguna,10:15 - 11:00,MATEMATIKA
+2B,Ostirala,10:15 - 11:00,MATEMATIKA
+2B,Astelehena,11:00 - 11:30,ATSEDENALDIA
+2B,Astelehena,11:30 - 12:15,GAZTE
+2B,Asteartea,11:30 - 12:15,GAZTE
+2B,Asteazkena,11:30 - 12:15,"HF
+EDURNE"
+2B,Osteguna,11:30 - 12:15,"INGURU
+EDURNE · Laguntza"
+2B,Ostirala,11:30 - 12:15,"HF
+EDURNE"
+2B,Astelehena,12:15 - 13:00,"INGURU
+EDURNE · Laguntza"
+2B,Asteartea,12:15 - 13:00,INGURU
+2B,Asteazkena,12:15 - 13:00,LIBURUTEGIA
+2B,Osteguna,12:15 - 13:00,GAZTE
+2B,Ostirala,12:15 - 13:00,INGURU
+2B,Astelehena,13:00 - 15:00,BAZKARIA
+2B,Astelehena,15:00 - 15:45,TUTORETZA
+2B,Asteartea,15:00 - 15:45,GAZTE
+2B,Osteguna,15:00 - 15:45,"MUSIKA
+MUSIKA"
+2B,Ostirala,15:00 - 15:45,JOLAS AUTONOMOA
+2B,Astelehena,15:45 - 16:30,"HF
+EDURNE"
+2B,Asteartea,15:45 - 16:30,PLASTIKA
+2B,Osteguna,15:45 - 16:30,"INGELESA
+ALBA"
+2B,Ostirala,15:45 - 16:30,JOLAS AUTONOMOA
+2D,Astelehena,9:00 - 9:30,TANTAI
+2D,Asteartea,9:00 - 9:30,TANTAI
+2D,Asteazkena,9:00 - 9:30,TANTAI
+2D,Osteguna,9:00 - 9:30,TANTAI
+2D,Ostirala,9:00 - 9:30,TANTAI
+2D,Astelehena,9:30 - 10:15,EUSKARA
+2D,Asteartea,9:30 - 10:15,"INGELESA
+ALBA"
+2D,Asteazkena,9:30 - 10:15,EUSKARA
+2D,Osteguna,9:30 - 10:15,MATEMATIKA
+2D,Ostirala,9:30 - 10:15,"EUSKARA
+EDURNE · Laguntza"
+2D,Astelehena,10:15 - 11:00,"INGELESA
+ALBA"
+2D,Asteartea,10:15 - 11:00,EUSKARA
+2D,Asteazkena,10:15 - 11:00,MATEMATIKA
+2D,Osteguna,10:15 - 11:00,MATEMATIKA
+2D,Ostirala,10:15 - 11:00,"INGELESA
+ALBA"
+2D,Astelehena,11:00 - 11:30,ATSEDENALDIA
+2D,Astelehena,11:30 - 12:15,TUTORETZA
+2D,Asteartea,11:30 - 12:15,GAZTE
+2D,Asteazkena,11:30 - 12:15,LIBURUTEGIA
+2D,Osteguna,11:30 - 12:15,"INGURU
+EDURNE · Laguntza"
+2D,Ostirala,11:30 - 12:15,MATEMATIKA
+2D,Astelehena,12:15 - 13:00,"INGURU
+EDURNE · Laguntza"
+2D,Asteartea,12:15 - 13:00,INGURU
+2D,Asteazkena,12:15 - 13:00,"HF
+EDURNE"
+2D,Osteguna,12:15 - 13:00,GAZTE
+2D,Ostirala,12:15 - 13:00,INGURU
+2D,Astelehena,13:00 - 15:00,BAZKARIA
+2D,Astelehena,15:00 - 15:45,GAZTE
+2D,Asteartea,15:00 - 15:45,"HF
+EDURNE"
+2D,Osteguna,15:00 - 15:45,"HF
+EDURNE"
+2D,Ostirala,15:00 - 15:45,JOLAS AUTONOMOA
+2D,Astelehena,15:45 - 16:30,GAZTE
+2D,Asteartea,15:45 - 16:30,PLASTIKA
+2D,Osteguna,15:45 - 16:30,"MUSIKA
+MUSIKA"
+2D,Ostirala,15:45 - 16:30,JOLAS AUTONOMOA
+3A,Astelehena,9:00 - 9:30,"TANTAI
+IKER PT"
+3A,Asteartea,9:00 - 9:30,TANTAI
+3A,Asteazkena,9:00 - 9:30,TANTAI
+3A,Osteguna,9:00 - 9:30,TANTAI
+3A,Ostirala,9:00 - 9:30,TANTAI
+3A,Astelehena,9:30 - 10:15,EUSKARA
+3A,Asteartea,9:30 - 10:15,"MATEMATIKA
+IKER PT"
+3A,Asteazkena,9:30 - 10:15,EUSKARA
+3A,Osteguna,9:30 - 10:15,"MATEMATIKA
+IKER PT"
+3A,Ostirala,9:30 - 10:15,EUSKARA
+3A,Astelehena,10:15 - 11:00,INGURU
+3A,Asteartea,10:15 - 11:00,MATEMATIKA
+3A,Asteazkena,10:15 - 11:00,"INGURU
+IKER PT"
+3A,Osteguna,10:15 - 11:00,GAZTE
+3A,Ostirala,10:15 - 11:00,INGURU
+3A,Astelehena,11:00 - 11:30,ATSEDENALDIA
+3A,Astelehena,11:30 - 12:15,LIBURUTEGIA
+3A,Asteartea,11:30 - 12:15,"EUSKARA
+IKER PT"
+3A,Asteazkena,11:30 - 12:15,GAZTE
+3A,Osteguna,11:30 - 12:15,EUSKARA
+3A,Ostirala,11:30 - 12:15,"GAZTE
+IKER PT"
+3A,Astelehena,12:15 - 13:00,"BURUKETA TAILERRA
+Andoni"
+3A,Asteartea,12:15 - 13:00,"INGURU
+IKER PT"
+3A,Asteazkena,12:15 - 13:00,"INGELESA
+LEIRE Z."
+3A,Osteguna,12:15 - 13:00,INGURU
+3A,Ostirala,12:15 - 13:00,TUTORETZA
+3A,Astelehena,13:00 - 15:00,BAZKARIA
+3A,Astelehena,15:00 - 15:45,"HF
+HF 1/2"
+3A,Asteartea,15:00 - 15:45,"MUSIKA
+MUSIKA"
+3A,Osteguna,15:00 - 15:45,"INGELESA
+LEIRE Z."
+3A,Ostirala,15:00 - 15:45,"INGELESA
+LEIRE Z."
+3A,Astelehena,15:45 - 16:30,"INGELESA
+LEIRE Z."
+3A,Asteartea,15:45 - 16:30,GAZTE
+3A,Osteguna,15:45 - 16:30,"HF
+HF 1/2"
+3A,Ostirala,15:45 - 16:30,PLASTIKA
+3B,Astelehena,9:00 - 9:30,TANTAI
+3B,Asteartea,9:00 - 9:30,TANTAI
+3B,Asteazkena,9:00 - 9:30,"TANTAI
+IKER PT"
+3B,Osteguna,9:00 - 9:30,TANTAI
+3B,Ostirala,9:00 - 9:30,TANTAI
+3B,Astelehena,9:30 - 10:15,EUSKARA
+3B,Asteartea,9:30 - 10:15,MATEMATIKA
+3B,Asteazkena,9:30 - 10:15,EUSKARA
+3B,Osteguna,9:30 - 10:15,MATEMATIKA
+3B,Ostirala,9:30 - 10:15,EUSKARA
+3B,Astelehena,10:15 - 11:00,"INGURU
+IKER PT"
+3B,Asteartea,10:15 - 11:00,"MATEMATIKA
+IKER PT"
+3B,Asteazkena,10:15 - 11:00,INGURU
+3B,Osteguna,10:15 - 11:00,GAZTE
+3B,Ostirala,10:15 - 11:00,"INGURU
+IKER PT"
+3B,Astelehena,11:00 - 11:30,ATSEDENALDIA
+3B,Astelehena,11:30 - 12:15,GAZTE
+3B,Asteartea,11:30 - 12:15,EUSKARA
+3B,Asteazkena,11:30 - 12:15,"MUSIKA
+MUSIKA"
+3B,Osteguna,11:30 - 12:15,"EUSKARA
+IKER PT"
+3B,Ostirala,11:30 - 12:15,LIBURUTEGIA
+3B,Astelehena,12:15 - 13:00,"BURUKETA TAILERRA
+Yurena"
+3B,Asteartea,12:15 - 13:00,INGURU
+3B,Asteazkena,12:15 - 13:00,"HF
+HF 1/2"
+3B,Osteguna,12:15 - 13:00,INGURU
+3B,Ostirala,12:15 - 13:00,"INGELESA
+LEIRE Z."
+3B,Astelehena,13:00 - 15:00,BAZKARIA
+3B,Astelehena,15:00 - 15:45,"INGELESA
+LEIRE Z."
+3B,Asteartea,15:00 - 15:45,"GAZTE
+IKER PT"
+3B,Osteguna,15:00 - 15:45,TUTORETZA
+3B,Ostirala,15:00 - 15:45,GAZTE
+3B,Astelehena,15:45 - 16:30,"HF
+HF 1/2"
+3B,Asteartea,15:45 - 16:30,"INGELESA
+LEIRE Z."
+3B,Osteguna,15:45 - 16:30,"INGELESA
+LEIRE Z."
+3B,Ostirala,15:45 - 16:30,PLASTIKA
+4A,Astelehena,9:00 - 9:30,TANTAI
+4A,Asteartea,9:00 - 9:30,"TANTAI
+PABLO PT"
+4A,Asteazkena,9:00 - 9:30,TANTAI
+4A,Osteguna,9:00 - 9:30,TANTAI
+4A,Ostirala,9:00 - 9:30,"TANTAI
+PABLO PT"
+4A,Astelehena,9:30 - 10:15,"EUSKARA
+LEIRE A. · Laguntza"
+4A,Asteartea,9:30 - 10:15,MATEMATIKA
+4A,Asteazkena,9:30 - 10:15,"EUSKARA
+LEIRE A. · Laguntza"
+4A,Osteguna,9:30 - 10:15,GAZTE
+4A,Ostirala,9:30 - 10:15,"EUSKARA
+PABLO PT"
+4A,Astelehena,10:15 - 11:00,"INGURU
+PABLO PT"
+4A,Asteartea,10:15 - 11:00,"MATEMATIKA
+PABLO PT"
+4A,Asteazkena,10:15 - 11:00,"INGURU
+PABLO PT"
+4A,Osteguna,10:15 - 11:00,"MUSIKA
+MUSIKA"
+4A,Ostirala,10:15 - 11:00,INGURU
+4A,Astelehena,11:00 - 11:30,ATSEDENALDIA
+4A,Astelehena,11:30 - 12:15,"MATEMATIKA
+PABLO PT"
+4A,Asteartea,11:30 - 12:15,EUSKARA
+4A,Asteazkena,11:30 - 12:15,"INGELESA
+LEIRE Z."
+4A,Osteguna,11:30 - 12:15,"EUSKARA
+PABLO PT"
+4A,Ostirala,11:30 - 12:15,"INGELESA
+LEIRE Z."
+4A,Astelehena,12:15 - 13:00,"INGELESA
+LEIRE Z."
+4A,Asteartea,12:15 - 13:00,INGURU
+4A,Asteazkena,12:15 - 13:00,"GAZTE
+PABLO PT"
+4A,Osteguna,12:15 - 13:00,INGURU
+4A,Ostirala,12:15 - 13:00,"HF
+HF 1/2"
+4A,Astelehena,13:00 - 15:00,BAZKARIA
+4A,Astelehena,15:00 - 15:45,GAZTE
+4A,Asteartea,15:00 - 15:45,"INGELESA
+LEIRE Z."
+4A,Osteguna,15:00 - 15:45,"BURUKETA TAILERRA
+Itziar"
+4A,Ostirala,15:00 - 15:45,GAZTE
+4A,Astelehena,15:45 - 16:30,TUTORETZA
+4A,Asteartea,15:45 - 16:30,"HF
+HF 1/2"
+4A,Osteguna,15:45 - 16:30,PLASTIKA
+4A,Ostirala,15:45 - 16:30,LIBURUTEGIA
+4B,Astelehena,9:00 - 9:30,TANTAI
+4B,Asteartea,9:00 - 9:30,TANTAI
+4B,Asteazkena,9:00 - 9:30,"TANTAI
+PABLO PT"
+4B,Osteguna,9:00 - 9:30,TANTAI
+4B,Ostirala,9:00 - 9:30,TANTAI
+4B,Astelehena,9:30 - 10:15,"EUSKARA
+PABLO PT"
+4B,Asteartea,9:30 - 10:15,MATEMATIKA
+4B,Asteazkena,9:30 - 10:15,EUSKARA
+4B,Osteguna,9:30 - 10:15,"MATEMATIKA
+PABLO PT"
+4B,Ostirala,9:30 - 10:15,EUSKARA
+4B,Astelehena,10:15 - 11:00,"INGURU
+LEIRE A. · Laguntza"
+4B,Asteartea,10:15 - 11:00,"INGELESA
+AMAIA"
+4B,Asteazkena,10:15 - 11:00,"INGURU
+LEIRE A. · Laguntza"
+4B,Osteguna,10:15 - 11:00,"MATEMATIKA
+PABLO PT"
+4B,Ostirala,10:15 - 11:00,INGURU
+4B,Astelehena,11:00 - 11:30,ATSEDENALDIA
+4B,Astelehena,11:30 - 12:15,"INGELESA
+AMAIA"
+4B,Asteartea,11:30 - 12:15,EUSKARA
+4B,Asteazkena,11:30 - 12:15,"INGELESA
+AMAIA
+PABLO PT"
+4B,Osteguna,11:30 - 12:15,EUSKARA
+4B,Ostirala,11:30 - 12:15,"HF
+HF 1/2"
+4B,Astelehena,12:15 - 13:00,"GAZTE
+PABLO PT"
+4B,Asteartea,12:15 - 13:00,"INGURU
+PABLO PT"
+4B,Asteazkena,12:15 - 13:00,GAZTE
+4B,Osteguna,12:15 - 13:00,INGURU
+4B,Ostirala,12:15 - 13:00,"INGELESA
+AMAIA
+PABLO PT"
+4B,Astelehena,13:00 - 15:00,BAZKARIA
+4B,Astelehena,15:00 - 15:45,LIBURUTEGIA
+4B,Asteartea,15:00 - 15:45,"HF
+HF 1/2"
+4B,Osteguna,15:00 - 15:45,GAZTE
+4B,Ostirala,15:00 - 15:45,"GAZTE
+PABLO PT"
+4B,Astelehena,15:45 - 16:30,"BURUKETA TAILERRA
+Gema"
+4B,Asteartea,15:45 - 16:30,"MUSIKA
+MUSIKA"
+4B,Osteguna,15:45 - 16:30,PLASTIKA
+4B,Ostirala,15:45 - 16:30,TUTORETZA
+4D,Astelehena,9:00 - 9:30,"TANTAI
+PABLO PT"
+4D,Asteartea,9:00 - 9:30,TANTAI
+4D,Asteazkena,9:00 - 9:30,TANTAI
+4D,Osteguna,9:00 - 9:30,"TANTAI
+PABLO PT"
+4D,Ostirala,9:00 - 9:30,TANTAI
+4D,Astelehena,9:30 - 10:15,EUSKARA
+4D,Asteartea,9:30 - 10:15,"MATEMATIKA
+PABLO PT"
+4D,Asteazkena,9:30 - 10:15,"EUSKARA
+PABLO PT"
+4D,Osteguna,9:30 - 10:15,GAZTE
+4D,Ostirala,9:30 - 10:15,"EUSKARA
+LEIRE A. · Laguntza"
+4D,Astelehena,10:15 - 11:00,INGURU
+4D,Asteartea,10:15 - 11:00,MATEMATIKA
+4D,Asteazkena,10:15 - 11:00,INGURU
+4D,Osteguna,10:15 - 11:00,"INGELESA
+AMAIA"
+4D,Ostirala,10:15 - 11:00,"INGURU
+PABLO PT"
+4D,Astelehena,11:00 - 11:30,ATSEDENALDIA
+4D,Astelehena,11:30 - 12:15,MATEMATIKA
+4D,Asteartea,11:30 - 12:15,"EUSKARA
+PABLO PT"
+4D,Asteazkena,11:30 - 12:15,"HF
+HF 1/2"
+4D,Osteguna,11:30 - 12:15,"EUSKARA
+LEIRE A. · Laguntza"
+4D,Ostirala,11:30 - 12:15,"INGELESA
+AMAIA
+PABLO PT"
+4D,Astelehena,12:15 - 13:00,"INGELESA
+AMAIA"
+4D,Asteartea,12:15 - 13:00,INGURU
+4D,Asteazkena,12:15 - 13:00,"INGELESA
+AMAIA"
+4D,Osteguna,12:15 - 13:00,"INGURU
+PABLO PT"
+4D,Ostirala,12:15 - 13:00,"MUSIKA
+MUSIKA"
+4D,Astelehena,13:00 - 15:00,BAZKARIA
+4D,Astelehena,15:00 - 15:45,"GAZTE
+PABLO PT"
+4D,Asteartea,15:00 - 15:45,GAZTE
+4D,Osteguna,15:00 - 15:45,"HF
+HF 1/2"
+4D,Ostirala,15:00 - 15:45,LIBURUTEGIA
+4D,Astelehena,15:45 - 16:30,TUTORETZA
+4D,Asteartea,15:45 - 16:30,GAZTE
+4D,Osteguna,15:45 - 16:30,"BURUKETA TAILERRA
+Iker"
+4D,Ostirala,15:45 - 16:30,PLASTIKA
+5A,Astelehena,9:00 - 9:30,TANTAI
+5A,Asteartea,9:00 - 9:30,TANTAI
+5A,Asteazkena,9:00 - 9:30,TANTAI
+5A,Osteguna,9:00 - 9:30,TANTAI
+5A,Ostirala,9:00 - 9:30,TANTAI
+5A,Astelehena,9:30 - 10:15,"EUSKARA
+JON PT"
+5A,Asteartea,9:30 - 10:15,"MATEMATIKA
+JON PT"
+5A,Asteazkena,9:30 - 10:15,"EUSKARA
+JON PT"
+5A,Osteguna,9:30 - 10:15,"MATEMATIKA
+JON PT"
+5A,Ostirala,9:30 - 10:15,BALIOAK
+5A,Astelehena,10:15 - 11:00,"INGURU
+JON PT"
+5A,Asteartea,10:15 - 11:00,MATEMATIKA
+5A,Asteazkena,10:15 - 11:00,INGURU
+5A,Osteguna,10:15 - 11:00,GAZTE
+5A,Ostirala,10:15 - 11:00,"EUSKARA
+JON PT"
+5A,Astelehena,11:00 - 11:30,ATSEDENALDIA
+5A,Astelehena,11:30 - 12:15,"GAZTE
+JON PT"
+5A,Asteartea,11:30 - 12:15,EUSKARA
+5A,Asteazkena,11:30 - 12:15,"HF
+MARKEL"
+5A,Osteguna,11:30 - 12:15,TUTORETZA
+5A,Ostirala,11:30 - 12:15,"BURUKETA TAILERRA
+Ander P."
+5A,Astelehena,12:15 - 13:00,GAZTE
+5A,Asteartea,12:15 - 13:00,"INGURU
+JON PT"
+5A,Asteazkena,12:15 - 13:00,"INGELESA
+ALBA 1/3
+JON PT"
+5A,Osteguna,12:15 - 13:00,"INGURU
+JON PT"
+5A,Ostirala,12:15 - 13:00,LIBURUTEGIA
+5A,Astelehena,13:00 - 15:00,BAZKARIA
+5A,Astelehena,15:00 - 15:45,"HF
+MARKEL"
+5A,Asteartea,15:00 - 15:45,"INGELESA
+ALBA 1/3"
+5A,Osteguna,15:00 - 15:45,PLASTIKA
+5A,Ostirala,15:00 - 15:45,"MUSIKA
+MUSIKA"
+5A,Astelehena,15:45 - 16:30,"INGELESA
+ALBA 1/3"
+5A,Asteartea,15:45 - 16:30,"ROBOTIKA
+LEIRE A."
+5A,Osteguna,15:45 - 16:30,"IDAZKETA TAILERRA
+CRISTINA"
+5A,Ostirala,15:45 - 16:30,"INGELESA
+ALBA 1/3"
+5B,Astelehena,9:00 - 9:30,TANTAI
+5B,Asteartea,9:00 - 9:30,TANTAI
+5B,Asteazkena,9:00 - 9:30,TANTAI
+5B,Osteguna,9:00 - 9:30,TANTAI
+5B,Ostirala,9:00 - 9:30,TANTAI
+5B,Astelehena,9:30 - 10:15,EUSKARA
+5B,Asteartea,9:30 - 10:15,MATEMATIKA
+5B,Asteazkena,9:30 - 10:15,EUSKARA
+5B,Osteguna,9:30 - 10:15,GAZTE
+5B,Ostirala,9:30 - 10:15,"EUSKARA
+JON PT"
+5B,Astelehena,10:15 - 11:00,INGURU
+5B,Asteartea,10:15 - 11:00,"MATEMATIKA
+JON PT"
+5B,Asteazkena,10:15 - 11:00,"INGURU
+JON PT"
+5B,Osteguna,10:15 - 11:00,"MATEMATIKA
+JON PT"
+5B,Ostirala,10:15 - 11:00,BALIOAK
+5B,Astelehena,11:00 - 11:30,ATSEDENALDIA
+5B,Astelehena,11:30 - 12:15,"BURUKETA TAILERRA
+Eba"
+5B,Asteartea,11:30 - 12:15,"EUSKARA
+JON PT"
+5B,Asteazkena,11:30 - 12:15,"INGELESA
+ALBA 1/3"
+5B,Osteguna,11:30 - 12:15,"INGURU
+JON PT"
+5B,Ostirala,11:30 - 12:15,"GAZTE
+JON PT"
+5B,Astelehena,12:15 - 13:00,"GAZTE
+JON PT"
+5B,Asteartea,12:15 - 13:00,INGURU
+5B,Asteazkena,12:15 - 13:00,"HF
+MARKEL"
+5B,Osteguna,12:15 - 13:00,TUTORETZA
+5B,Ostirala,12:15 - 13:00,"IDAZKETA TAILERRA
+Unai"
+5B,Astelehena,13:00 - 15:00,BAZKARIA
+5B,Astelehena,15:00 - 15:45,"INGELESA
+ALBA 1/3"
+5B,Asteartea,15:00 - 15:45,LIBURUTEGIA
+5B,Osteguna,15:00 - 15:45,"ROBOTIKA
+LEIRE A."
+5B,Ostirala,15:00 - 15:45,"INGELESA
+ALBA 1/3"
+5B,Astelehena,15:45 - 16:30,"HF
+MARKEL"
+5B,Asteartea,15:45 - 16:30,"INGELESA
+ALBA 1/3"
+5B,Osteguna,15:45 - 16:30,PLASTIKA
+5B,Ostirala,15:45 - 16:30,"MUSIKA
+MUSIKA"
+6A,Astelehena,9:00 - 9:30,TANTAI
+6A,Asteartea,9:00 - 9:30,TANTAI
+6A,Asteazkena,9:00 - 9:30,TANTAI
+6A,Osteguna,9:00 - 9:30,TANTAI
+6A,Ostirala,9:00 - 9:30,TANTAI
+6A,Astelehena,9:30 - 10:15,EUSKARA
+6A,Asteartea,9:30 - 10:15,"MATEMATIKA
+CRISTINA PT"
+6A,Asteazkena,9:30 - 10:15,EUSKARA
+6A,Osteguna,9:30 - 10:15,MATEMATIKA
+6A,Ostirala,9:30 - 10:15,"EUSKARA
+CRISTINA PT"
+6A,Astelehena,10:15 - 11:00,INGURU
+6A,Asteartea,10:15 - 11:00,GAZTE
+6A,Asteazkena,10:15 - 11:00,INGURU
+6A,Osteguna,10:15 - 11:00,MATEMATIKA
+6A,Ostirala,10:15 - 11:00,BALIOAK
+6A,Astelehena,11:00 - 11:30,ATSEDENALDIA
+6A,Astelehena,11:30 - 12:15,"HF
+MARKEL"
+6A,Asteartea,11:30 - 12:15,EUSKARA
+6A,Asteazkena,11:30 - 12:15,"BURUKETA TAILERRA
+Unai"
+6A,Osteguna,11:30 - 12:15,INGURU
+6A,Ostirala,11:30 - 12:15,"HF
+MARKEL"
+6A,Astelehena,12:15 - 13:00,"MUSIKA
+MUSIKA"
+6A,Asteartea,12:15 - 13:00,"INGURU
+CRISTINA PT"
+6A,Asteazkena,12:15 - 13:00,"GAZTE
+CRISTINA PT"
+6A,Osteguna,12:15 - 13:00,TUTORETZA
+6A,Ostirala,12:15 - 13:00,GAZTE
+6A,Astelehena,13:00 - 15:00,BAZKARIA
+6A,Astelehena,15:00 - 15:45,"INGELESA
+Amaia 1/3"
+6A,Asteartea,15:00 - 15:45,PLASTIKA
+6A,Osteguna,15:00 - 15:45,"INGELESA
+Amaia 1/3"
+6A,Ostirala,15:00 - 15:45,"ROBOTIKA
+LEIRE A."
+6A,Astelehena,15:45 - 16:30,"IDAZKETA TAILERRA
+KEVIN"
+6A,Asteartea,15:45 - 16:30,"INGELESA
+Amaia 1/3
+CRISTINA PT"
+6A,Osteguna,15:45 - 16:30,LIBURUTEGIA
+6A,Ostirala,15:45 - 16:30,"INGELESA
+Amaia 1/3"
+6B,Astelehena,9:30 - 10:15,EUSKARA
+6B,Asteartea,9:30 - 10:15,MATEMATIKA
+6B,Asteazkena,9:30 - 10:15,"EUSKARA
+CRISTINA PT"
+6B,Osteguna,9:30 - 10:15,MATEMATIKA
+6B,Ostirala,9:30 - 10:15,EUSKARA
+6B,Astelehena,10:15 - 11:00,INGURU
+6B,Asteartea,10:15 - 11:00,GAZTE
+6B,Asteazkena,10:15 - 11:00,INGURU
+6B,Osteguna,10:15 - 11:00,"MATEMATIKA
+CRISTINA PT"
+6B,Ostirala,10:15 - 11:00,BALIOAK
+6B,Astelehena,11:00 - 11:30,ATSEDENALDIA
+6B,Astelehena,11:30 - 12:15,"MUSIKA
+MUSIKA"
+6B,Asteartea,11:30 - 12:15,"EUSKARA
+CRISTINA PT"
+6B,Asteazkena,11:30 - 12:15,"BURUKETA TAILERRA
+Gema"
+6B,Osteguna,11:30 - 12:15,TUTORETZA
+6B,Ostirala,11:30 - 12:15,"GAZTE
+CRISTINA PT"
+6B,Astelehena,12:15 - 13:00,"HF
+MARKEL"
+6B,Asteartea,12:15 - 13:00,INGURU
+6B,Asteazkena,12:15 - 13:00,GAZTE
+6B,Osteguna,12:15 - 13:00,"INGURU
+CRISTINA PT"
+6B,Ostirala,12:15 - 13:00,"HF
+MARKEL"
+6B,Astelehena,13:00 - 15:00,BAZKARIA
+6B,Astelehena,15:00 - 15:45,"IDAZKETA TAILERRA
+KEVIN"
+6B,Asteartea,15:00 - 15:45,"INGELESA
+Amaia 1/3"
+6B,Osteguna,15:00 - 15:45,LIBURUTEGIA
+6B,Ostirala,15:00 - 15:45,"INGELESA
+Amaia 1/3"
+6B,Astelehena,15:45 - 16:30,"INGELESA
+Amaia 1/3
+CRISTINA PT"
+6B,Asteartea,15:45 - 16:30,PLASTIKA
+6B,Osteguna,15:45 - 16:30,"INGELESA
+Amaia 1/3"
+6B,Ostirala,15:45 - 16:30,"ROBOTIKA
+LEIRE A."
+6C,Astelehena,9:00 - 9:30,"TANTAI
+CRISTINA · Laguntza"
+6C,Asteartea,9:00 - 9:30,"TANTAI
+CRISTINA · Laguntza"
+6C,Asteazkena,9:00 - 9:30,"TANTAI
+CRISTINA · Laguntza"
+6C,Osteguna,9:00 - 9:30,"TANTAI
+CRISTINA · Laguntza"
+6C,Ostirala,9:00 - 9:30,"TANTAI
+CRISTINA · Laguntza"
+6C,Astelehena,9:30 - 10:15,INGURU
+6C,Asteartea,9:30 - 10:15,MATEMATIKA
+6C,Asteazkena,9:30 - 10:15,EUSKARA
+6C,Osteguna,9:30 - 10:15,MATEMATIKA
+6C,Ostirala,9:30 - 10:15,EUSKARA
+6C,Astelehena,10:15 - 11:00,"EUSKARA
+CRISTINA PT"
+6C,Asteartea,10:15 - 11:00,"MATEMATIKA
+CRISTINA PT"
+6C,Asteazkena,10:15 - 11:00,"INGURU
+CRISTINA PT"
+6C,Osteguna,10:15 - 11:00,"INGELESA
+LEIRE A."
+6C,Ostirala,10:15 - 11:00,BALIOAK
+6C,Astelehena,11:00 - 11:30,ATSEDENALDIA
+6C,Astelehena,11:30 - 12:15,"INGELESA
+LEIRE A."
+6C,Asteartea,11:30 - 12:15,EUSKARA
+6C,Asteazkena,11:30 - 12:15,"GAZTE
+CRISTINA PT"
+6C,Osteguna,11:30 - 12:15,"INGURU
+CRISTINA PT"
+6C,Ostirala,11:30 - 12:15,"INGELESA
+LEIRE A."
+6C,Astelehena,12:15 - 13:00,"HF
+HF 1/2"
+6C,Asteartea,12:15 - 13:00,INGURU
+6C,Asteazkena,12:15 - 13:00,"INGELESA
+LEIRE A."
+6C,Osteguna,12:15 - 13:00,TUTORETZA
+6C,Ostirala,12:15 - 13:00,"IDAZKETA TAILERRA
+CRISTINA"
+6C,Astelehena,13:00 - 15:00,BAZKARIA
+6C,Astelehena,15:00 - 15:45,"MUSIKA
+MUSIKA"
+6C,Asteartea,15:00 - 15:45,"GAZTE
+CRISTINA PT"
+6C,Osteguna,15:00 - 15:45,"BURUKETA TAILERRA
+ANDER M"
+6C,Ostirala,15:00 - 15:45,"HF
+HF 1/2"
+6C,Astelehena,15:45 - 16:30,"ROBOTIKA
+LEIRE A."
+6C,Asteartea,15:45 - 16:30,LIBURUTEGIA
+6C,Osteguna,15:45 - 16:30,"GAZTE
+CRISTINA PT"
+6C,Ostirala,15:45 - 16:30,PLASTIKA
+6D,Astelehena,9:00 - 9:30,TANTAI
+6D,Asteartea,9:00 - 9:30,TANTAI
+6D,Asteazkena,9:00 - 9:30,"TANTAI
+CRISTINA PT"
+6D,Osteguna,9:00 - 9:30,TANTAI
+6D,Ostirala,9:00 - 9:30,TANTAI
+6D,Astelehena,9:30 - 10:15,"EUSKARA
+CRISTINA PT"
+6D,Asteartea,9:30 - 10:15,MATEMATIKA
+6D,Asteazkena,9:30 - 10:15,EUSKARA
+6D,Osteguna,9:30 - 10:15,"MATEMATIKA
+CRISTINA PT"
+6D,Ostirala,9:30 - 10:15,BALIOAK
+6D,Astelehena,10:15 - 11:00,INGURU
+6D,Asteartea,10:15 - 11:00,"INGELESA
+LEIRE A."
+6D,Asteazkena,10:15 - 11:00,INGURU
+6D,Osteguna,10:15 - 11:00,"BURUKETA TAILERRA
+Ander P."
+6D,Ostirala,10:15 - 11:00,"EUSKARA
+CRISTINA PT"
+6D,Astelehena,11:00 - 11:30,ATSEDENALDIA
+6D,Astelehena,11:30 - 12:15,"HF
+HF 1/2"
+6D,Asteartea,11:30 - 12:15,EUSKARA
+6D,Asteazkena,11:30 - 12:15,"INGELESA
+LEIRE A."
+6D,Osteguna,11:30 - 12:15,INGURU
+6D,Ostirala,11:30 - 12:15,MATEMATIKA
+6D,Astelehena,12:15 - 13:00,"INGELESA
+LEIRE A."
+6D,Asteartea,12:15 - 13:00,INGURU
+6D,Asteazkena,12:15 - 13:00,"MUSIKA
+MUSIKA"
+6D,Osteguna,12:15 - 13:00,TUTORETZA
+6D,Ostirala,12:15 - 13:00,"INGELESA
+LEIRE A."
+6D,Astelehena,13:00 - 15:00,BAZKARIA
+6D,Astelehena,15:00 - 15:45,"IDAZKETA TAILERRA
+CRISTINA PT
+ANDER M"
+6D,Asteartea,15:00 - 15:45,"ROBOTIKA
+LEIRE A."
+6D,Osteguna,15:00 - 15:45,"GAZTE
+CRISTINA PT"
+6D,Ostirala,15:00 - 15:45,"GAZTE
+CRISTINA PT"
+6D,Astelehena,15:45 - 16:30,LIBURUTEGIA
+6D,Asteartea,15:45 - 16:30,PLASTIKA
+6D,Osteguna,15:45 - 16:30,GAZTE
+6D,Ostirala,15:45 - 16:30,"HF
+HF 1/2"
+3 urte,Astelehena,10:15 - 11:00,"INGELESA
+LEIRE Z."
+3 urte,Ostirala,10:15 - 11:00,"INGELESA
+LEIRE Z."
+3 urte,Astelehena,11:00 - 11:30,ATSEDENALDIA
+3 urte,Osteguna,11:30 - 12:15,"INGELESA
+LEIRE Z."
+3 urte,Osteguna,12:15 - 13:00,"INGELESA
+LEIRE Z."
+3 urte,Astelehena,13:00 - 15:00,BAZKARIA

@@ -1,0 +1,35 @@
+nombre,perfil,clase_base,jornada,observaciones,dossier
+MARKEL,Especialista,,Jornada completa,,true
+EDURNE,Especialista,,Jornada completa,,true
+HF 1/2,Especialista,,Media jornada (1/2),,true
+ALBA,Especialista,,2/3 de jornada,,true
+ALBA 1/3,Especialista,,1/3 de jornada,,false
+LEIRE Z.,Especialista,,Jornada completa,,false
+LEIRE A.,Especialista,,Jornada completa,,false
+MUSIKA,Especialista,,2/3 de jornada,,false
+YULE,Especialista,,2/3 de jornada,,true
+AINHOA,Especialista,,Jornada completa,,true
+AMAIA,Especialista,,2/3 de jornada,,false
+Danel,Tutor,1A,Jornada completa,,true
+Nagore,Tutor,1B,Jornada completa,,true
+Jessica,Tutor,2A,2/3 de jornada,,false
+Mikel,Tutor,2B,Jornada completa,,false
+Jone,Tutor,2D,Jornada completa,,false
+Itziar,Tutor,3A,Jornada completa,,false
+Iker,Tutor,3B,Jornada completa,,false
+Andoni,Tutor,4A,Jornada completa,,false
+Eba,Tutor,4B,Jornada completa,,false
+Yurena,Tutor,4D,Jornada completa,,false
+Gema,Tutor,5B,Jornada completa,,false
+Ander P.,Tutor,6C,Jornada completa,,false
+Unai,Tutor,6D,Jornada completa,,false
+Amaia 1/3,Especialista,,1/3 de jornada,,false
+Tutorea,Tutor,,Jornada completa,,false
+IKER PT,Especialista,,Jornada completa,,false
+MIREN Ma PT,Especialista,,Jornada completa,,false
+PABLO PT,Especialista,,Jornada completa,,false
+JON PT,Especialista,,2/3 de jornada,,false
+CRISTINA PT,Especialista,,Jornada completa,,false
+ANDER M,Tutor,6A,Jornada completa,,false
+CRISTINA,Tutor,6B,Jornada completa,,false
+KEVIN,Tutor,5A,Jornada completa,,false

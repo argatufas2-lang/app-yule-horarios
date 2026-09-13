@@ -1,0 +1,90 @@
+table_schema,table_name,column_name,ordinal_position,column_default,is_nullable,data_type,character_maximum_length
+public,actividades,id,1,nextval('actividades_id_seq'::regclass),NO,integer,null
+public,actividades,nombre,2,null,NO,text,null
+public,actividades,categoria,3,null,NO,text,null
+public,actividades,es_lectiva,4,null,NO,boolean,null
+public,actividades,curso_escolar,5,'2026-2027'::text,NO,text,null
+public,actividades,created_at,6,now(),YES,timestamp with time zone,null
+public,ajustes_minutos,id,1,gen_random_uuid(),NO,uuid,null
+public,ajustes_minutos,profesor_nombre,2,null,NO,text,null
+public,ajustes_minutos,dia,3,null,NO,integer,null
+public,ajustes_minutos,franja,4,null,NO,integer,null
+public,ajustes_minutos,minutos,5,null,NO,integer,null
+public,ajustes_minutos,parte,6,'Desde el inicio'::text,NO,text,null
+public,ajustes_minutos,updated_at,7,now(),YES,timestamp with time zone,null
+public,ajustes_minutos,curso_escolar,8,'2026-2027'::text,YES,text,null
+public,anotaciones,id,1,gen_random_uuid(),NO,uuid,null
+public,anotaciones,profesor_nombre,2,null,NO,text,null
+public,anotaciones,dia,3,null,NO,integer,null
+public,anotaciones,franja,4,null,NO,integer,null
+public,anotaciones,texto,5,''::text,YES,text,null
+public,anotaciones,updated_at,6,now(),YES,timestamp with time zone,null
+public,anotaciones,curso_escolar,7,'2026-2027'::text,YES,text,null
+public,aulas,id,1,nextval('aulas_id_seq'::regclass),NO,integer,null
+public,aulas,nombre,2,null,NO,text,null
+public,aulas,curso_escolar,3,'2026-2027'::text,NO,text,null
+public,aulas,created_at,4,now(),YES,timestamp with time zone,null
+public,historial_importaciones,id,1,gen_random_uuid(),NO,uuid,null
+public,historial_importaciones,fecha,2,now(),YES,timestamp with time zone,null
+public,historial_importaciones,archivo_nombre,3,null,YES,text,null
+public,historial_importaciones,modo,4,null,YES,text,null
+public,historial_importaciones,sesiones_importadas,5,0,YES,integer,null
+public,historial_importaciones,payload_backup,6,null,YES,jsonb,null
+public,historial_importaciones,curso_escolar,7,'2026-2027'::text,YES,text,null
+public,infantil_actividades,id,1,null,NO,bigint,null
+public,infantil_actividades,nombre,2,null,NO,text,null
+public,infantil_actividades,tipo,3,'Lectiva'::text,NO,text,null
+public,infantil_actividades,created_at,4,now(),YES,timestamp with time zone,null
+public,infantil_actividades,curso_escolar,5,'2026-2027'::text,YES,text,null
+public,infantil_clases,id,1,null,NO,bigint,null
+public,infantil_clases,codigo,2,null,NO,text,null
+public,infantil_clases,created_at,3,now(),YES,timestamp with time zone,null
+public,infantil_clases,curso_escolar,4,'2026-2027'::text,YES,text,null
+public,infantil_profesores,id,1,null,NO,bigint,null
+public,infantil_profesores,nombre,2,null,NO,text,null
+public,infantil_profesores,jornada,3,'100%'::text,NO,text,null
+public,infantil_profesores,presencia,4,''::text,YES,text,null
+public,infantil_profesores,created_at,5,now(),YES,timestamp with time zone,null
+public,infantil_profesores,curso_escolar,6,'2026-2027'::text,YES,text,null
+public,infantil_sesiones_horario,id,1,null,NO,bigint,null
+public,infantil_sesiones_horario,profesor_nombre,2,null,NO,text,null
+public,infantil_sesiones_horario,dia,3,null,NO,text,null
+public,infantil_sesiones_horario,franja,4,null,NO,text,null
+public,infantil_sesiones_horario,actividad,5,''::text,YES,text,null
+public,infantil_sesiones_horario,clase,6,''::text,YES,text,null
+public,infantil_sesiones_horario,anotacion,7,''::text,YES,text,null
+public,infantil_sesiones_horario,created_at,8,now(),YES,timestamp with time zone,null
+public,infantil_sesiones_horario,curso_escolar,9,'2026-2027'::text,YES,text,null
+public,profesores,id,1,gen_random_uuid(),NO,uuid,null
+public,profesores,nombre,2,null,NO,text,null
+public,profesores,perfil,3,''::text,YES,text,null
+public,profesores,clase_base,4,''::text,YES,text,null
+public,profesores,jornada,5,'Jornada completa'::text,NO,text,null
+public,profesores,orden,6,0,YES,integer,null
+public,profesores,created_at,7,now(),YES,timestamp with time zone,null
+public,profesores,curso_escolar,8,'2026-2027'::text,YES,text,null
+public,sesiones,id,1,gen_random_uuid(),NO,uuid,null
+public,sesiones,profesor_nombre,2,null,NO,text,null
+public,sesiones,dia,3,null,NO,integer,null
+public,sesiones,franja,4,null,NO,integer,null
+public,sesiones,actividad,5,null,YES,text,null
+public,sesiones,clase,6,null,YES,text,null
+public,sesiones,aula,7,''::text,YES,text,null
+public,sesiones,rol_aula,8,'principal'::text,YES,text,null
+public,sesiones,fuente,9,'excel_import'::text,YES,text,null
+public,sesiones,updated_at,10,now(),YES,timestamp with time zone,null
+public,sesiones,curso_escolar,11,'2026-2027'::text,YES,text,null
+public,sesiones,minutos,12,60,YES,integer,null
+public,tipos_jornada,id,1,nextval('tipos_jornada_id_seq'::regclass),NO,integer,null
+public,tipos_jornada,nombre,2,null,NO,text,null
+public,tipos_jornada,objetivo_total_horas,3,null,NO,numeric,null
+public,tipos_jornada,objetivo_lectivas_horas,4,null,NO,numeric,null
+public,tipos_jornada,objetivo_no_lectivas_horas,5,null,NO,numeric,null
+public,tipos_jornada,created_at,6,now(),YES,timestamp with time zone,null
+public,tramos_horarios_primaria,id,1,nextval('tramos_horarios_primaria_id_seq'::regclass),NO,integer,null
+public,tramos_horarios_primaria,orden,2,null,NO,integer,null
+public,tramos_horarios_primaria,franja,3,null,NO,text,null
+public,tramos_horarios_primaria,minutos_maximos,4,null,NO,integer,null
+public,tramos_horarios_primaria,hora_inicio,5,null,NO,time without time zone,null
+public,tramos_horarios_primaria,hora_fin,6,null,NO,time without time zone,null
+public,tramos_horarios_primaria,created_at,7,now(),YES,timestamp with time zone,null

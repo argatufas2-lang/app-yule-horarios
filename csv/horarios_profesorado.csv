@@ -1,0 +1,932 @@
+profesor,dia,franja,actividad,clase
+EDURNE,Astelehena,9:00 - 9:30,AKA,
+EDURNE,Asteartea,9:00 - 9:30,AKA,
+EDURNE,Asteazkena,9:00 - 9:30,AKA,
+EDURNE,Osteguna,9:00 - 9:30,AKA,
+EDURNE,Ostirala,9:00 - 9:30,AKA,
+EDURNE,Astelehena,9:30 - 10:15,AKA,
+EDURNE,Asteartea,9:30 - 10:15,AKA,
+EDURNE,Asteazkena,9:30 - 10:15,AKA,
+EDURNE,Osteguna,9:30 - 10:15,AKA,
+EDURNE,Ostirala,9:30 - 10:15,Euskara,2A · 2B · 2D
+EDURNE,Astelehena,10:15 - 11:00,AKA,
+EDURNE,Asteartea,10:15 - 11:00,AKA,
+EDURNE,Asteazkena,10:15 - 11:00,AKA,
+EDURNE,Osteguna,10:15 - 11:00,AKA,
+EDURNE,Ostirala,10:15 - 11:00,AKA,
+EDURNE,Astelehena,11:00 - 11:30,Atsedenaldia,
+EDURNE,Asteartea,11:00 - 11:30,Atsedenaldia,
+EDURNE,Asteazkena,11:00 - 11:30,Atsedenaldia,
+EDURNE,Osteguna,11:00 - 11:30,Atsedenaldia,
+EDURNE,Ostirala,11:00 - 11:30,Atsedenaldia,
+EDURNE,Astelehena,11:30 - 12:15,Lan Pertsonala,
+EDURNE,Asteartea,11:30 - 12:15,Pedagogika,
+EDURNE,Asteazkena,11:30 - 12:15,HF,2B
+EDURNE,Osteguna,11:30 - 12:15,Inguru,2A · 2B · 2D
+EDURNE,Ostirala,11:30 - 12:15,HF,2B
+EDURNE,Astelehena,12:15 - 13:00,Inguru,2A · 2B · 2D
+EDURNE,Asteartea,12:15 - 13:00,Pedagogika,
+EDURNE,Asteazkena,12:15 - 13:00,HF,2D
+EDURNE,Osteguna,12:15 - 13:00,Lan Pertsonala,
+EDURNE,Ostirala,12:15 - 13:00,HF,2A
+EDURNE,Astelehena,13:00 - 14:00,Ziklo bilera,
+EDURNE,Asteartea,13:00 - 14:00,Familia/Maila,
+EDURNE,Asteazkena,13:00 - 14:00,Formakuntza,
+EDURNE,Osteguna,13:00 - 14:00,Batzordeak,
+EDURNE,Astelehena,14:00 - 15:00,BAZKARIA,
+EDURNE,Asteartea,14:00 - 15:00,BAZKARIA,
+EDURNE,Asteazkena,14:00 - 15:00,Formakuntza,
+EDURNE,Osteguna,14:00 - 15:00,BAZKARIA,
+EDURNE,Ostirala,14:00 - 15:00,BAZKARIA,
+EDURNE,Astelehena,15:00 - 15:45,HF,2A
+EDURNE,Asteartea,15:00 - 15:45,HF,2D
+EDURNE,Osteguna,15:00 - 15:45,HF,2D
+EDURNE,Ostirala,15:00 - 15:45,Lan Pertsonala,
+EDURNE,Astelehena,15:45 - 16:30,HF,2B
+EDURNE,Asteartea,15:45 - 16:30,Lan Pertsonala,
+EDURNE,Osteguna,15:45 - 16:30,HF,2A
+EDURNE,Ostirala,15:45 - 16:30,Lan Pertsonala,
+ALBA,Astelehena,9:00 - 9:30,Lan Pertsonala,
+ALBA,Asteartea,9:00 - 9:30,Lan Pertsonala,
+ALBA,Asteazkena,9:00 - 9:30,Lan Pertsonala,
+ALBA,Osteguna,9:00 - 9:30,BAT,
+ALBA,Ostirala,9:00 - 9:30,Lan Pertsonala,
+ALBA,Astelehena,9:30 - 10:15,Ingelesa,2A
+ALBA,Asteartea,9:30 - 10:15,Ingelesa,2D
+ALBA,Asteazkena,9:30 - 10:15,Ingelesa,2B
+ALBA,Osteguna,9:30 - 10:15,BAT,
+ALBA,Ostirala,9:30 - 10:15,OBK,
+ALBA,Astelehena,10:15 - 11:00,Ingelesa,2D
+ALBA,Asteartea,10:15 - 11:00,Ingelesa,2B
+ALBA,Asteazkena,10:15 - 11:00,Ingelesa,2A
+ALBA,Osteguna,10:15 - 11:00,BAT,
+ALBA,Ostirala,10:15 - 11:00,Ingelesa,2D
+ALBA,Astelehena,11:00 - 11:30,Atsedenaldia,
+ALBA,Asteartea,11:00 - 11:30,Atsedenaldia,
+ALBA,Asteazkena,11:00 - 11:30,Atsedenaldia,
+ALBA,Osteguna,11:00 - 11:30,Atsedenaldia,
+ALBA,Ostirala,11:00 - 11:30,Atsedenaldia,
+ALBA,Astelehena,11:30 - 12:15,OBK,
+ALBA,Asteartea,11:30 - 12:15,OBK,
+ALBA,Asteazkena,11:30 - 12:15,OBK,
+ALBA,Osteguna,11:30 - 12:15,OBK,
+ALBA,Ostirala,11:30 - 12:15,OBK,
+ALBA,Osteguna,12:15 - 13:00,OBK,
+ALBA,Osteguna,13:00 - 14:00,Batzordeak,
+ALBA,Asteartea,15:00 - 15:45,Lan Pertsonala,
+ALBA,Osteguna,15:00 - 15:45,Ingelesa,2A
+ALBA,Asteartea,15:45 - 16:30,Lan Pertsonala,
+ALBA,Osteguna,15:45 - 16:30,Ingelesa,2B
+MUSIKA,Ostirala,9:00 - 9:30,Irratsaioa,
+MUSIKA,Ostirala,9:30 - 10:15,Irratsaioa,
+MUSIKA,Asteartea,10:15 - 11:00,Musika,2A
+MUSIKA,Osteguna,10:15 - 11:00,Musika,4A
+MUSIKA,Ostirala,10:15 - 11:00,Irratsaioa,
+MUSIKA,Astelehena,11:00 - 11:30,Atsedenaldia,
+MUSIKA,Asteartea,11:00 - 11:30,Atsedenaldia,
+MUSIKA,Asteazkena,11:00 - 11:30,Atsedenaldia,
+MUSIKA,Osteguna,11:00 - 11:30,Atsedenaldia,
+MUSIKA,Ostirala,11:00 - 11:30,Atsedenaldia,
+MUSIKA,Astelehena,11:30 - 12:15,Musika,6B
+MUSIKA,Asteazkena,11:30 - 12:15,Musika,3B
+MUSIKA,Osteguna,11:30 - 12:15,Musika,1A
+MUSIKA,Astelehena,12:15 - 13:00,Musika,6A
+MUSIKA,Asteazkena,12:15 - 13:00,Musika,6D
+MUSIKA,Osteguna,12:15 - 13:00,Musika,1B
+MUSIKA,Ostirala,12:15 - 13:00,Musika,4D
+MUSIKA,Astelehena,15:00 - 15:45,Musika,6C
+MUSIKA,Asteartea,15:00 - 15:45,Musika,3A
+MUSIKA,Osteguna,15:00 - 15:45,Musika,2B
+MUSIKA,Ostirala,15:00 - 15:45,Musika,5A
+MUSIKA,Asteartea,15:45 - 16:30,Musika,4B
+MUSIKA,Osteguna,15:45 - 16:30,Musika,2D
+MUSIKA,Ostirala,15:45 - 16:30,Musika,5B
+YULE,Astelehena,9:00 - 9:30,Eusle,
+YULE,Asteartea,9:00 - 9:30,Eusle,
+YULE,Asteazkena,9:00 - 9:30,Eusle,
+YULE,Osteguna,9:00 - 9:30,Eusle,
+YULE,Ostirala,9:00 - 9:30,Eusle,
+YULE,Astelehena,9:30 - 10:15,Eusle,
+YULE,Asteazkena,9:30 - 10:15,Eusle,
+YULE,Ostirala,9:30 - 10:15,Eusle,
+YULE,Astelehena,10:15 - 11:00,Eusle,
+YULE,Asteazkena,10:15 - 11:00,Eusle,
+YULE,Ostirala,10:15 - 11:00,Eusle,
+YULE,Astelehena,11:00 - 11:30,Atsedenaldia,
+YULE,Asteartea,11:00 - 11:30,Atsedenaldia,
+YULE,Asteazkena,11:00 - 11:30,Atsedenaldia,
+YULE,Osteguna,11:00 - 11:30,Atsedenaldia,
+YULE,Ostirala,11:00 - 11:30,Atsedenaldia,
+YULE,Astelehena,11:30 - 12:15,Formakuntza,
+YULE,Asteartea,11:30 - 12:15,Eusle,
+YULE,Asteazkena,11:30 - 12:15,Koordinazioa,
+YULE,Osteguna,11:30 - 12:15,Eusle,
+YULE,Astelehena,12:15 - 13:00,Formakuntza,
+YULE,Asteartea,12:15 - 13:00,Eusle,
+YULE,Osteguna,12:15 - 13:00,Eusle,
+YULE,Astelehena,13:00 - 14:00,Formakuntza,
+AINHOA,Astelehena,9:00 - 9:30,Eusle,
+AINHOA,Asteartea,9:00 - 9:30,Eusle,
+AINHOA,Asteazkena,9:00 - 9:30,Eusle,
+AINHOA,Osteguna,9:00 - 9:30,Eusle,
+AINHOA,Ostirala,9:00 - 9:30,Eusle,
+AINHOA,Astelehena,9:30 - 10:15,Eusle,
+AINHOA,Asteazkena,9:30 - 10:15,Eusle,
+AINHOA,Ostirala,9:30 - 10:15,Eusle,
+AINHOA,Astelehena,10:15 - 11:00,Eusle,
+AINHOA,Asteazkena,10:15 - 11:00,Eusle,
+AINHOA,Ostirala,10:15 - 11:00,Eusle,
+AINHOA,Astelehena,11:00 - 11:30,Atsedenaldia,
+AINHOA,Asteartea,11:00 - 11:30,Atsedenaldia,
+AINHOA,Asteazkena,11:00 - 11:30,Atsedenaldia,
+AINHOA,Osteguna,11:00 - 11:30,Atsedenaldia,
+AINHOA,Ostirala,11:00 - 11:30,Atsedenaldia,
+AINHOA,Astelehena,11:30 - 12:15,Formakuntza,
+AINHOA,Asteartea,11:30 - 12:15,Eusle,
+AINHOA,Osteguna,11:30 - 12:15,Eusle,
+AINHOA,Astelehena,12:15 - 13:00,Formakuntza,
+AINHOA,Asteartea,12:15 - 13:00,Eusle,
+AINHOA,Osteguna,12:15 - 13:00,Eusle,
+AINHOA,Astelehena,13:00 - 14:00,Ziklo bilera,
+AINHOA,Asteartea,13:00 - 14:00,Familia/Maila,
+AINHOA,Asteazkena,13:00 - 14:00,Formakuntza,
+AINHOA,Osteguna,13:00 - 14:00,Batzordeak,
+AINHOA,Astelehena,14:00 - 15:00,BAZKARIA,
+AINHOA,Asteartea,14:00 - 15:00,BAZKARIA,
+AINHOA,Asteazkena,14:00 - 15:00,Formakuntza,
+AINHOA,Osteguna,14:00 - 15:00,BAZKARIA,
+AINHOA,Ostirala,14:00 - 15:00,BAZKARIA,
+AMAIA,Astelehena,9:00 - 9:30,Lan Pertsonala,
+AMAIA,Asteartea,9:00 - 9:30,Lan Pertsonala,
+AMAIA,Asteazkena,9:00 - 9:30,Lan Pertsonala,
+AMAIA,Osteguna,9:00 - 9:30,Lan Pertsonala,
+AMAIA,Ostirala,9:00 - 9:30,Lan Pertsonala,
+AMAIA,Astelehena,9:30 - 10:15,Lan Pertsonala,
+AMAIA,Asteartea,9:30 - 10:15,Lan Pertsonala,
+AMAIA,Asteazkena,9:30 - 10:15,Ingelesa,1A
+AMAIA,Osteguna,9:30 - 10:15,Esklusiba,
+AMAIA,Ostirala,9:30 - 10:15,Esklusiba,
+AMAIA,Astelehena,10:15 - 11:00,Ingelesa,1A
+AMAIA,Asteartea,10:15 - 11:00,Ingelesa,4B
+AMAIA,Asteazkena,10:15 - 11:00,Ingelesa,1B
+AMAIA,Osteguna,10:15 - 11:00,Ingelesa,4D
+AMAIA,Ostirala,10:15 - 11:00,Ingelesa,1B
+AMAIA,Astelehena,11:00 - 11:30,Atsedenaldia,
+AMAIA,Asteartea,11:00 - 11:30,Atsedenaldia,
+AMAIA,Asteazkena,11:00 - 11:30,Atsedenaldia,
+AMAIA,Osteguna,11:00 - 11:30,Atsedenaldia,
+AMAIA,Ostirala,11:00 - 11:30,Atsedenaldia,
+AMAIA,Astelehena,11:30 - 12:15,Ingelesa,4B
+AMAIA,Asteartea,11:30 - 12:15,Ingelesa,1B
+AMAIA,Asteazkena,11:30 - 12:15,Ingelesa,4B
+AMAIA,Osteguna,11:30 - 12:15,Esklusiba,
+AMAIA,Ostirala,11:30 - 12:15,Ingelesa,4D
+AMAIA,Astelehena,12:15 - 13:00,Ingelesa,4D
+AMAIA,Asteartea,12:15 - 13:00,Ingelesa,1A
+AMAIA,Asteazkena,12:15 - 13:00,Ingelesa,4D
+AMAIA,Osteguna,12:15 - 13:00,Esklusiba,
+AMAIA,Ostirala,12:15 - 13:00,Ingelesa,4B
+Danel,Astelehena,9:00 - 9:30,Tantai,1A
+Danel,Asteartea,9:00 - 9:30,Tantai,1A
+Danel,Asteazkena,9:00 - 9:30,Tantai,1A
+Danel,Osteguna,9:00 - 9:30,Tantai,1A
+Danel,Ostirala,9:00 - 9:30,Tantai,1A
+Danel,Astelehena,9:30 - 10:15,Euskara,1A
+Danel,Asteartea,9:30 - 10:15,Matematika,1A
+Danel,Asteazkena,9:30 - 10:15,Lan Pertsonala,
+Danel,Osteguna,9:30 - 10:15,Matematika,1A
+Danel,Ostirala,9:30 - 10:15,Euskara,1A
+Danel,Astelehena,10:15 - 11:00,Lan Pertsonala,
+Danel,Asteartea,10:15 - 11:00,Matematika,1A
+Danel,Asteazkena,10:15 - 11:00,Euskara,1A
+Danel,Osteguna,10:15 - 11:00,Euskara,1A
+Danel,Ostirala,10:15 - 11:00,Matematika,1A
+Danel,Astelehena,11:00 - 11:30,Atsedenaldia,
+Danel,Asteartea,11:00 - 11:30,Atsedenaldia,
+Danel,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Danel,Osteguna,11:00 - 11:30,Atsedenaldia,
+Danel,Ostirala,11:00 - 11:30,Atsedenaldia,
+Danel,Astelehena,11:30 - 12:15,Gazte,1A
+Danel,Asteartea,11:30 - 12:15,Liburutegia,1A
+Danel,Asteazkena,11:30 - 12:15,Inguru,1A
+Danel,Osteguna,11:30 - 12:15,Koordinazioa,
+Danel,Ostirala,11:30 - 12:15,Gazte,1A
+Danel,Astelehena,12:15 - 13:00,Inguru,1A
+Danel,Asteartea,12:15 - 13:00,Lan Pertsonala,
+Danel,Asteazkena,12:15 - 13:00,Gazte,1A
+Danel,Osteguna,12:15 - 13:00,Koordinazioa,
+Danel,Ostirala,12:15 - 13:00,Gazte,1A
+Danel,Astelehena,13:00 - 14:00,Ziklo bilera,
+Danel,Asteartea,13:00 - 14:00,Familia/Maila,
+Danel,Asteazkena,13:00 - 14:00,Formakuntza,
+Danel,Osteguna,13:00 - 14:00,Batzordeak,
+Danel,Astelehena,14:00 - 15:00,BAZKARIA,
+Danel,Asteartea,14:00 - 15:00,BAZKARIA,
+Danel,Asteazkena,14:00 - 15:00,Formakuntza,
+Danel,Osteguna,14:00 - 15:00,BAZKARIA,
+Danel,Ostirala,14:00 - 15:00,BAZKARIA,
+Danel,Astelehena,15:00 - 15:45,Tutoretza,1A
+Danel,Asteartea,15:00 - 15:45,Lan Pertsonala,
+Danel,Osteguna,15:00 - 15:45,Inguru,1A
+Danel,Ostirala,15:00 - 15:45,Lan Pertsonala,
+Danel,Astelehena,15:45 - 16:30,Plastika,1A
+Danel,Asteartea,15:45 - 16:30,Inguru,1A
+Danel,Osteguna,15:45 - 16:30,Jolas autonomoa,1A
+Danel,Ostirala,15:45 - 16:30,Jolas autonomoa,1A
+Nagore,Astelehena,9:00 - 9:30,Tantai,1B
+Nagore,Asteartea,9:00 - 9:30,Tantai,1B
+Nagore,Asteazkena,9:00 - 9:30,Tantai,1B
+Nagore,Osteguna,9:00 - 9:30,Tantai,1B
+Nagore,Ostirala,9:00 - 9:30,Tantai,1B
+Nagore,Astelehena,9:30 - 10:15,Euskara,1B
+Nagore,Asteartea,9:30 - 10:15,Matematika,1B
+Nagore,Asteazkena,9:30 - 10:15,Euskara,1B
+Nagore,Osteguna,9:30 - 10:15,Matematika,1B
+Nagore,Ostirala,9:30 - 10:15,Euskara,1B
+Nagore,Astelehena,10:15 - 11:00,Matematika,1B
+Nagore,Asteartea,10:15 - 11:00,Matematika,1B
+Nagore,Asteazkena,10:15 - 11:00,Lan Pertsonala,
+Nagore,Osteguna,10:15 - 11:00,Euskara,1B
+Nagore,Ostirala,10:15 - 11:00,Lan Pertsonala,
+Nagore,Astelehena,11:00 - 11:30,Atsedenaldia,
+Nagore,Asteartea,11:00 - 11:30,Atsedenaldia,
+Nagore,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Nagore,Osteguna,11:00 - 11:30,Atsedenaldia,
+Nagore,Ostirala,11:00 - 11:30,Atsedenaldia,
+Nagore,Astelehena,11:30 - 12:15,Gazte,1B
+Nagore,Asteartea,11:30 - 12:15,Lan Pertsonala,
+Nagore,Asteazkena,11:30 - 12:15,Inguru,1B
+Nagore,Osteguna,11:30 - 12:15,Koordinazioa,
+Nagore,Ostirala,11:30 - 12:15,Gazte,1B
+Nagore,Astelehena,12:15 - 13:00,Inguru,1B
+Nagore,Asteartea,12:15 - 13:00,Liburutegia,1B
+Nagore,Asteazkena,12:15 - 13:00,Gazte,1B
+Nagore,Osteguna,12:15 - 13:00,Koordinazioa,
+Nagore,Ostirala,12:15 - 13:00,Gazte,1B
+Nagore,Astelehena,13:00 - 14:00,Ziklo bilera,
+Nagore,Asteartea,13:00 - 14:00,Familia/Maila,
+Nagore,Asteazkena,13:00 - 14:00,Formakuntza,
+Nagore,Osteguna,13:00 - 14:00,Batzordeak,
+Nagore,Astelehena,14:00 - 15:00,BAZKARIA,
+Nagore,Asteartea,14:00 - 15:00,BAZKARIA,
+Nagore,Asteazkena,14:00 - 15:00,Formakuntza,
+Nagore,Osteguna,14:00 - 15:00,BAZKARIA,
+Nagore,Ostirala,14:00 - 15:00,BAZKARIA,
+Nagore,Astelehena,15:00 - 15:45,Tutoretza,1B
+Nagore,Asteartea,15:00 - 15:45,Inguru,1B
+Nagore,Osteguna,15:00 - 15:45,Inguru,1B
+Nagore,Ostirala,15:00 - 15:45,Jolas autonomoa,1B
+Nagore,Astelehena,15:45 - 16:30,Plastika,1B
+Nagore,Asteartea,15:45 - 16:30,Lan Pertsonala,
+Nagore,Osteguna,15:45 - 16:30,Jolas autonomoa,1B
+Nagore,Ostirala,15:45 - 16:30,Lan Pertsonala,
+Jessica,Astelehena,9:00 - 9:30,Tantai,2A
+Jessica,Asteartea,9:00 - 9:30,Tantai,2A
+Jessica,Asteazkena,9:00 - 9:30,Tantai,2A
+Jessica,Osteguna,9:00 - 9:30,Tantai,2A
+Jessica,Ostirala,9:00 - 9:30,Tantai,2A
+Jessica,Asteartea,9:30 - 10:15,Euskara,2A
+Jessica,Asteazkena,9:30 - 10:15,Euskara,2A
+Jessica,Osteguna,9:30 - 10:15,Matematika,2A
+Jessica,Ostirala,9:30 - 10:15,Euskara,2A
+Jessica,Astelehena,10:15 - 11:00,Euskara,2A
+Jessica,Osteguna,10:15 - 11:00,Matematika,2A
+Jessica,Ostirala,10:15 - 11:00,Matematika,2A
+Jessica,Astelehena,11:00 - 11:30,Atsedenaldia,
+Jessica,Asteartea,11:00 - 11:30,Atsedenaldia,
+Jessica,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Jessica,Osteguna,11:00 - 11:30,Atsedenaldia,
+Jessica,Ostirala,11:00 - 11:30,Atsedenaldia,
+Jessica,Astelehena,11:30 - 12:15,Gazte,2A
+Jessica,Asteartea,11:30 - 12:15,Matematika,2A
+Jessica,Asteazkena,11:30 - 12:15,Gazte,2A
+Jessica,Osteguna,11:30 - 12:15,Inguru,2A
+Jessica,Ostirala,11:30 - 12:15,Inguru,2A
+Jessica,Astelehena,12:15 - 13:00,Inguru,2A
+Jessica,Asteartea,12:15 - 13:00,Inguru,2A
+Jessica,Asteazkena,12:15 - 13:00,Gazte,2A
+Jessica,Osteguna,12:15 - 13:00,Liburutegia,2A
+Jessica,Asteartea,15:00 - 15:45,Gazte,2A
+Jessica,Osteguna,15:00 - 15:45,Koordinazioa,
+Jessica,Ostirala,15:00 - 15:45,Jolas autonomoa,2A
+Jessica,Astelehena,15:45 - 16:30,Tutoretza,2A
+Jessica,Asteartea,15:45 - 16:30,Plastika,2A
+Jessica,Osteguna,15:45 - 16:30,Koordinazioa,
+Jessica,Ostirala,15:45 - 16:30,Jolas autonomoa,2A
+Mikel,Astelehena,9:00 - 9:30,Tantai,2B
+Mikel,Asteartea,9:00 - 9:30,Tantai,2B
+Mikel,Asteazkena,9:00 - 9:30,Tantai,2B
+Mikel,Osteguna,9:00 - 9:30,Tantai,2B
+Mikel,Ostirala,9:00 - 9:30,Tantai,2B
+Mikel,Astelehena,9:30 - 10:15,Euskara,2B
+Mikel,Asteartea,9:30 - 10:15,Euskara,2B
+Mikel,Osteguna,9:30 - 10:15,Matematika,2B
+Mikel,Ostirala,9:30 - 10:15,Euskara,2B
+Mikel,Astelehena,10:15 - 11:00,Matematika,2B
+Mikel,Asteazkena,10:15 - 11:00,Euskara,2B
+Mikel,Osteguna,10:15 - 11:00,Matematika,2B
+Mikel,Ostirala,10:15 - 11:00,Matematika,2B
+Mikel,Astelehena,11:00 - 11:30,Atsedenaldia,
+Mikel,Asteartea,11:00 - 11:30,Atsedenaldia,
+Mikel,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Mikel,Osteguna,11:00 - 11:30,Atsedenaldia,
+Mikel,Ostirala,11:00 - 11:30,Atsedenaldia,
+Mikel,Astelehena,11:30 - 12:15,Gazte,2B
+Mikel,Asteartea,11:30 - 12:15,Gazte,2B
+Mikel,Osteguna,11:30 - 12:15,Inguru,2B
+Mikel,Astelehena,12:15 - 13:00,Inguru,2B
+Mikel,Asteartea,12:15 - 13:00,Inguru,2B
+Mikel,Asteazkena,12:15 - 13:00,Liburutegia,2B
+Mikel,Osteguna,12:15 - 13:00,Gazte,2B
+Mikel,Ostirala,12:15 - 13:00,Inguru,2B
+Mikel,Astelehena,13:00 - 14:00,Ziklo bilera,
+Mikel,Asteartea,13:00 - 14:00,Familia/Maila,
+Mikel,Asteazkena,13:00 - 14:00,Formakuntza,
+Mikel,Osteguna,13:00 - 14:00,Batzordeak,
+Mikel,Astelehena,14:00 - 15:00,BAZKARIA,
+Mikel,Asteartea,14:00 - 15:00,BAZKARIA,
+Mikel,Asteazkena,14:00 - 15:00,Formakuntza,
+Mikel,Osteguna,14:00 - 15:00,BAZKARIA,
+Mikel,Ostirala,14:00 - 15:00,BAZKARIA,
+Mikel,Astelehena,15:00 - 15:45,Tutoretza,2B
+Mikel,Asteartea,15:00 - 15:45,Gazte,2B
+Mikel,Ostirala,15:00 - 15:45,Jolas autonomoa,2B
+Mikel,Asteartea,15:45 - 16:30,Plastika,2B
+Mikel,Ostirala,15:45 - 16:30,Jolas autonomoa,2B
+Jone,Astelehena,9:00 - 9:30,Tantai,2D
+Jone,Asteartea,9:00 - 9:30,Tantai,2D
+Jone,Asteazkena,9:00 - 9:30,Tantai,2D
+Jone,Osteguna,9:00 - 9:30,Tantai,2D
+Jone,Ostirala,9:00 - 9:30,Tantai,2D
+Jone,Astelehena,9:30 - 10:15,Euskara,2D
+Jone,Asteazkena,9:30 - 10:15,Euskara,2D
+Jone,Osteguna,9:30 - 10:15,Matematika,2D
+Jone,Ostirala,9:30 - 10:15,Euskara,2D
+Jone,Asteartea,10:15 - 11:00,Euskara,2D
+Jone,Asteazkena,10:15 - 11:00,Matematika,2D
+Jone,Osteguna,10:15 - 11:00,Matematika,2D
+Jone,Astelehena,11:00 - 11:30,Atsedenaldia,
+Jone,Asteartea,11:00 - 11:30,Atsedenaldia,
+Jone,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Jone,Osteguna,11:00 - 11:30,Atsedenaldia,
+Jone,Ostirala,11:00 - 11:30,Atsedenaldia,
+Jone,Astelehena,11:30 - 12:15,Tutoretza,2D
+Jone,Asteartea,11:30 - 12:15,Gazte,2D
+Jone,Asteazkena,11:30 - 12:15,Liburutegia,2D
+Jone,Osteguna,11:30 - 12:15,Inguru,2D
+Jone,Ostirala,11:30 - 12:15,Matematika,2D
+Jone,Astelehena,12:15 - 13:00,Inguru,2D
+Jone,Asteartea,12:15 - 13:00,Inguru,2D
+Jone,Osteguna,12:15 - 13:00,Gazte,2D
+Jone,Ostirala,12:15 - 13:00,Inguru,2D
+Jone,Astelehena,13:00 - 14:00,Ziklo bilera,
+Jone,Asteartea,13:00 - 14:00,Familia/Maila,
+Jone,Asteazkena,13:00 - 14:00,Formakuntza,
+Jone,Osteguna,13:00 - 14:00,Batzordeak,
+Jone,Astelehena,14:00 - 15:00,BAZKARIA,
+Jone,Asteartea,14:00 - 15:00,BAZKARIA,
+Jone,Asteazkena,14:00 - 15:00,Formakuntza,
+Jone,Osteguna,14:00 - 15:00,BAZKARIA,
+Jone,Ostirala,14:00 - 15:00,BAZKARIA,
+Jone,Astelehena,15:00 - 15:45,Gazte,2D
+Jone,Ostirala,15:00 - 15:45,Jolas autonomoa,2D
+Jone,Astelehena,15:45 - 16:30,Gazte,2D
+Jone,Asteartea,15:45 - 16:30,Plastika,2D
+Jone,Ostirala,15:45 - 16:30,Jolas autonomoa,2D
+Itziar,Astelehena,9:00 - 9:30,Tantai,3A
+Itziar,Asteartea,9:00 - 9:30,Tantai,3A
+Itziar,Asteazkena,9:00 - 9:30,Tantai,3A
+Itziar,Osteguna,9:00 - 9:30,Tantai,3A
+Itziar,Ostirala,9:00 - 9:30,Tantai,3A
+Itziar,Astelehena,9:30 - 10:15,Euskara,3A
+Itziar,Asteartea,9:30 - 10:15,Matematika,3A
+Itziar,Asteazkena,9:30 - 10:15,Euskara,3A
+Itziar,Osteguna,9:30 - 10:15,Matematika,3A
+Itziar,Ostirala,9:30 - 10:15,Euskara,3A
+Itziar,Astelehena,10:15 - 11:00,Inguru,3A
+Itziar,Asteartea,10:15 - 11:00,Matematika,3A
+Itziar,Asteazkena,10:15 - 11:00,Inguru,3A
+Itziar,Osteguna,10:15 - 11:00,Gazte,3A
+Itziar,Ostirala,10:15 - 11:00,Inguru,3A
+Itziar,Astelehena,11:00 - 11:30,Atsedenaldia,
+Itziar,Asteartea,11:00 - 11:30,Atsedenaldia,
+Itziar,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Itziar,Osteguna,11:00 - 11:30,Atsedenaldia,
+Itziar,Ostirala,11:00 - 11:30,Atsedenaldia,
+Itziar,Astelehena,11:30 - 12:15,Liburutegia,3A
+Itziar,Asteartea,11:30 - 12:15,Euskara,3A
+Itziar,Asteazkena,11:30 - 12:15,Gazte,3A
+Itziar,Osteguna,11:30 - 12:15,Euskara,3A
+Itziar,Ostirala,11:30 - 12:15,Gazte,3A
+Itziar,Astelehena,12:15 - 13:00,Buruketa Tailerra,3A
+Itziar,Asteartea,12:15 - 13:00,Inguru,3A
+Itziar,Osteguna,12:15 - 13:00,Inguru,3A
+Itziar,Ostirala,12:15 - 13:00,Tutoretza,3A
+Itziar,Astelehena,13:00 - 14:00,Ziklo bilera,
+Itziar,Asteartea,13:00 - 14:00,Familia/Maila,
+Itziar,Asteazkena,13:00 - 14:00,Formakuntza,
+Itziar,Osteguna,13:00 - 14:00,Batzordeak,
+Itziar,Astelehena,14:00 - 15:00,BAZKARIA,
+Itziar,Asteartea,14:00 - 15:00,BAZKARIA,
+Itziar,Asteazkena,14:00 - 15:00,Formakuntza,
+Itziar,Osteguna,14:00 - 15:00,BAZKARIA,
+Itziar,Ostirala,14:00 - 15:00,BAZKARIA,
+Itziar,Osteguna,15:00 - 15:45,Buruketa Tailerra,4A
+Itziar,Asteartea,15:45 - 16:30,Gazte,3A
+Itziar,Ostirala,15:45 - 16:30,Plastika,3A
+Iker,Astelehena,9:00 - 9:30,Tantai,3B
+Iker,Asteartea,9:00 - 9:30,Tantai,3B
+Iker,Asteazkena,9:00 - 9:30,Tantai,3B
+Iker,Osteguna,9:00 - 9:30,Tantai,3B
+Iker,Ostirala,9:00 - 9:30,Tantai,3B
+Iker,Astelehena,9:30 - 10:15,Euskara,3B
+Iker,Asteartea,9:30 - 10:15,Matematika,3B
+Iker,Asteazkena,9:30 - 10:15,Euskara,3B
+Iker,Osteguna,9:30 - 10:15,Matematika,3B
+Iker,Ostirala,9:30 - 10:15,Euskara,3B
+Iker,Astelehena,10:15 - 11:00,Inguru,3B
+Iker,Asteartea,10:15 - 11:00,Matematika,3B
+Iker,Asteazkena,10:15 - 11:00,Inguru,3B
+Iker,Osteguna,10:15 - 11:00,Gazte,3B
+Iker,Ostirala,10:15 - 11:00,Inguru,3B
+Iker,Astelehena,11:00 - 11:30,Atsedenaldia,
+Iker,Asteartea,11:00 - 11:30,Atsedenaldia,
+Iker,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Iker,Osteguna,11:00 - 11:30,Atsedenaldia,
+Iker,Ostirala,11:00 - 11:30,Atsedenaldia,
+Iker,Astelehena,11:30 - 12:15,Gazte,3B
+Iker,Asteartea,11:30 - 12:15,Euskara,3B
+Iker,Osteguna,11:30 - 12:15,Euskara,3B
+Iker,Ostirala,11:30 - 12:15,Liburutegia,3B
+Iker,Astelehena,12:15 - 13:00,Buruketa Tailerra,3B
+Iker,Asteartea,12:15 - 13:00,Inguru,3B
+Iker,Osteguna,12:15 - 13:00,Inguru,3B
+Iker,Astelehena,13:00 - 14:00,Ziklo bilera,
+Iker,Asteartea,13:00 - 14:00,Familia/Maila,
+Iker,Asteazkena,13:00 - 14:00,Formakuntza,
+Iker,Osteguna,13:00 - 14:00,Batzordeak,
+Iker,Astelehena,14:00 - 15:00,BAZKARIA,
+Iker,Asteartea,14:00 - 15:00,BAZKARIA,
+Iker,Asteazkena,14:00 - 15:00,Formakuntza,
+Iker,Osteguna,14:00 - 15:00,BAZKARIA,
+Iker,Ostirala,14:00 - 15:00,BAZKARIA,
+Iker,Asteartea,15:00 - 15:45,Gazte,3B
+Iker,Osteguna,15:00 - 15:45,Tutoretza,3B
+Iker,Ostirala,15:00 - 15:45,Gazte,3B
+Iker,Osteguna,15:45 - 16:30,Buruketa Tailerra,4D
+Iker,Ostirala,15:45 - 16:30,Plastika,3B
+Andoni,Astelehena,9:00 - 9:30,Tantai,4A
+Andoni,Asteartea,9:00 - 9:30,Tantai,4A
+Andoni,Asteazkena,9:00 - 9:30,Tantai,4A
+Andoni,Osteguna,9:00 - 9:30,Tantai,4A
+Andoni,Ostirala,9:00 - 9:30,Tantai,4A
+Andoni,Astelehena,9:30 - 10:15,Euskara,4A
+Andoni,Asteartea,9:30 - 10:15,Matematika,4A
+Andoni,Asteazkena,9:30 - 10:15,Euskara,4A
+Andoni,Osteguna,9:30 - 10:15,Gazte,4A
+Andoni,Ostirala,9:30 - 10:15,Euskara,4A
+Andoni,Astelehena,10:15 - 11:00,Inguru,4A
+Andoni,Asteartea,10:15 - 11:00,Matematika,4A
+Andoni,Asteazkena,10:15 - 11:00,Inguru,4A
+Andoni,Ostirala,10:15 - 11:00,Inguru,4A
+Andoni,Astelehena,11:00 - 11:30,Atsedenaldia,
+Andoni,Asteartea,11:00 - 11:30,Atsedenaldia,
+Andoni,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Andoni,Osteguna,11:00 - 11:30,Atsedenaldia,
+Andoni,Ostirala,11:00 - 11:30,Atsedenaldia,
+Andoni,Astelehena,11:30 - 12:15,Matematika,4A
+Andoni,Asteartea,11:30 - 12:15,Euskara,4A
+Andoni,Osteguna,11:30 - 12:15,Euskara,4A
+Andoni,Astelehena,12:15 - 13:00,Buruketa Tailerra,3A
+Andoni,Asteartea,12:15 - 13:00,Inguru,4A
+Andoni,Asteazkena,12:15 - 13:00,Gazte,4A
+Andoni,Osteguna,12:15 - 13:00,Inguru,4A
+Andoni,Astelehena,13:00 - 14:00,Ziklo bilera,
+Andoni,Asteartea,13:00 - 14:00,Familia/Maila,
+Andoni,Asteazkena,13:00 - 14:00,Formakuntza,
+Andoni,Osteguna,13:00 - 14:00,Batzordeak,
+Andoni,Astelehena,14:00 - 15:00,BAZKARIA,
+Andoni,Asteartea,14:00 - 15:00,BAZKARIA,
+Andoni,Asteazkena,14:00 - 15:00,Formakuntza,
+Andoni,Osteguna,14:00 - 15:00,BAZKARIA,
+Andoni,Ostirala,14:00 - 15:00,BAZKARIA,
+Andoni,Astelehena,15:00 - 15:45,Gazte,4A
+Andoni,Osteguna,15:00 - 15:45,Buruketa Tailerra,4A
+Andoni,Ostirala,15:00 - 15:45,Gazte,4A
+Andoni,Astelehena,15:45 - 16:30,Tutoretza,4A
+Andoni,Osteguna,15:45 - 16:30,Plastika,4A
+Andoni,Ostirala,15:45 - 16:30,Liburutegia,4A
+Eba,Astelehena,9:00 - 9:30,Tantai,4B
+Eba,Asteartea,9:00 - 9:30,Tantai,4B
+Eba,Asteazkena,9:00 - 9:30,Tantai,4B
+Eba,Osteguna,9:00 - 9:30,Tantai,4B
+Eba,Ostirala,9:00 - 9:30,Tantai,4B
+Eba,Astelehena,9:30 - 10:15,Euskara,4B
+Eba,Asteartea,9:30 - 10:15,Matematika,4B
+Eba,Asteazkena,9:30 - 10:15,Euskara,4B
+Eba,Osteguna,9:30 - 10:15,Matematika,4B
+Eba,Ostirala,9:30 - 10:15,Euskara,4B
+Eba,Astelehena,10:15 - 11:00,Inguru,4B
+Eba,Asteazkena,10:15 - 11:00,Inguru,4B
+Eba,Osteguna,10:15 - 11:00,Matematika,4B
+Eba,Ostirala,10:15 - 11:00,Inguru,4B
+Eba,Astelehena,11:00 - 11:30,Atsedenaldia,
+Eba,Asteartea,11:00 - 11:30,Atsedenaldia,
+Eba,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Eba,Osteguna,11:00 - 11:30,Atsedenaldia,
+Eba,Ostirala,11:00 - 11:30,Atsedenaldia,
+Eba,Astelehena,11:30 - 12:15,Buruketa Tailerra,5B
+Eba,Asteartea,11:30 - 12:15,Euskara,4B
+Eba,Osteguna,11:30 - 12:15,Euskara,4B
+Eba,Astelehena,12:15 - 13:00,Gazte,4B
+Eba,Asteartea,12:15 - 13:00,Inguru,4B
+Eba,Asteazkena,12:15 - 13:00,Gazte,4B
+Eba,Osteguna,12:15 - 13:00,Inguru,4B
+Eba,Astelehena,13:00 - 14:00,Ziklo bilera,
+Eba,Asteartea,13:00 - 14:00,Familia/Maila,
+Eba,Asteazkena,13:00 - 14:00,Formakuntza,
+Eba,Osteguna,13:00 - 14:00,Batzordeak,
+Eba,Astelehena,14:00 - 15:00,BAZKARIA,
+Eba,Asteartea,14:00 - 15:00,BAZKARIA,
+Eba,Asteazkena,14:00 - 15:00,Formakuntza,
+Eba,Osteguna,14:00 - 15:00,BAZKARIA,
+Eba,Ostirala,14:00 - 15:00,BAZKARIA,
+Eba,Astelehena,15:00 - 15:45,Liburutegia,4B
+Eba,Osteguna,15:00 - 15:45,Gazte,4B
+Eba,Ostirala,15:00 - 15:45,Gazte,4B
+Eba,Astelehena,15:45 - 16:30,Buruketa Tailerra,4B
+Eba,Osteguna,15:45 - 16:30,Plastika,4B
+Eba,Ostirala,15:45 - 16:30,Tutoretza,4B
+Yurena,Astelehena,9:00 - 9:30,Tantai,4D
+Yurena,Asteartea,9:00 - 9:30,Tantai,4D
+Yurena,Asteazkena,9:00 - 9:30,Tantai,4D
+Yurena,Osteguna,9:00 - 9:30,Tantai,4D
+Yurena,Ostirala,9:00 - 9:30,Tantai,4D
+Yurena,Astelehena,9:30 - 10:15,Euskara,4D
+Yurena,Asteartea,9:30 - 10:15,Matematika,4D
+Yurena,Asteazkena,9:30 - 10:15,Euskara,4D
+Yurena,Osteguna,9:30 - 10:15,Gazte,4D
+Yurena,Ostirala,9:30 - 10:15,Euskara,4D
+Yurena,Astelehena,10:15 - 11:00,Inguru,4D
+Yurena,Asteartea,10:15 - 11:00,Matematika,4D
+Yurena,Asteazkena,10:15 - 11:00,Inguru,4D
+Yurena,Ostirala,10:15 - 11:00,Inguru,4D
+Yurena,Astelehena,11:00 - 11:30,Atsedenaldia,
+Yurena,Asteartea,11:00 - 11:30,Atsedenaldia,
+Yurena,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Yurena,Osteguna,11:00 - 11:30,Atsedenaldia,
+Yurena,Ostirala,11:00 - 11:30,Atsedenaldia,
+Yurena,Astelehena,11:30 - 12:15,Matematika,4D
+Yurena,Asteartea,11:30 - 12:15,Euskara,4D
+Yurena,Osteguna,11:30 - 12:15,Euskara,4D
+Yurena,Astelehena,12:15 - 13:00,Buruketa Tailerra,3B
+Yurena,Asteartea,12:15 - 13:00,Inguru,4D
+Yurena,Osteguna,12:15 - 13:00,Inguru,4D
+Yurena,Astelehena,13:00 - 14:00,Ziklo bilera,
+Yurena,Asteartea,13:00 - 14:00,Familia/Maila,
+Yurena,Asteazkena,13:00 - 14:00,Formakuntza,
+Yurena,Osteguna,13:00 - 14:00,Batzordeak,
+Yurena,Astelehena,14:00 - 15:00,BAZKARIA,
+Yurena,Asteartea,14:00 - 15:00,BAZKARIA,
+Yurena,Asteazkena,14:00 - 15:00,Formakuntza,
+Yurena,Osteguna,14:00 - 15:00,BAZKARIA,
+Yurena,Ostirala,14:00 - 15:00,BAZKARIA,
+Yurena,Astelehena,15:00 - 15:45,Gazte,4D
+Yurena,Asteartea,15:00 - 15:45,Gazte,4D
+Yurena,Ostirala,15:00 - 15:45,Liburutegia,4D
+Yurena,Astelehena,15:45 - 16:30,Tutoretza,4D
+Yurena,Asteartea,15:45 - 16:30,Gazte,4D
+Yurena,Osteguna,15:45 - 16:30,Buruketa Tailerra,4D
+Yurena,Ostirala,15:45 - 16:30,Plastika,4D
+Gema,Astelehena,9:00 - 9:30,Tantai,5B
+Gema,Asteartea,9:00 - 9:30,Tantai,5B
+Gema,Asteazkena,9:00 - 9:30,Tantai,5B
+Gema,Osteguna,9:00 - 9:30,Tantai,5B
+Gema,Ostirala,9:00 - 9:30,Tantai,5B
+Gema,Astelehena,9:30 - 10:15,Euskara,5B
+Gema,Asteartea,9:30 - 10:15,Matematika,5B
+Gema,Asteazkena,9:30 - 10:15,Euskara,5B
+Gema,Osteguna,9:30 - 10:15,Gazte,5B
+Gema,Ostirala,9:30 - 10:15,Euskara,5B
+Gema,Astelehena,10:15 - 11:00,Inguru,5B
+Gema,Asteartea,10:15 - 11:00,Matematika,5B
+Gema,Asteazkena,10:15 - 11:00,Inguru,5B
+Gema,Osteguna,10:15 - 11:00,Matematika,5B
+Gema,Ostirala,10:15 - 11:00,Balioak,5B
+Gema,Astelehena,11:00 - 11:30,Atsedenaldia,
+Gema,Asteartea,11:00 - 11:30,Atsedenaldia,
+Gema,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Gema,Osteguna,11:00 - 11:30,Atsedenaldia,
+Gema,Ostirala,11:00 - 11:30,Atsedenaldia,
+Gema,Astelehena,11:30 - 12:15,Buruketa Tailerra,5B
+Gema,Asteartea,11:30 - 12:15,Euskara,5B
+Gema,Asteazkena,11:30 - 12:15,Buruketa Tailerra,6B
+Gema,Osteguna,11:30 - 12:15,Inguru,5B
+Gema,Ostirala,11:30 - 12:15,Gazte,5B
+Gema,Astelehena,12:15 - 13:00,Gazte,5B
+Gema,Asteartea,12:15 - 13:00,Inguru,5B
+Gema,Osteguna,12:15 - 13:00,Tutoretza,5B
+Gema,Ostirala,12:15 - 13:00,Idazketa Tailerra,5B
+Gema,Astelehena,13:00 - 14:00,Ziklo bilera,
+Gema,Asteartea,13:00 - 14:00,Familia/Maila,
+Gema,Asteazkena,13:00 - 14:00,Formakuntza,
+Gema,Osteguna,13:00 - 14:00,Batzordeak,
+Gema,Astelehena,14:00 - 15:00,BAZKARIA,
+Gema,Asteartea,14:00 - 15:00,BAZKARIA,
+Gema,Asteazkena,14:00 - 15:00,Formakuntza,
+Gema,Osteguna,14:00 - 15:00,BAZKARIA,
+Gema,Ostirala,14:00 - 15:00,BAZKARIA,
+Gema,Asteartea,15:00 - 15:45,Liburutegia,5B
+Gema,Astelehena,15:45 - 16:30,Buruketa Tailerra,4B
+Gema,Osteguna,15:45 - 16:30,Plastika,5B
+Unai,Astelehena,9:00 - 9:30,Tantai,6D
+Unai,Asteartea,9:00 - 9:30,Tantai,6D
+Unai,Asteazkena,9:00 - 9:30,Tantai,6D
+Unai,Osteguna,9:00 - 9:30,Tantai,6D
+Unai,Ostirala,9:00 - 9:30,Tantai,6D
+Unai,Astelehena,9:30 - 10:15,Euskara,6D
+Unai,Asteartea,9:30 - 10:15,Matematika,6D
+Unai,Asteazkena,9:30 - 10:15,Euskara,6D
+Unai,Osteguna,9:30 - 10:15,Matematika,6D
+Unai,Ostirala,9:30 - 10:15,Balioak,6D
+Unai,Astelehena,10:15 - 11:00,Inguru,6D
+Unai,Asteazkena,10:15 - 11:00,Inguru,6D
+Unai,Osteguna,10:15 - 11:00,Buruketa Tailerra,6D
+Unai,Ostirala,10:15 - 11:00,Euskara,6D
+Unai,Astelehena,11:00 - 11:30,Atsedenaldia,
+Unai,Asteartea,11:00 - 11:30,Atsedenaldia,
+Unai,Asteazkena,11:00 - 11:30,Atsedenaldia,
+Unai,Osteguna,11:00 - 11:30,Atsedenaldia,
+Unai,Ostirala,11:00 - 11:30,Atsedenaldia,
+Unai,Asteartea,11:30 - 12:15,Euskara,6D
+Unai,Asteazkena,11:30 - 12:15,Buruketa Tailerra,6A
+Unai,Osteguna,11:30 - 12:15,Inguru,6D
+Unai,Ostirala,11:30 - 12:15,Matematika,6D
+Unai,Asteartea,12:15 - 13:00,Inguru,6D
+Unai,Osteguna,12:15 - 13:00,Tutoretza,6D
+Unai,Ostirala,12:15 - 13:00,Idazketa Tailerra,5B
+Unai,Astelehena,13:00 - 14:00,Ziklo bilera,
+Unai,Asteartea,13:00 - 14:00,Familia/Maila,
+Unai,Asteazkena,13:00 - 14:00,Formakuntza,
+Unai,Osteguna,13:00 - 14:00,Batzordeak,
+Unai,Astelehena,14:00 - 15:00,BAZKARIA,
+Unai,Asteartea,14:00 - 15:00,BAZKARIA,
+Unai,Asteazkena,14:00 - 15:00,Formakuntza,
+Unai,Osteguna,14:00 - 15:00,BAZKARIA,
+Unai,Ostirala,14:00 - 15:00,BAZKARIA,
+Unai,Astelehena,15:00 - 15:45,Idazketa Tailerra,6D
+Unai,Osteguna,15:00 - 15:45,Gazte,6D
+Unai,Ostirala,15:00 - 15:45,Gazte,6D
+Unai,Astelehena,15:45 - 16:30,Liburutegia,6D
+Unai,Asteartea,15:45 - 16:30,Plastika,6D
+Unai,Osteguna,15:45 - 16:30,Gazte,6D
+Tutorea,Astelehena,13:00 - 14:00,Ziklo bilera,
+Tutorea,Asteartea,13:00 - 14:00,Familia/Maila,
+Tutorea,Asteazkena,13:00 - 14:00,Formakuntza,
+Tutorea,Osteguna,13:00 - 14:00,Batzordeak,
+Tutorea,Astelehena,14:00 - 15:00,BAZKARIA,
+Tutorea,Asteartea,14:00 - 15:00,BAZKARIA,
+Tutorea,Asteazkena,14:00 - 15:00,Formakuntza,
+Tutorea,Osteguna,14:00 - 15:00,BAZKARIA,
+Tutorea,Ostirala,14:00 - 15:00,BAZKARIA,
+IKER PT,Astelehena,9:00 - 9:30,Tantai,3A
+IKER PT,Asteartea,9:00 - 9:30,Tantai,1B
+IKER PT,Asteazkena,9:00 - 9:30,Tantai,3B
+IKER PT,Osteguna,9:00 - 9:30,Tantai,1B
+IKER PT,Ostirala,9:00 - 9:30,Tantai,1A
+IKER PT,Astelehena,9:30 - 10:15,Euskara,1A
+IKER PT,Asteartea,9:30 - 10:15,Matematika,3A
+IKER PT,Asteazkena,9:30 - 10:15,Euskara,1B
+IKER PT,Osteguna,9:30 - 10:15,Matematika,3A
+IKER PT,Ostirala,9:30 - 10:15,Euskara,1B
+IKER PT,Astelehena,10:15 - 11:00,Inguru,3B
+IKER PT,Asteartea,10:15 - 11:00,Matematika,3B
+IKER PT,Asteazkena,10:15 - 11:00,Inguru,3A
+IKER PT,Osteguna,10:15 - 11:00,Euskara,1A
+IKER PT,Ostirala,10:15 - 11:00,Inguru,3B
+IKER PT,Astelehena,11:30 - 12:15,Gazte,1B
+IKER PT,Asteartea,11:30 - 12:15,Euskara,3A
+IKER PT,Asteazkena,11:30 - 12:15,Inguru,1B
+IKER PT,Osteguna,11:30 - 12:15,Euskara,3B
+IKER PT,Ostirala,11:30 - 12:15,Gazte,3A
+IKER PT,Astelehena,12:15 - 13:00,Inguru,1B
+IKER PT,Asteartea,12:15 - 13:00,Inguru,3A
+IKER PT,Asteazkena,12:15 - 13:00,Gazte,1A
+IKER PT,Ostirala,12:15 - 13:00,Gazte,1B
+IKER PT,Astelehena,13:00 - 14:00,Ziklo bilera,
+IKER PT,Asteartea,13:00 - 14:00,Familia/Maila,
+IKER PT,Asteazkena,13:00 - 14:00,Formakuntza,
+IKER PT,Osteguna,13:00 - 14:00,Batzordeak,
+IKER PT,Astelehena,14:00 - 15:00,BAZKARIA,
+IKER PT,Asteartea,14:00 - 15:00,BAZKARIA,
+IKER PT,Asteazkena,14:00 - 15:00,Formakuntza,
+IKER PT,Osteguna,14:00 - 15:00,BAZKARIA,
+IKER PT,Ostirala,14:00 - 15:00,BAZKARIA,
+IKER PT,Asteartea,15:00 - 15:45,Gazte,3B
+IKER PT,Osteguna,15:00 - 15:45,Inguru,1B
+IKER PT,Asteartea,15:45 - 16:30,Inguru,1A
+MIREN Ma PT,Astelehena,13:00 - 14:00,Ziklo bilera,
+MIREN Ma PT,Asteartea,13:00 - 14:00,Familia/Maila,
+MIREN Ma PT,Asteazkena,13:00 - 14:00,Formakuntza,
+MIREN Ma PT,Osteguna,13:00 - 14:00,Batzordeak,
+MIREN Ma PT,Astelehena,14:00 - 15:00,BAZKARIA,
+MIREN Ma PT,Asteartea,14:00 - 15:00,BAZKARIA,
+MIREN Ma PT,Asteazkena,14:00 - 15:00,Formakuntza,
+MIREN Ma PT,Osteguna,14:00 - 15:00,BAZKARIA,
+MIREN Ma PT,Ostirala,14:00 - 15:00,BAZKARIA,
+PABLO PT,Astelehena,9:00 - 9:30,Tantai,4D
+PABLO PT,Asteartea,9:00 - 9:30,Tantai,4A
+PABLO PT,Asteazkena,9:00 - 9:30,Tantai,4B
+PABLO PT,Osteguna,9:00 - 9:30,Tantai,4D
+PABLO PT,Ostirala,9:00 - 9:30,Tantai,4A
+PABLO PT,Astelehena,9:30 - 10:15,Euskara,4B
+PABLO PT,Asteartea,9:30 - 10:15,Matematika,4D
+PABLO PT,Asteazkena,9:30 - 10:15,Euskara,4D
+PABLO PT,Osteguna,9:30 - 10:15,Matematika,4B
+PABLO PT,Ostirala,9:30 - 10:15,Euskara,4A
+PABLO PT,Astelehena,10:15 - 11:00,Inguru,4A
+PABLO PT,Asteartea,10:15 - 11:00,Matematika,4A
+PABLO PT,Asteazkena,10:15 - 11:00,Inguru,4A
+PABLO PT,Osteguna,10:15 - 11:00,Matematika,4B
+PABLO PT,Ostirala,10:15 - 11:00,Inguru,4D
+PABLO PT,Astelehena,11:30 - 12:15,Matematika,4A
+PABLO PT,Asteartea,11:30 - 12:15,Euskara,4D
+PABLO PT,Asteazkena,11:30 - 12:15,Ingelesa,4B
+PABLO PT,Osteguna,11:30 - 12:15,Euskara,4A
+PABLO PT,Ostirala,11:30 - 12:15,Ingelesa,4D
+PABLO PT,Astelehena,12:15 - 13:00,Gazte,4B
+PABLO PT,Asteartea,12:15 - 13:00,Inguru,4B
+PABLO PT,Asteazkena,12:15 - 13:00,Gazte,4A
+PABLO PT,Osteguna,12:15 - 13:00,Inguru,4D
+PABLO PT,Ostirala,12:15 - 13:00,Ingelesa,4B
+PABLO PT,Astelehena,13:00 - 14:00,Ziklo bilera,
+PABLO PT,Asteartea,13:00 - 14:00,Familia/Maila,
+PABLO PT,Asteazkena,13:00 - 14:00,Formakuntza,
+PABLO PT,Osteguna,13:00 - 14:00,Batzordeak,
+PABLO PT,Astelehena,14:00 - 15:00,BAZKARIA,
+PABLO PT,Asteartea,14:00 - 15:00,BAZKARIA,
+PABLO PT,Asteazkena,14:00 - 15:00,Formakuntza,
+PABLO PT,Osteguna,14:00 - 15:00,BAZKARIA,
+PABLO PT,Ostirala,14:00 - 15:00,BAZKARIA,
+PABLO PT,Astelehena,15:00 - 15:45,Gazte,4D
+PABLO PT,Ostirala,15:00 - 15:45,Gazte,4B
+JON PT,Astelehena,9:30 - 10:15,Euskara,5A
+JON PT,Asteartea,9:30 - 10:15,Matematika,5A
+JON PT,Asteazkena,9:30 - 10:15,Euskara,5A
+JON PT,Osteguna,9:30 - 10:15,Matematika,5A
+JON PT,Ostirala,9:30 - 10:15,Euskara,5B
+JON PT,Astelehena,10:15 - 11:00,Inguru,5A
+JON PT,Asteartea,10:15 - 11:00,Matematika,5B
+JON PT,Asteazkena,10:15 - 11:00,Inguru,5B
+JON PT,Osteguna,10:15 - 11:00,Matematika,5B
+JON PT,Ostirala,10:15 - 11:00,Euskara,5A
+JON PT,Astelehena,11:30 - 12:15,Gazte,5A
+JON PT,Asteartea,11:30 - 12:15,Euskara,5B
+JON PT,Osteguna,11:30 - 12:15,Inguru,5B
+JON PT,Ostirala,11:30 - 12:15,Gazte,5B
+JON PT,Astelehena,12:15 - 13:00,Gazte,5B
+JON PT,Asteartea,12:15 - 13:00,Inguru,5A
+JON PT,Asteazkena,12:15 - 13:00,Ingelesa,5A
+JON PT,Osteguna,12:15 - 13:00,Inguru,5A
+CRISTINA PT,Asteazkena,9:00 - 9:30,Tantai,6D
+CRISTINA PT,Astelehena,9:30 - 10:15,Euskara,6D
+CRISTINA PT,Asteartea,9:30 - 10:15,Matematika,6A
+CRISTINA PT,Asteazkena,9:30 - 10:15,Euskara,6B
+CRISTINA PT,Osteguna,9:30 - 10:15,Matematika,6D
+CRISTINA PT,Ostirala,9:30 - 10:15,Euskara,6A
+CRISTINA PT,Astelehena,10:15 - 11:00,Euskara,6C
+CRISTINA PT,Asteartea,10:15 - 11:00,Matematika,6C
+CRISTINA PT,Asteazkena,10:15 - 11:00,Inguru,6C
+CRISTINA PT,Osteguna,10:15 - 11:00,Matematika,6B
+CRISTINA PT,Ostirala,10:15 - 11:00,Euskara,6D
+CRISTINA PT,Asteartea,11:30 - 12:15,Euskara,6B
+CRISTINA PT,Asteazkena,11:30 - 12:15,Gazte,6C
+CRISTINA PT,Osteguna,11:30 - 12:15,Inguru,6C
+CRISTINA PT,Ostirala,11:30 - 12:15,Gazte,6B
+CRISTINA PT,Asteartea,12:15 - 13:00,Inguru,6A
+CRISTINA PT,Asteazkena,12:15 - 13:00,Gazte,6A
+CRISTINA PT,Osteguna,12:15 - 13:00,Inguru,6B
+CRISTINA PT,Astelehena,13:00 - 14:00,Ziklo bilera,
+CRISTINA PT,Asteartea,13:00 - 14:00,Familia/Maila,
+CRISTINA PT,Asteazkena,13:00 - 14:00,Formakuntza,
+CRISTINA PT,Osteguna,13:00 - 14:00,Batzordeak,
+CRISTINA PT,Astelehena,14:00 - 15:00,BAZKARIA,
+CRISTINA PT,Asteartea,14:00 - 15:00,BAZKARIA,
+CRISTINA PT,Asteazkena,14:00 - 15:00,Formakuntza,
+CRISTINA PT,Osteguna,14:00 - 15:00,BAZKARIA,
+CRISTINA PT,Ostirala,14:00 - 15:00,BAZKARIA,
+CRISTINA PT,Astelehena,15:00 - 15:45,Idazketa Tailerra,6D
+CRISTINA PT,Asteartea,15:00 - 15:45,Gazte,6C
+CRISTINA PT,Osteguna,15:00 - 15:45,Gazte,6D
+CRISTINA PT,Ostirala,15:00 - 15:45,Gazte,6D
+CRISTINA PT,Astelehena,15:45 - 16:30,Ingelesa,6B
+CRISTINA PT,Asteartea,15:45 - 16:30,Ingelesa,6A
+CRISTINA PT,Osteguna,15:45 - 16:30,Gazte,6C
+ANDER M,Astelehena,9:00 - 9:30,Tantai,6A
+ANDER M,Asteartea,9:00 - 9:30,Tantai,6A
+ANDER M,Asteazkena,9:00 - 9:30,Tantai,6A
+ANDER M,Osteguna,9:00 - 9:30,Tantai,6A
+ANDER M,Ostirala,9:00 - 9:30,Tantai,6A
+ANDER M,Astelehena,9:30 - 10:15,Euskara,6A
+ANDER M,Asteartea,9:30 - 10:15,Matematika,6A
+ANDER M,Asteazkena,9:30 - 10:15,Euskara,6A
+ANDER M,Osteguna,9:30 - 10:15,Matematika,6A
+ANDER M,Ostirala,9:30 - 10:15,Euskara,6A
+ANDER M,Astelehena,10:15 - 11:00,Inguru,6A
+ANDER M,Asteartea,10:15 - 11:00,Gazte,6A
+ANDER M,Asteazkena,10:15 - 11:00,Inguru,6A
+ANDER M,Osteguna,10:15 - 11:00,Matematika,6A
+ANDER M,Ostirala,10:15 - 11:00,Balioak,6A
+ANDER M,Asteartea,11:30 - 12:15,Euskara,6A
+ANDER M,Asteazkena,11:30 - 12:15,Buruketa Tailerra,6A
+ANDER M,Osteguna,11:30 - 12:15,Inguru,6A
+ANDER M,Asteartea,12:15 - 13:00,Inguru,6A
+ANDER M,Asteazkena,12:15 - 13:00,Gazte,6A
+ANDER M,Osteguna,12:15 - 13:00,Tutoretza,6A
+ANDER M,Ostirala,12:15 - 13:00,Gazte,6A
+ANDER M,Astelehena,13:00 - 14:00,Ziklo bilera,
+ANDER M,Asteartea,13:00 - 14:00,Familia/Maila,
+ANDER M,Asteazkena,13:00 - 14:00,Formakuntza,
+ANDER M,Osteguna,13:00 - 14:00,Batzordeak,
+ANDER M,Astelehena,14:00 - 15:00,BAZKARIA,
+ANDER M,Asteartea,14:00 - 15:00,BAZKARIA,
+ANDER M,Asteazkena,14:00 - 15:00,Formakuntza,
+ANDER M,Osteguna,14:00 - 15:00,BAZKARIA,
+ANDER M,Ostirala,14:00 - 15:00,BAZKARIA,
+ANDER M,Astelehena,15:00 - 15:45,Idazketa Tailerra,6D
+ANDER M,Asteartea,15:00 - 15:45,Plastika,6A
+ANDER M,Osteguna,15:00 - 15:45,Buruketa Tailerra,6C
+ANDER M,Astelehena,15:45 - 16:30,Idazketa Tailerra,6A
+ANDER M,Osteguna,15:45 - 16:30,Liburutegia,6A
+CRISTINA,Astelehena,9:00 - 9:30,Tantai,6C
+CRISTINA,Asteartea,9:00 - 9:30,Tantai,6C
+CRISTINA,Asteazkena,9:00 - 9:30,Tantai,6C
+CRISTINA,Osteguna,9:00 - 9:30,Tantai,6C
+CRISTINA,Ostirala,9:00 - 9:30,Tantai,6C
+CRISTINA,Astelehena,9:30 - 10:15,Euskara,6B
+CRISTINA,Asteartea,9:30 - 10:15,Matematika,6B
+CRISTINA,Asteazkena,9:30 - 10:15,Euskara,6B
+CRISTINA,Osteguna,9:30 - 10:15,Matematika,6B
+CRISTINA,Ostirala,9:30 - 10:15,Euskara,6B
+CRISTINA,Astelehena,10:15 - 11:00,Inguru,6B
+CRISTINA,Asteartea,10:15 - 11:00,Gazte,6B
+CRISTINA,Asteazkena,10:15 - 11:00,Inguru,6B
+CRISTINA,Osteguna,10:15 - 11:00,Matematika,6B
+CRISTINA,Ostirala,10:15 - 11:00,Balioak,6B
+CRISTINA,Asteartea,11:30 - 12:15,Euskara,6B
+CRISTINA,Asteazkena,11:30 - 12:15,Buruketa Tailerra,6B
+CRISTINA,Osteguna,11:30 - 12:15,Tutoretza,6B
+CRISTINA,Ostirala,11:30 - 12:15,Gazte,6B
+CRISTINA,Asteartea,12:15 - 13:00,Inguru,6B
+CRISTINA,Asteazkena,12:15 - 13:00,Gazte,6B
+CRISTINA,Osteguna,12:15 - 13:00,Inguru,6B
+CRISTINA,Ostirala,12:15 - 13:00,Idazketa Tailerra,6C
+CRISTINA,Astelehena,13:00 - 14:00,Ziklo bilera,
+CRISTINA,Asteartea,13:00 - 14:00,Familia/Maila,
+CRISTINA,Asteazkena,13:00 - 14:00,Formakuntza,
+CRISTINA,Osteguna,13:00 - 14:00,Batzordeak,
+CRISTINA,Astelehena,14:00 - 15:00,BAZKARIA,
+CRISTINA,Asteartea,14:00 - 15:00,BAZKARIA,
+CRISTINA,Asteazkena,14:00 - 15:00,Formakuntza,
+CRISTINA,Osteguna,14:00 - 15:00,BAZKARIA,
+CRISTINA,Ostirala,14:00 - 15:00,BAZKARIA,
+CRISTINA,Astelehena,15:00 - 15:45,Idazketa Tailerra,6B
+CRISTINA,Osteguna,15:00 - 15:45,Liburutegia,6B
+CRISTINA,Asteartea,15:45 - 16:30,Plastika,6B
+CRISTINA,Osteguna,15:45 - 16:30,Idazketa Tailerra,5A
+KEVIN,Astelehena,9:00 - 9:30,Tantai,5A
+KEVIN,Asteartea,9:00 - 9:30,Tantai,5A
+KEVIN,Asteazkena,9:00 - 9:30,Tantai,5A
+KEVIN,Osteguna,9:00 - 9:30,Tantai,5A
+KEVIN,Ostirala,9:00 - 9:30,Tantai,5A
+KEVIN,Astelehena,9:30 - 10:15,Euskara,5A
+KEVIN,Asteartea,9:30 - 10:15,Matematika,5A
+KEVIN,Asteazkena,9:30 - 10:15,Euskara,5A
+KEVIN,Osteguna,9:30 - 10:15,Matematika,5A
+KEVIN,Ostirala,9:30 - 10:15,Balioak,5A
+KEVIN,Astelehena,10:15 - 11:00,Inguru,5A
+KEVIN,Asteartea,10:15 - 11:00,Matematika,5A
+KEVIN,Asteazkena,10:15 - 11:00,Inguru,5A
+KEVIN,Osteguna,10:15 - 11:00,Gazte,5A
+KEVIN,Ostirala,10:15 - 11:00,Euskara,5A
+KEVIN,Astelehena,11:30 - 12:15,Gazte,5A
+KEVIN,Asteartea,11:30 - 12:15,Euskara,5A
+KEVIN,Osteguna,11:30 - 12:15,Tutoretza,5A
+KEVIN,Ostirala,11:30 - 12:15,Buruketa Tailerra,5A
+KEVIN,Astelehena,12:15 - 13:00,Gazte,5A
+KEVIN,Asteartea,12:15 - 13:00,Inguru,5A
+KEVIN,Osteguna,12:15 - 13:00,Inguru,5A
+KEVIN,Ostirala,12:15 - 13:00,Liburutegia,5A
+KEVIN,Astelehena,13:00 - 14:00,Ziklo bilera,
+KEVIN,Asteartea,13:00 - 14:00,Familia/Maila,
+KEVIN,Asteazkena,13:00 - 14:00,Formakuntza,
+KEVIN,Osteguna,13:00 - 14:00,Batzordeak,
+KEVIN,Astelehena,14:00 - 15:00,BAZKARIA,
+KEVIN,Asteartea,14:00 - 15:00,BAZKARIA,
+KEVIN,Asteazkena,14:00 - 15:00,Formakuntza,
+KEVIN,Osteguna,14:00 - 15:00,BAZKARIA,
+KEVIN,Ostirala,14:00 - 15:00,BAZKARIA,
+KEVIN,Astelehena,15:00 - 15:45,Idazketa Tailerra,6B
+KEVIN,Osteguna,15:00 - 15:45,Plastika,5A
+KEVIN,Astelehena,15:45 - 16:30,Idazketa Tailerra,6A
+KEVIN,Osteguna,15:45 - 16:30,Idazketa Tailerra,5A

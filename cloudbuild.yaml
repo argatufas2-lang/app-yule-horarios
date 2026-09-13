@@ -1,0 +1,38 @@
+steps:
+  # 1. Construir la imagen Docker usando Cloud Build pasando argumentos de compilación
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'PUBLIC_SUPABASE_URL=$_PUBLIC_SUPABASE_URL'
+      - '--build-arg'
+      - 'PUBLIC_SUPABASE_ANON_KEY=$_PUBLIC_SUPABASE_ANON_KEY'
+      - '-t'
+      - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/app-yule-horarios:$COMMIT_SHA'
+      - '.'
+
+  # 2. Subir la imagen Docker a Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/app-yule-horarios:$COMMIT_SHA'
+
+  # 3. Desplegar la imagen en Google Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'app-yule-horarios'
+      - '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/app-yule-horarios:$COMMIT_SHA'
+      - '--region=europe-west1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8080'
+
+substitutions:
+  _PUBLIC_SUPABASE_URL: 'https://gecshkodnighzkghjlgw.supabase.co'
+  _PUBLIC_SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlY3Noa29kbmlnaHprZ2hqbGd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1NTI2MjcsImV4cCI6MjEwNDEyODYyN30.RAXVd7RMXZCEyPkw9A-KFG_Mor3yit58dilDM3iAmWE'
+
+images:
+  - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/app-yule-horarios:$COMMIT_SHA'

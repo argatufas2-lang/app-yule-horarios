@@ -1,0 +1,184 @@
+profesor,dia,franja,actividad,grupo,clase_objetivo
+EDURNE,Osteguna,11:30 - 12:15,Inguru,Grupo 2,2B
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,3A
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,3B
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,4A
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,4B
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,4D
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,5A
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,5B
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,6A
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,6B
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,6D
+YULE,Astelehena,9:00 - 9:30,Eusle,Grupo 2,6C
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,3A
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,3B
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,4A
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,4B
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,4D
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,5A
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,5B
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,6A
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,6B
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,6D
+YULE,Asteartea,9:00 - 9:30,Eusle,Grupo 2,6C
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,3A
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,3B
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,4A
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,4B
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,4D
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,5A
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,5B
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,6A
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,6B
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,6D
+YULE,Asteazkena,9:00 - 9:30,Eusle,Grupo 2,6C
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,3A
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,3B
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,4A
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,4B
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,4D
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,5A
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,5B
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,6A
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,6B
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,6D
+YULE,Osteguna,9:00 - 9:30,Eusle,Grupo 2,6C
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,3A
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,3B
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,4A
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,4B
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,4D
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,5A
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,5B
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,6A
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,6B
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,6D
+YULE,Ostirala,9:00 - 9:30,Eusle,Grupo 2,6C
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,3A
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,3B
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,4A
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,4B
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,4D
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,5A
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,5B
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,6A
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,6B
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,6D
+YULE,Astelehena,9:30 - 10:15,Eusle,Grupo 2,6C
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,3A
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,3B
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,4A
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,4B
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,4D
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,5A
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,5B
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,6A
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,6B
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,6D
+YULE,Asteazkena,9:30 - 10:15,Eusle,Grupo 2,6C
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,3A
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,3B
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,4A
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,4B
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,4D
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,5A
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,5B
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,6A
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,6B
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,6D
+YULE,Ostirala,9:30 - 10:15,Eusle,Grupo 2,6C
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,3A
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,3B
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,4A
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,4B
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,4D
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,5A
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,5B
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,6A
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,6B
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,6D
+YULE,Astelehena,10:15 - 11:00,Eusle,Grupo 2,6C
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,3A
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,3B
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,4A
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,4B
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,4D
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,5A
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,5B
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,6A
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,6B
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,6D
+YULE,Asteazkena,10:15 - 11:00,Eusle,Grupo 2,6C
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,3A
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,3B
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,4A
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,4B
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,4D
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,5A
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,5B
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,6A
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,6B
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,6D
+YULE,Ostirala,10:15 - 11:00,Eusle,Grupo 2,6C
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,3A
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,3B
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,4A
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,4B
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,4D
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,5A
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,5B
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,6A
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,6B
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,6D
+YULE,Asteartea,11:30 - 12:15,Eusle,Grupo 2,6C
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,3A
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,3B
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,4A
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,4B
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,4D
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,5A
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,5B
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,6A
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,6B
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,6D
+YULE,Osteguna,11:30 - 12:15,Eusle,Grupo 2,6C
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,3A
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,3B
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,4A
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,4B
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,4D
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,5A
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,5B
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,6A
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,6B
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,6D
+YULE,Asteartea,12:15 - 13:00,Eusle,Grupo 2,6C
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,3A
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,3B
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,4A
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,4B
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,4D
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,5A
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,5B
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,6A
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,6B
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,6D
+YULE,Osteguna,12:15 - 13:00,Eusle,Grupo 2,6C
+Itziar,Osteguna,15:00 - 15:45,Buruketa Tailerra,Grupo 2,4A
+Iker,Osteguna,15:45 - 16:30,Buruketa Tailerra,Grupo 2,4D
+Andoni,Astelehena,12:15 - 13:00,Buruketa Tailerra,Grupo 2,3A
+Eba,Astelehena,11:30 - 12:15,Buruketa Tailerra,Grupo 2,5B
+Yurena,Astelehena,12:15 - 13:00,Buruketa Tailerra,Grupo 2,3B
+KEVIN,Astelehena,15:00 - 15:45,Idazketa Tailerra,Grupo 2,6B
+KEVIN,Astelehena,15:45 - 16:30,Idazketa Tailerra,Grupo 2,6A
+Gema,Asteazkena,11:30 - 12:15,Buruketa Tailerra,Grupo 2,6B
+Gema,Astelehena,15:45 - 16:30,Buruketa Tailerra,Grupo 2,4B
+ANDER M,Astelehena,15:00 - 15:45,Idazketa Tailerra,Grupo 2,6D
+ANDER M,Osteguna,15:00 - 15:45,Buruketa Tailerra,Grupo 2,6C
+CRISTINA,Ostirala,12:15 - 13:00,Idazketa Tailerra,Grupo 2,6C
+CRISTINA,Osteguna,15:45 - 16:30,Idazketa Tailerra,Grupo 2,5A
+Ander P.,Osteguna,10:15 - 11:00,Buruketa Tailerra,Grupo 2,6D
+Ander P.,Ostirala,11:30 - 12:15,Buruketa Tailerra,Grupo 2,5A
+Unai,Asteazkena,11:30 - 12:15,Buruketa Tailerra,Grupo 2,6A
+Unai,Ostirala,12:15 - 13:00,Idazketa Tailerra,Grupo 2,5B

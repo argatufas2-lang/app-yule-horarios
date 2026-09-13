@@ -10,10 +10,19 @@
     export let items: { id: string; nombre: string; labelText?: string }[] = [];
 
     let selectedIds: string[] = [];
+    let lastInitializedItemsKey = '';
 
-    // Al abrir el modal con elementos cargados, inicializar con todos seleccionados
-    $: if (isOpen && items.length > 0 && selectedIds.length === 0) {
+    // Inicializar seleccionados solo cuando se abre el modal o cambia la lista de elementos,
+    // evitando que una deselección manual dispare el rellenado automático.
+    $: itemsKey = items.map(i => i.id).join(',');
+    $: if (isOpen && itemsKey !== lastInitializedItemsKey) {
         selectedIds = items.map(item => item.id);
+        lastInitializedItemsKey = itemsKey;
+    }
+
+    // Resetear el control si se cierra el modal
+    $: if (!isOpen) {
+        lastInitializedItemsKey = '';
     }
 
     // Función exclusiva para marcar todos los checkboxes
