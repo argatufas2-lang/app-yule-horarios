@@ -240,8 +240,9 @@
 
             if (data && data.length > 0) {
                 data.forEach((s: { id?: string | number; dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
-                    // Lunes es estrictamente 1, Martes 2...
-                    const dia = Number(s.dia ?? s.day_of_week ?? 1);
+                    // Lunes es estrictamente 0, Martes 1, Miércoles 2...
+                    const rawDia = s.dia ?? s.day_of_week ?? 0;
+                    const dia = Number(rawDia);
                     // Tramo exacto empezando en 0
                     const franja = Number(s.franja ?? s.tramo_id ?? s.orden ?? 0);
                     const key = `${dia}_${franja}`;
@@ -316,13 +317,13 @@
         await loadDataForCurrentTab();
     }
 
-    // Días de la semana únicamente en Euskera (Día 1 = Astelehena / Lunes)
+    // Días de la semana en Euskera alineados a Base 0 (0 = Astelehena / Lunes)
     const daysOfWeek = [
-        { id: 1, name: 'Astelehena' },
-        { id: 2, name: 'Asteartea' },
-        { id: 3, name: 'Asteazkena' },
-        { id: 4, name: 'Osteguna' },
-        { id: 5, name: 'Ostirala' }
+        { id: 0, name: 'Astelehena' },
+        { id: 1, name: 'Asteartea' },
+        { id: 2, name: 'Asteazkena' },
+        { id: 3, name: 'Osteguna' },
+        { id: 4, name: 'Ostirala' }
     ];
 
     // Manejadores de eventos de ActionToolbar
