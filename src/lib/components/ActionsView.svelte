@@ -8,6 +8,7 @@
     export let selectedCiclo: 'LH' | 'HH' = 'LH';
     
     let activeTab: 'profesorado' | 'aulas' = 'profesorado';
+    let showDebug: boolean = false; // Estado para conmutar el panel de depuración
 
     // Listados dinámicos obtenidos de Supabase
     export let profesoresDisponibles: { id: string; nombre: string; rol?: string; jornada?: string; labelText?: string }[] = [];
@@ -21,7 +22,7 @@
 
     // Tramos horarios y Sesiones dinámicas de Supabase
     let timeSlots: { orden: number; time: string; label: string; type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' }[] = [];
-    let teacherScheduleGrid: Record<string, Record<string, { actividad: string; clase?: string; aula?: string }>> = {};
+    let teacherScheduleGrid: Record<string, Record<string, { id?: string; actividad: string; clase?: string; aula?: string; rawData?: any }>> = {};
 
     // Helper para formatear la jornada visualmente (JC o fracción)
     function formatJornada(jornadaRaw?: string | null): string {
@@ -150,7 +151,6 @@
                     };
                 });
 
-                // Garantizar ordenación alfabética ascendente estricta (A-Z)
                 mapped.sort((a: { nombre: string }, b: { nombre: string }) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
                 profesoresDisponibles = mapped;
             } else {
@@ -233,20 +233,22 @@
                 return;
             }
 
-            const grid: Record<string, Record<string, { actividad: string; clase?: string; aula?: string }>> = {
+            const grid: Record<string, Record<string, { id?: string; actividad: string; clase?: string; aula?: string; rawData?: any }>> = {
                 [entityId]: {}
             };
 
             if (data && data.length > 0) {
-                data.forEach((s: { dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
+                data.forEach((s: { id?: string | number; dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
                     const dia = s.dia ?? s.day_of_week ?? 1;
                     const franja = s.franja ?? s.tramo_id ?? s.orden ?? 0;
                     const key = `${dia}_${franja}`;
 
                     grid[entityId][key] = {
+                        id: s.id ? String(s.id) : undefined,
                         actividad: s.actividad || s.group_name || 'Asignatura',
                         clase: s.clase || s.grupo || '',
-                        aula: s.aula || ''
+                        aula: s.aula || '',
+                        rawData: s
                     };
                 });
             }
@@ -389,50 +391,62 @@
     <!-- Área de Contenido Principal Ampliada -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-4 space-y-4">
         
-        <!-- Pestañas y Selector Unificados en una sola línea horizontal hacia la izquierda -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-3 flex flex-col md:flex-row md:items-center justify-start gap-4">
+        <!-- Pestañas y Selector Unificados con Botón de Debug -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
             
-            <!-- Pestañas Principales -->
-            <div class="flex items-center space-x-1 shrink-0">
-                <button
-                    type="button"
-                    on:click={() => handleTabChange('profesorado')}
-                    class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border {activeTab === 'profesorado' ? 'border-sky-600 bg-sky-600 text-white shadow-xs' : 'border-slate-200 dark:border-gray-600 text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700'}"
-                >
-                    👨‍🏫 Profesorado
-                </button>
+            <div class="flex flex-col md:flex-row md:items-center justify-start gap-4 flex-1">
+                <!-- Pestañas Principales -->
+                <div class="flex items-center space-x-1 shrink-0">
+                    <button
+                        type="button"
+                        on:click={() => handleTabChange('profesorado')}
+                        class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border {activeTab === 'profesorado' ? 'border-sky-600 bg-sky-600 text-white shadow-xs' : 'border-slate-200 dark:border-gray-600 text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700'}"
+                    >
+                        👨‍🏫 Profesorado
+                    </button>
 
-                <button
-                    type="button"
-                    on:click={() => handleTabChange('aulas')}
-                    class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border {activeTab === 'aulas' ? 'border-sky-600 bg-sky-600 text-white shadow-xs' : 'border-slate-200 dark:border-gray-600 text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700'}"
-                >
-                    🏫 Aulas y Grupos
-                </button>
+                    <button
+                        type="button"
+                        on:click={() => handleTabChange('aulas')}
+                        class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border {activeTab === 'aulas' ? 'border-sky-600 bg-sky-600 text-white shadow-xs' : 'border-slate-200 dark:border-gray-600 text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700'}"
+                    >
+                        🏫 Aulas y Grupos
+                    </button>
+                </div>
+
+                <!-- Desplegable Alineado Inmediatamente a Continuación -->
+                <div class="flex items-center space-x-2 w-full md:w-auto flex-1 max-w-2xl">
+                    <label for="entitySelector" class="text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
+                        {activeTab === 'profesorado' ? 'SELECCIONAR PROFESORADO:' : 'SELECCIONAR AULA / GRUPO:'}
+                    </label>
+                    <select
+                        id="entitySelector"
+                        value={selectedEntityId}
+                        on:change={(e) => selectedEntityId = e.currentTarget.value}
+                        class="w-full bg-slate-50 dark:bg-gray-700 text-slate-900 dark:text-gray-100 text-xs font-semibold rounded-lg border border-slate-300 dark:border-gray-500 px-3 py-2 focus:ring-2 focus:ring-sky-500 focus:outline-hidden shadow-xs"
+                    >
+                        {#if loading}
+                            <option value="">Cargando datos de Supabase...</option>
+                        {:else if selectorOptions.length === 0}
+                            <option value="">Sin registros disponibles</option>
+                        {:else}
+                            {#each selectorOptions as option}
+                                <option value={option.id}>{option.labelText || option.nombre}</option>
+                            {/each}
+                        {/if}
+                    </select>
+                </div>
             </div>
 
-            <!-- Desplegable Alineado Inmediatamente a Continuación -->
-            <div class="flex items-center space-x-2 w-full md:w-auto flex-1 max-w-2xl">
-                <label for="entitySelector" class="text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
-                    {activeTab === 'profesorado' ? 'SELECCIONAR PROFESORADO:' : 'SELECCIONAR AULA / GRUPO:'}
-                </label>
-                <select
-                    id="entitySelector"
-                    value={selectedEntityId}
-                    on:change={(e) => selectedEntityId = e.currentTarget.value}
-                    class="w-full bg-slate-50 dark:bg-gray-700 text-slate-900 dark:text-gray-100 text-xs font-semibold rounded-lg border border-slate-300 dark:border-gray-500 px-3 py-2 focus:ring-2 focus:ring-sky-500 focus:outline-hidden shadow-xs"
-                >
-                    {#if loading}
-                        <option value="">Cargando datos de Supabase...</option>
-                    {:else if selectorOptions.length === 0}
-                        <option value="">Sin registros disponibles</option>
-                    {:else}
-                        {#each selectorOptions as option}
-                            <option value={option.id}>{option.labelText || option.nombre}</option>
-                        {/each}
-                    {/if}
-                </select>
-            </div>
+            <!-- Botón Conmutador de Depuración Visual -->
+            <button
+                type="button"
+                on:click={() => showDebug = !showDebug}
+                class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 flex items-center gap-1 border {showDebug ? 'bg-amber-500 text-white border-amber-600 shadow-xs' : 'bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-300 border-slate-300 dark:border-gray-600 hover:bg-slate-200'}"
+                title="Activar/desactivar visor técnico de auditoría de datos en cada celda"
+            >
+                🐛 Debug Datos
+            </button>
         </div>
 
         <!-- Tarjeta de Perfil Alineada Horizontalmente (Logo -> Nombre Grande -> Etiquetas) -->
@@ -483,7 +497,7 @@
             {/if}
         </div>
 
-        <!-- Cuadrícula de Horarios Principal con Bordes Marcados y Tipografía Más Grande -->
+        <!-- Cuadrícula de Horarios Principal con Bordes Marcados y Modo Debug -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border-2 border-slate-300 dark:border-gray-600 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse border-2 border-slate-300 dark:border-gray-600 text-center text-xs md:text-sm">
@@ -557,7 +571,10 @@
                                     {#each daysOfWeek as day}
                                         {@const sessionKey = `${day.id}_${slot.orden}`}
                                         {@const session = teacherScheduleGrid[selectedEntityId]?.[sessionKey]}
-                                        <td class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer">
+                                        <td 
+                                            class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer relative"
+                                            title={showDebug ? `[DEBUG] Día: ${day.id} | Franja: ${slot.orden} | EntityID: ${selectedEntityId} | SessionID: ${session?.id || 'N/A'}` : ''}
+                                        >
                                             {#if session}
                                                 <div class="flex flex-col items-center justify-center space-y-0.5">
                                                     <span class="block font-black text-slate-900 dark:text-gray-100 text-sm uppercase tracking-wide">
@@ -573,6 +590,15 @@
                                                             {session.aula.toUpperCase()}
                                                         </span>
                                                     {/if}
+                                                </div>
+                                            {/if}
+
+                                            <!-- Bloque Visual de Depuración Técnica Auditora -->
+                                            {#if showDebug}
+                                                <div class="mt-1 text-[9px] font-mono leading-none bg-amber-100/90 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 p-1 rounded-sm border border-amber-300/80 text-left space-y-0.5">
+                                                    <div><strong class="font-bold">Key:</strong> {sessionKey}</div>
+                                                    <div><strong class="font-bold">SesionID:</strong> {session?.id || 'ninguna'}</div>
+                                                    <div><strong class="font-bold">Entidad:</strong> {selectedEntityId}</div>
                                                 </div>
                                             {/if}
                                         </td>
