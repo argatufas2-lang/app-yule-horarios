@@ -497,7 +497,7 @@
             {/if}
         </div>
 
-        <!-- Cuadrícula de Horarios Principal con Bordes Marcados y Modo Debug -->
+        <!-- Cuadrícula de Horarios Principal con Bordes Marcados y Modo Debug Enriquecido -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border-2 border-slate-300 dark:border-gray-600 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse border-2 border-slate-300 dark:border-gray-600 text-center text-xs md:text-sm">
@@ -573,7 +573,7 @@
                                         {@const session = teacherScheduleGrid[selectedEntityId]?.[sessionKey]}
                                         <td 
                                             class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer relative"
-                                            title={showDebug ? `[DEBUG] Día: ${day.id} | Franja: ${slot.orden} | EntityID: ${selectedEntityId} | SessionID: ${session?.id || 'N/A'}` : ''}
+                                            title={showDebug ? `[DEBUG] Día: ${day.id} | Tramo: ${slot.orden} | Asignatura: ${session?.actividad || 'Ninguna'} | Grupo: ${session?.clase || 'Ninguno'} | SesionID: ${session?.id || 'N/A'}` : ''}
                                         >
                                             {#if session}
                                                 <div class="flex flex-col items-center justify-center space-y-0.5">
@@ -593,12 +593,13 @@
                                                 </div>
                                             {/if}
 
-                                            <!-- Bloque Visual de Depuración Técnica Auditora -->
+                                            <!-- Bloque Visual de Depuración Técnica Enriquecido -->
                                             {#if showDebug}
-                                                <div class="mt-1 text-[9px] font-mono leading-none bg-amber-100/90 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 p-1 rounded-sm border border-amber-300/80 text-left space-y-0.5">
-                                                    <div><strong class="font-bold">Key:</strong> {sessionKey}</div>
-                                                    <div><strong class="font-bold">SesionID:</strong> {session?.id || 'ninguna'}</div>
-                                                    <div><strong class="font-bold">Entidad:</strong> {selectedEntityId}</div>
+                                                <div class="mt-1 text-[9px] font-mono leading-tight bg-amber-100/90 dark:bg-amber-950/90 text-amber-950 dark:text-amber-100 p-1 rounded-sm border border-amber-400/80 text-left space-y-0.5 shadow-xs">
+                                                    <div><strong class="font-bold">Día:</strong> {day.id} | <strong class="font-bold">Tramo:</strong> {slot.orden}</div>
+                                                    <div><strong class="font-bold">Act:</strong> {session?.actividad || '---'}</div>
+                                                    <div><strong class="font-bold">Grupo:</strong> {session?.clase || '---'}</div>
+                                                    <div class="truncate text-[8px] text-amber-800 dark:text-amber-300"><strong class="font-bold">ID:</strong> {session?.id || 'sin_sesion'}</div>
                                                 </div>
                                             {/if}
                                         </td>
