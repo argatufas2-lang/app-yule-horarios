@@ -21,7 +21,7 @@
 
     // Tramos horarios y Sesiones dinámicas de Supabase
     let timeSlots: { orden: number; time: string; label: string; type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' }[] = [];
-    let teacherScheduleGrid: Record<string, Record<number, { actividad: string; clase?: string; aula?: string }>> = {};
+    let teacherScheduleGrid: Record<string, Record<string, { actividad: string; clase?: string; aula?: string }>> = {};
 
     // Helper para formatear la jornada visualmente (JC o fracción)
     function formatJornada(jornadaRaw?: string | null): string {
@@ -74,7 +74,7 @@
             }
 
             if (data && data.length > 0) {
-                timeSlots = data.map((t) => {
+                timeSlots = data.map((t: { hora_inicio?: string; hora_fin?: string; tipo?: string; descripcion?: string; orden?: number; id: number }) => {
                     const horaInicio = t.hora_inicio ? t.hora_inicio.slice(0, 5) : '';
                     const horaFin = t.hora_fin ? t.hora_fin.slice(0, 5) : '';
                     const timeRange = `${horaInicio} - ${horaFin}`;
@@ -120,7 +120,7 @@
         ];
     }
 
-    // Consultar profesores desde Supabase ordenados strictly de la A a la Z
+    // Consultar profesores desde Supabase ordenados estrictamente de la A a la Z
     async function fetchProfesores(curso: string) {
         loading = true;
         try {
@@ -136,7 +136,7 @@
             }
 
             if (data && data.length > 0) {
-                const mapped = data.map((p) => {
+                const mapped = data.map((p: { id: string | number; nombre: string; jornada?: string; perfil?: string }) => {
                     const nombreFormatted = p.nombre ? p.nombre.toUpperCase() : '';
                     const jornadaFormatted = formatJornada(p.jornada);
                     const rolFormatted = formatRol(p.perfil);
@@ -151,7 +151,7 @@
                 });
 
                 // Garantizar ordenación alfabética ascendente estricta (A-Z)
-                mapped.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+                mapped.sort((a: { nombre: string }, b: { nombre: string }) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
                 profesoresDisponibles = mapped;
             } else {
                 profesoresDisponibles = [];
@@ -179,7 +179,7 @@
             }
 
             if (data && data.length > 0) {
-                const mapped = data.map((a) => {
+                const mapped = data.map((a: { id: string | number; name?: string; nombre?: string; code?: string; edificio?: string; capacidad?: string }) => {
                     const aulaNombre = a.name || a.nombre || a.code || `Aula ${a.id}`;
                     return {
                         id: String(a.id),
@@ -190,7 +190,7 @@
                     };
                 });
 
-                mapped.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+                mapped.sort((a: { nombre: string }, b: { nombre: string }) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
                 aulasDisponibles = mapped;
             } else {
                 aulasDisponibles = [];
@@ -233,17 +233,17 @@
                 return;
             }
 
-            const grid: Record<string, Record<number, { actividad: string; clase?: string; aula?: string }>> = {
+            const grid: Record<string, Record<string, { actividad: string; clase?: string; aula?: string }>> = {
                 [entityId]: {}
             };
 
             if (data && data.length > 0) {
-                data.forEach((s) => {
+                data.forEach((s: { dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
                     const dia = s.dia ?? s.day_of_week ?? 1;
                     const franja = s.franja ?? s.tramo_id ?? s.orden ?? 0;
                     const key = `${dia}_${franja}`;
 
-                    grid[entityId][key as any] = {
+                    grid[entityId][key] = {
                         actividad: s.actividad || s.group_name || 'Asignatura',
                         clase: s.clase || s.grupo || '',
                         aula: s.aula || ''
