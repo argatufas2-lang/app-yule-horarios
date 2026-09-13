@@ -60,7 +60,7 @@
             }
         } catch (e: any) {
             errorMessage = e.message || 'Error al cargar datos';
-        } fontally {
+        } finally {
             loading = false;
         }
     }
