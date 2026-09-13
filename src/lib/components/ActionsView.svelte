@@ -274,7 +274,7 @@
                         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200/60 print:text-[9px] print:py-0.5 print:px-2">
                             {currentClassroom?.edificio || 'Edificio Principal'}
                         </span>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 print:text-[9px] print:py-0.5 print:px-2">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 dark:text-slate-700 dark:text-slate-300 border border-slate-200 print:text-[9px] print:py-0.5 print:px-2">
                             Capacidad: {currentClassroom?.capacidad || 'Estándar'}
                         </span>
                     </div>
