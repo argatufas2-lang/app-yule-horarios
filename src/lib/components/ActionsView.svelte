@@ -5,17 +5,34 @@
 
     // Estados de navegación y selección
     export let selectedCurso: string = '2026-2027';
-    export let cursosDisponibles: string[] = ['2026-2027', '2025-2026', '2024-2025'];
+    export let selectedCiclo: 'LH' | 'HH' = 'LH';
     
     let activeTab: 'profesorado' | 'aulas' = 'profesorado';
 
     // Listados dinámicos obtenidos de Supabase
     export let profesoresDisponibles: { id: string; nombre: string; rol?: string; jornada?: string }[] = [];
     export let aulasDisponibles: { id: string; nombre: string; edificio?: string; capacidad?: string }[] = [];
+    export let totalProfesoradoCount: number = 0;
 
     export let selectedEntityId: string = '';
 
     let loading: boolean = false;
+
+    // Consultar el total global de profesores en Supabase
+    async function fetchTotalProfesorado() {
+        try {
+            const { count, error } = await supabase
+                .from('profesores')
+                .select('*', { count: 'exact', head: true })
+                .eq('curso_escolar', selectedCurso);
+
+            if (!error && count !== null) {
+                totalProfesoradoCount = count;
+            }
+        } catch (e) {
+            console.error('Error al consultar el recuento total de profesorado:', e);
+        }
+    }
 
     // Consultar profesores desde Supabase
     async function fetchProfesores(curso: string) {
@@ -82,6 +99,7 @@
 
     // Cargar los datos correspondientes según la pestaña y el curso activo
     async function loadDataForCurrentTab() {
+        await fetchTotalProfesorado();
         if (activeTab === 'profesorado') {
             await fetchProfesores(selectedCurso);
             if (profesoresDisponibles.length > 0) {
@@ -120,7 +138,7 @@
         await loadDataForCurrentTab();
     }
 
-    // Días de la semana
+    // Días de la semana almacenados/mostrados en euskera
     const daysOfWeek = [
         { id: 1, name: 'Astelehena', short: 'Lunes' },
         { id: 2, name: 'Asteartea', short: 'Martes' },
@@ -129,16 +147,18 @@
         { id: 5, name: 'Ostirala', short: 'Viernes' }
     ];
 
-    // Franjas horarias
+    // 10 franjas horarias principales completas
     const timeSlots = [
         { orden: 1, time: '09:00 - 10:00', label: '1ª Franja', type: 'lectiva' },
         { orden: 2, time: '10:00 - 11:00', label: '2ª Franja', type: 'lectiva' },
-        { orden: 3, time: '11:00 - 11:30', label: 'Jolas-ordua / Recreo', type: 'recreo' },
+        { orden: 3, time: '11:00 - 11:30', label: 'Atsedenaldia / Recreo', type: 'recreo' },
         { orden: 4, time: '11:30 - 12:30', label: '3ª Franja', type: 'lectiva' },
-        { orden: 5, time: '12:30 - 14:30', label: 'Bazcaria / Comedor', type: 'comedor' },
-        { orden: 6, time: '14:30 - 15:30', label: '4ª Franja', type: 'lectiva' },
-        { orden: 7, time: '15:30 - 16:30', label: '5ª Franja', type: 'lectiva' },
-        { orden: 8, time: '16:30 - 17:30', label: 'Zaintza / Presencia', type: 'presencia' }
+        { orden: 5, time: '12:30 - 13:30', label: '4ª Franja', type: 'lectiva' },
+        { orden: 6, time: '13:30 - 14:30', label: 'Bazkaria / Comedor', type: 'comedor' },
+        { orden: 7, time: '14:30 - 15:30', label: '5ª Franja', type: 'lectiva' },
+        { orden: 8, time: '15:30 - 16:30', label: '6ª Franja', type: 'lectiva' },
+        { orden: 9, time: '16:30 - 17:30', label: '7ª Franja', type: 'lectiva' },
+        { orden: 10, time: '17:30 - 18:30', label: 'Zaintza / Guardias', type: 'presencia' }
     ];
 
     // Matriz de horario para Profesores (ID -> Franja)
@@ -147,29 +167,29 @@
             1: { actividad: 'Euskera', clase: 'LH 2A', aula: 'Aula 201' },
             2: { actividad: 'Gaztelania', clase: 'LH 2A', aula: 'Aula 201' },
             4: { actividad: 'Ingelesa', clase: 'LH 3B', aula: 'Aula Idiomas' },
-            6: { actividad: 'Tutoretza', clase: 'LH 2A', aula: 'Aula 201' },
-            7: { actividad: 'Koordinazioa', clase: 'Irakasleak', aula: 'Mintegia' }
+            7: { actividad: 'Tutoretza', clase: 'LH 2A', aula: 'Aula 201' },
+            8: { actividad: 'Koordinazioa', clase: 'Irakasleak', aula: 'Mintegia' }
         },
         '2': {
             1: { actividad: 'Matematika', clase: 'LH 4A', aula: 'Aula 401' },
             2: { actividad: 'Ingurunea', clase: 'LH 4A', aula: 'Aula 401' },
             4: { actividad: 'Gaztelania', clase: 'LH 4A', aula: 'Aula 401' },
-            6: { actividad: 'Gorputz Hezkuntza', clase: 'LH 4A', aula: 'Gimnasio' }
+            7: { actividad: 'Gorputz Hezkuntza', clase: 'LH 4A', aula: 'Gimnasio' }
         }
     };
 
     // Matriz de horario para Aulas y Grupos (ID -> Franja)
     const classroomScheduleGrid: Record<string, Record<number, { actividad: string; profesor?: string; grupo?: string }>> = {
-        'a2': { // LH 2A - Aula 201
+        'a2': {
             1: { actividad: 'Euskera', profesor: 'ALBA', grupo: 'LH 2A' },
             2: { actividad: 'Gaztelania', profesor: 'ALBA', grupo: 'LH 2A' },
             4: { actividad: 'Matematika', profesor: 'MIKEL', grupo: 'LH 2A' },
-            6: { actividad: 'Tutoretza', profesor: 'ALBA', grupo: 'LH 2A' }
+            7: { actividad: 'Tutoretza', profesor: 'ALBA', grupo: 'LH 2A' }
         },
-        'a3': { // Gimnasio
-            6: { actividad: 'Gorputz Hezkuntza', profesor: 'MIKEL', grupo: 'LH 4A' }
+        'a3': {
+            7: { actividad: 'Gorputz Hezkuntza', profesor: 'MIKEL', grupo: 'LH 4A' }
         },
-        'a4': { // Aula Idiomas
+        'a4': {
             4: { actividad: 'Ingelesa', profesor: 'ALBA', grupo: 'LH 3B' }
         }
     };
@@ -177,13 +197,15 @@
     // Manejadores de eventos de ActionToolbar
     async function handleSelectCurso(event: CustomEvent<string>) {
         selectedCurso = event.detail;
-        console.log('Curso seleccionado:', selectedCurso);
         await loadDataForCurrentTab();
     }
 
     function handleSelectEntity(event: CustomEvent<string>) {
         selectedEntityId = event.detail;
-        console.log('Elemento seleccionado ID:', selectedEntityId);
+    }
+
+    function handleSelectCiclo(event: CustomEvent<'LH' | 'HH'>) {
+        selectedCiclo = event.detail;
     }
 
     function handleFinDeCurso() {
@@ -212,14 +234,17 @@
 </script>
 
 <div class="flex flex-col min-h-screen bg-slate-50 dark:bg-gray-900 transition-colors">
-    <!-- Barra de Herramientas Superior Reutilizada -->
+    <!-- Barra de Herramientas Superior Corporativa Ganivet -->
     <ActionToolbar
         {selectedCurso}
-        {cursosDisponibles}
+        {selectedCiclo}
+        totalProfesorado={totalProfesoradoCount}
         selectedProfesor={selectedEntityId}
         profesoresDisponibles={selectorOptions}
+        {activeTab}
         on:selectCurso={handleSelectCurso}
         on:selectProfesor={handleSelectEntity}
+        on:selectCiclo={handleSelectCiclo}
         on:finDeCurso={handleFinDeCurso}
         on:controlJornada={handleControlJornada}
         on:imprimirHorario={handleImprimirHorario}
@@ -231,25 +256,54 @@
     <!-- Área de Contenido Principal -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
         
-        <!-- Pestañas de Navegación Interna -->
-        <div class="border-b border-slate-200 dark:border-gray-700">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                <button
-                    type="button"
-                    on:click={() => handleTabChange('profesorado')}
-                    class="py-3 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-2 {activeTab === 'profesorado' ? 'border-sky-600 text-sky-700 dark:border-sky-400 dark:text-sky-400 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-gray-400 dark:hover:text-gray-300'}"
-                >
-                    👨‍🏫 Profesorado (Irakasleak)
-                </button>
+        <!-- Selector Unificado (Pestañas + Menú Desplegable) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                
+                <!-- Pestañas de Selección de Modo -->
+                <div class="border-b md:border-b-0 border-slate-200 dark:border-gray-700 pb-2 md:pb-0">
+                    <nav class="flex space-x-4" aria-label="Tabs">
+                        <button
+                            type="button"
+                            on:click={() => handleTabChange('profesorado')}
+                            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 {activeTab === 'profesorado' ? 'bg-sky-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-600'}"
+                        >
+                            👨‍🏫 Profesorado (Irakasleak)
+                        </button>
 
-                <button
-                    type="button"
-                    on:click={() => handleTabChange('aulas')}
-                    class="py-3 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-2 {activeTab === 'aulas' ? 'border-sky-600 text-sky-700 dark:border-sky-400 dark:text-sky-400 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-gray-400 dark:hover:text-gray-300'}"
-                >
-                    🏫 Aulas y Grupos (Gela / Taldeak)
-                </button>
-            </nav>
+                        <button
+                            type="button"
+                            on:click={() => handleTabChange('aulas')}
+                            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 {activeTab === 'aulas' ? 'bg-sky-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-600'}"
+                        >
+                            🏫 Aulas y Grupos (Gela / Taldeak)
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Menú Desplegable Unificado -->
+                <div class="flex items-center space-x-3 w-full md:w-auto">
+                    <label for="entitySelector" class="text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
+                        {activeTab === 'profesorado' ? 'Seleccionar Irakaslea:' : 'Seleccionar Gela/Taldea:'}
+                    </label>
+                    <select
+                        id="entitySelector"
+                        value={selectedEntityId}
+                        on:change={(e) => selectedEntityId = e.currentTarget.value}
+                        class="w-full md:w-80 bg-slate-50 dark:bg-gray-700 text-slate-800 dark:text-gray-100 text-sm font-medium rounded-lg border border-slate-300 dark:border-gray-600 px-3.5 py-2 focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
+                    >
+                        {#if loading}
+                            <option value="">Cargando datos de Supabase...</option>
+                        {:else if selectorOptions.length === 0}
+                            <option value="">Sin registros disponibles</option>
+                        {:else}
+                            {#each selectorOptions as option}
+                                <option value={option.id}>{option.nombre}</option>
+                            {/each}
+                        {/if}
+                    </select>
+                </div>
+            </div>
         </div>
 
         <!-- Tarjeta Informativa Unificada -->
@@ -325,9 +379,9 @@
                 <table class="w-full border-collapse text-center text-xs md:text-sm">
                     <thead>
                         <tr class="bg-sky-50/80 dark:bg-sky-950/40 text-sky-900 dark:text-sky-200 border-b border-slate-200 dark:border-gray-700 font-semibold">
-                            <th class="p-3 border-r border-slate-200 dark:border-gray-700 w-32 font-bold text-slate-700 dark:text-slate-300">Ordua / Hora</th>
+                            <th class="p-3 border-r border-slate-200 dark:border-gray-700 w-36 font-bold text-slate-700 dark:text-slate-300">Ordua / Hora</th>
                             {#each daysOfWeek as day}
-                                <th class="p-3 border-r border-slate-200 dark:border-gray-700 min-w-[130px]">
+                                <th class="p-3 border-r border-slate-200 dark:border-gray-700 min-w-[140px]">
                                     <span class="block text-sm font-bold text-sky-900 dark:text-sky-200">{day.name}</span>
                                     <span class="block text-[11px] text-sky-600 dark:text-sky-400 font-normal">{day.short}</span>
                                 </th>
@@ -335,19 +389,32 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-gray-700">
+                        <!-- Fila Superior de Presencia Calculada -->
+                        <tr class="bg-slate-100/90 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-gray-700">
+                            <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-200/60 dark:bg-gray-700 font-bold text-xs text-slate-700 dark:text-slate-200 whitespace-nowrap">
+                                📌 Presencia / Zaintza
+                            </td>
+                            {#each daysOfWeek as day}
+                                <td class="p-2 border-r border-slate-200 dark:border-gray-700 text-xs font-semibold text-sky-800 dark:text-sky-300 bg-slate-50 dark:bg-slate-800/60">
+                                    09:00 - 16:30 (4h 30m)
+                                </td>
+                            {/each}
+                        </tr>
+
+                        <!-- 10 Franjas Horarias -->
                         {#each timeSlots as slot}
                             {#if slot.type === 'recreo'}
-                                <!-- Fila Recreo -->
+                                <!-- Fila Recreo (Atsedenaldia) -->
                                 <tr class="bg-amber-50/70 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 font-medium">
                                     <td class="p-2 border-r border-amber-200 dark:border-amber-900/50 bg-amber-100/50 dark:bg-amber-900/40 font-semibold text-xs whitespace-nowrap text-amber-800 dark:text-amber-300">
                                         {slot.time}
                                     </td>
                                     <td colspan="5" class="p-2 text-center text-xs tracking-wider uppercase font-semibold text-amber-800 dark:text-amber-300">
-                                        ☕ {slot.label}
+                                        ☕ Atsedenaldia / Recreo
                                     </td>
                                 </tr>
                             {:else if slot.type === 'comedor'}
-                                <!-- Fila Bazcaria / Comedor -->
+                                <!-- Fila Bazkaria / Comedor -->
                                 <tr class="bg-orange-50/70 dark:bg-orange-950/30 text-orange-900 dark:text-orange-200 font-medium">
                                     <td class="p-2 border-r border-orange-200 dark:border-orange-900/50 bg-orange-100/50 dark:bg-orange-900/40 font-semibold text-xs whitespace-nowrap text-orange-800 dark:text-orange-300">
                                         {slot.time}
@@ -357,14 +424,14 @@
                                     </td>
                                 </tr>
                             {:else if slot.type === 'presencia'}
-                                <!-- Fila Presencia / Guardia -->
+                                <!-- Fila Guardias / Presencia Complementaria -->
                                 <tr class="bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200">
                                     <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-100/80 dark:bg-gray-700/50 font-semibold text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
                                         {slot.time}
                                     </td>
                                     {#each daysOfWeek as day}
                                         <td class="p-2 border-r border-slate-200 dark:border-gray-700 bg-slate-100/50 dark:bg-slate-700/30 text-xs italic text-slate-400 dark:text-gray-400">
-                                            {activeTab === 'profesorado' ? 'Presencia / Zaintza' : 'Libre / Libre'}
+                                            {activeTab === 'profesorado' ? 'Guardia / Zaintza' : 'Libre / Libre'}
                                         </td>
                                     {/each}
                                 </tr>
@@ -419,53 +486,69 @@
             </div>
         </div>
 
-        <!-- Tarjetas de Resumen Estadístico de Horas -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Horas Lectivas -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-slate-200 dark:border-gray-700 shadow-xs flex items-center justify-between">
+        <!-- Bloque de Resumen Inferior -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-gray-700 gap-2">
                 <div>
-                    <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Horas Lectivas</span>
-                    <strong class="text-xl font-bold text-slate-800 dark:text-gray-100 mt-1 block">14h 00m</strong>
-                    <span class="text-xs text-slate-500 dark:text-gray-400">Objetivo: 15h 00m</span>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-gray-100">
+                        Resumen Horario y Balance de Jornada
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-gray-400">
+                        Tipo de Jornada: <strong class="text-slate-800 dark:text-gray-200">{currentTeacher?.jornada || 'Jornada Completa'}</strong>
+                    </p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-lg">
-                    📚
+                <div class="bg-slate-50 dark:bg-gray-700 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-gray-600 text-xs font-semibold text-slate-700 dark:text-gray-300">
+                    Objetivo Oficial: <span class="text-sky-700 dark:text-sky-300 font-bold">23h 00m</span>
                 </div>
             </div>
 
-            <!-- Horas No Lectivas -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-slate-200 dark:border-gray-700 shadow-xs flex items-center justify-between">
-                <div>
-                    <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Horas No Lectivas</span>
-                    <strong class="text-xl font-bold text-slate-800 dark:text-gray-100 mt-1 block">8h 30m</strong>
-                    <span class="text-xs text-slate-500 dark:text-gray-400">Objetivo: 8h 00m</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Horas Lectivas -->
+                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-4 border border-slate-200 dark:border-gray-700 flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Horas Lectivas</span>
+                        <strong class="text-xl font-bold text-slate-800 dark:text-gray-100 mt-1 block">14h 00m</strong>
+                        <span class="text-xs text-slate-500 dark:text-gray-400">Objetivo: 15h 00m</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-lg">
+                        📚
+                    </div>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg">
-                    📝
-                </div>
-            </div>
 
-            <!-- Total Asignado -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-slate-200 dark:border-gray-700 shadow-xs flex items-center justify-between">
-                <div>
-                    <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Total Asignado</span>
-                    <strong class="text-xl font-bold text-slate-800 dark:text-gray-100 mt-1 block">22h 30m</strong>
-                    <span class="text-xs text-slate-500 dark:text-gray-400">Total Jornada: 23h 00m</span>
+                <!-- Horas No Lectivas -->
+                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-4 border border-slate-200 dark:border-gray-700 flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Horas No Lectivas</span>
+                        <strong class="text-xl font-bold text-slate-800 dark:text-gray-100 mt-1 block">8h 30m</strong>
+                        <span class="text-xs text-slate-500 dark:text-gray-400">Objetivo: 8h 00m</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg">
+                        📝
+                    </div>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">
-                    ⏱️
-                </div>
-            </div>
 
-            <!-- Balance Horario -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-slate-200 dark:border-gray-700 shadow-xs flex items-center justify-between">
-                <div>
-                    <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Balance Horario</span>
-                    <strong class="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 block">+0h 30m</strong>
-                    <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Jornada equilibrada</span>
+                <!-- Total Asignado -->
+                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-4 border border-slate-200 dark:border-gray-700 flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Total Asignado</span>
+                        <strong class="text-xl font-bold text-slate-800 dark:text-gray-100 mt-1 block">22h 30m</strong>
+                        <span class="text-xs text-slate-500 dark:text-gray-400">Total Jornada: 23h 00m</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">
+                        ⏱️
+                    </div>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">
-                    ⚖️
+
+                <!-- Balance Horario -->
+                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-4 border border-slate-200 dark:border-gray-700 flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Balance Horario</span>
+                        <strong class="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 block">+0h 30m</strong>
+                        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Jornada equilibrada</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">
+                        ⚖️
+                    </div>
                 </div>
             </div>
         </div>
