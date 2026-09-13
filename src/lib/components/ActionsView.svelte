@@ -93,9 +93,9 @@
                     }
 
                     return {
-                        orden: t.orden ?? t.id,
+                        orden: t.orden ?? 0,
                         time: timeRange,
-                        label: t.descripcion || `${t.orden}ª Franja`,
+                        label: t.descripcion || `Franja ${t.orden ?? 0}`,
                         type
                     };
                 });
@@ -110,14 +110,15 @@
 
     function fallbackTimeSlots() {
         timeSlots = [
-            { orden: 0, time: '09:00 - 10:00', label: '1ª Franja', type: 'lectiva' },
-            { orden: 1, time: '10:00 - 11:00', label: '2ª Franja', type: 'lectiva' },
-            { orden: 2, time: '11:00 - 11:30', label: 'ATSEDENALDIA', type: 'recreo' },
-            { orden: 3, time: '11:30 - 12:30', label: '3ª Franja', type: 'lectiva' },
-            { orden: 4, time: '12:30 - 14:00', label: '4ª Franja', type: 'lectiva' },
-            { orden: 5, time: '14:00 - 15:00', label: 'BAZKARIA', type: 'comedor' },
-            { orden: 6, time: '15:00 - 16:00', label: '5ª Franja', type: 'lectiva' },
-            { orden: 7, time: '16:00 - 17:00', label: '6ª Franja', type: 'lectiva' }
+            { orden: 0, time: '09:00 - 09:30', label: '1ª Franja', type: 'lectiva' },
+            { orden: 1, time: '09:30 - 10:30', label: '2ª Franja', type: 'lectiva' },
+            { orden: 2, time: '10:30 - 11:00', label: '3ª Franja', type: 'lectiva' },
+            { orden: 3, time: '11:00 - 11:30', label: 'ATSEDENALDIA', type: 'recreo' },
+            { orden: 4, time: '11:30 - 12:30', label: '4ª Franja', type: 'lectiva' },
+            { orden: 5, time: '12:30 - 14:00', label: '5ª Franja', type: 'lectiva' },
+            { orden: 6, time: '14:00 - 15:00', label: 'BAZKARIA', type: 'comedor' },
+            { orden: 7, time: '15:00 - 16:00', label: '6ª Franja', type: 'lectiva' },
+            { orden: 8, time: '16:00 - 17:00', label: '7ª Franja', type: 'lectiva' }
         ];
     }
 
@@ -239,8 +240,10 @@
 
             if (data && data.length > 0) {
                 data.forEach((s: { id?: string | number; dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
-                    const dia = s.dia ?? s.day_of_week ?? 1;
-                    const franja = s.franja ?? s.tramo_id ?? s.orden ?? 0;
+                    // Lunes es estrictamente 1, Martes 2...
+                    const dia = Number(s.dia ?? s.day_of_week ?? 1);
+                    // Tramo exacto empezando en 0
+                    const franja = Number(s.franja ?? s.tramo_id ?? s.orden ?? 0);
                     const key = `${dia}_${franja}`;
 
                     grid[entityId][key] = {
@@ -313,7 +316,7 @@
         await loadDataForCurrentTab();
     }
 
-    // Días de la semana únicamente en Euskera
+    // Días de la semana únicamente en Euskera (Día 1 = Astelehena / Lunes)
     const daysOfWeek = [
         { id: 1, name: 'Astelehena' },
         { id: 2, name: 'Asteartea' },
