@@ -123,7 +123,7 @@
         ];
     }
 
-    // Consultar profesores desde Supabase ordenados estrictamente de la A a la Z
+    // Consultar profesores desde Supabase ordenados strictly de la A a la Z
     async function fetchProfesores(curso: string) {
         loading = true;
         try {
@@ -321,7 +321,7 @@
         await loadDataForCurrentTab();
     }
 
-    // Días de la semana en Euskera alineados a Base 0 (0 = Astelehena / Lunes, 2 = Asteazkena / Miércoles)
+    // Días de la semana en Euskera alineados a Base 0 (0 = Astelehena / Lunes, 2 = Asteazkena / Miércoles, 4 = Ostirala / Viernes)
     const daysOfWeek = [
         { id: 0, name: 'Astelehena' },
         { id: 1, name: 'Asteartea' },
@@ -582,11 +582,14 @@
                                     {#each daysOfWeek as day}
                                         {@const sessionKey = `${day.id}_${slot.orden}`}
                                         {@const session = teacherScheduleGrid[selectedEntityId]?.[sessionKey]}
+                                        {@const isViernesLibre = day.id === 4 && slot.time.includes('13:00 - 14:00')}
                                         <td 
-                                            class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle hover:bg-slate-100/60 dark:hover:bg-gray-700/40 transition-colors cursor-pointer relative print:p-0.5 print:h-9 print:border-r print:border-black"
+                                            class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle transition-colors relative print:p-0.5 print:h-9 print:border-r print:border-black {isViernesLibre ? 'cell-disabled-striped' : 'hover:bg-slate-100/60 dark:hover:bg-gray-700/40 cursor-pointer'}"
                                             title={showDebug ? `[DEBUG] Día: ${day.id} | Tramo: ${slot.orden} | Asignatura: ${session?.actividad || 'Ninguna'} | Grupo: ${session?.clase || 'Ninguno'} | SesionID: ${session?.id || 'N/A'}` : ''}
                                         >
-                                            {#if day.id === 2 && isJornadaCompleta && slot.time.includes('13:00 - 14:00')}
+                                            {#if isViernesLibre}
+                                                <!-- Hora libre universal del Viernes (13:00 - 14:00) vacía con sombreado rayado -->
+                                            {:else if day.id === 2 && isJornadaCompleta && slot.time.includes('13:00 - 14:00')}
                                                 <!-- Formación en Miércoles Tarde (13:00 - 14:00) en Jornada Completa sin fondo especial -->
                                                 <div class="flex flex-col items-center justify-center space-y-0.5 p-1">
                                                     <span class="block font-black text-slate-900 dark:text-gray-100 text-xs sm:text-sm uppercase tracking-wide print:text-[9px]">
