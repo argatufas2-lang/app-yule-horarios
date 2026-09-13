@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import ActionToolbar from './ActionToolbar.svelte';
+    import AdminModal from './AdminModal.svelte';
     import { daysOfWeek } from '$lib/constants/calendar';
     import { formatJornada } from '$lib/utils/formatters';
     import {
@@ -20,6 +21,7 @@
     
     let activeTab: 'profesorado' | 'aulas' = 'profesorado';
     let showDebug: boolean = false; // Estado para conmutar el panel de depuración
+    let showAdminModal: boolean = false; // Estado para el modal de administración
 
     // Listados dinámicos obtenidos de Supabase
     export let profesoresDisponibles: EntityOption[] = [];
@@ -137,7 +139,7 @@
     }
 
     function handleAdministracion() {
-        console.log('Acción: Administración');
+        showAdminModal = true;
     }
 
     function handleImportarAsc() {
@@ -474,11 +476,21 @@
                         <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium print:text-[7px]">Jornada equilibrada</span>
                     </div>
                     <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
-                        ⚖️
+                        秤️
                     </div>
                 </div>
             </div>
         </div>
 
     </main>
+
+    <!-- Componente Modal de Administración -->
+    <AdminModal
+        isOpen={showAdminModal}
+        {selectedCurso}
+        on:close={() => {
+            showAdminModal = false;
+            loadDataForCurrentTab();
+        }}
+    />
 </div>
