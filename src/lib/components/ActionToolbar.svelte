@@ -62,12 +62,14 @@
     @media print {
         @page {
             size: A4 landscape;
-            margin: 12mm 10mm;
+            margin: 0;
         }
 
         :global(body) {
             background-color: #ffffff !important;
             color: #000000 !important;
+            margin: 0 !important;
+            padding: 10mm !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
@@ -80,7 +82,7 @@
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
-            min-height: 185mm !important;
+            min-height: 180mm !important;
         }
     }
 </style>
