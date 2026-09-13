@@ -120,7 +120,7 @@
         ];
     }
 
-    // Consultar profesores desde Supabase ordenados estrictamente de la A a la Z
+    // Consultar profesores desde Supabase ordenados strictly de la A a la Z
     async function fetchProfesores(curso: string) {
         loading = true;
         try {
@@ -435,7 +435,7 @@
             </div>
         </div>
 
-        <!-- Tarjeta de Perfil Alineada Horizontalmente (Logo -> Nombre -> Etiquetas) -->
+        <!-- Tarjeta de Perfil Alineada Horizontalmente (Logo -> Nombre Grande -> Etiquetas) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 flex items-center justify-center">
             {#if activeTab === 'profesorado'}
                 <div class="flex flex-wrap items-center justify-center gap-4 text-center sm:text-left">
@@ -443,8 +443,8 @@
                     <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0">
                         <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain" on:error={handleImageError} />
                     </div>
-                    <!-- 2. Nombre Grande -->
-                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight">
+                    <!-- 2. Nombre Mucho Más Grande y Destacado -->
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight">
                         {currentTeacher?.nombre ? currentTeacher.nombre.toUpperCase() : (loading ? 'CARGANDO PROFESORADO...' : 'SIN PROFESORADO DISPONIBLE')}
                     </h2>
                     <!-- 3. Etiquetas -->
@@ -466,8 +466,8 @@
                     <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0">
                         <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain" on:error={handleImageError} />
                     </div>
-                    <!-- 2. Nombre Grande -->
-                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight">
+                    <!-- 2. Nombre Mucho Más Grande y Destacado -->
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight">
                         {currentClassroom?.nombre ? currentClassroom.nombre.toUpperCase() : (loading ? 'CARGANDO AULAS...' : 'SIN AULAS DISPONIBLES')}
                     </h2>
                     <!-- 3. Etiquetas -->
