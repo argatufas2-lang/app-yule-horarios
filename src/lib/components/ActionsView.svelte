@@ -10,8 +10,8 @@
     let activeTab: 'profesorado' | 'aulas' = 'profesorado';
 
     // Listados dinámicos obtenidos de Supabase
-    export let profesoresDisponibles: { id: string; nombre: string; rol?: string; jornada?: string }[] = [];
-    export let aulasDisponibles: { id: string; nombre: string; edificio?: string; capacidad?: string }[] = [];
+    export let profesoresDisponibles: { id: string; nombre: string; rol?: string; jornada?: string; labelText?: string }[] = [];
+    export let aulasDisponibles: { id: string; nombre: string; edificio?: string; capacidad?: string; labelText?: string }[] = [];
     export let totalProfesoradoCount: number = 0;
 
     export let selectedEntityId: string = '';
@@ -22,6 +22,26 @@
     // Tramos horarios y Sesiones dinámicas de Supabase
     let timeSlots: { orden: number; time: string; label: string; type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' }[] = [];
     let teacherScheduleGrid: Record<string, Record<number, { actividad: string; clase?: string; aula?: string }>> = {};
+
+    // Helper para formatear la jornada (JC o fracción)
+    function formatJornada(jornadaRaw?: string | null): string {
+        if (!jornadaRaw) return 'JC';
+        const jLower = jornadaRaw.toLowerCase();
+        if (jLower.includes('completa') || jLower.includes('100') || jLower.includes('1/1') || jLower === 'jc') {
+            return 'JC';
+        }
+        return jornadaRaw;
+    }
+
+    // Helper para formatear el rol (Tutor / Especialista)
+    function formatRol(perfilRaw?: string | null): string {
+        if (!perfilRaw) return 'Especialista';
+        const pLower = perfilRaw.toLowerCase();
+        if (pLower.includes('tutor') || pLower.includes('tutoretza')) {
+            return 'Tutor';
+        }
+        return perfilRaw;
+    }
 
     // Consultar el total global de profesores en Supabase
     async function fetchTotalProfesorado() {
@@ -100,7 +120,7 @@
         ];
     }
 
-    // Consultar profesores desde Supabase
+    // Consultar profesores desde Supabase ordenados estrictamente de la A a la Z
     async function fetchProfesores(curso: string) {
         loading = true;
         try {
@@ -108,7 +128,7 @@
                 .from('profesores')
                 .select('*')
                 .eq('curso_escolar', curso)
-                .order('orden', { ascending: true, nullsFirst: false });
+                .order('nombre', { ascending: true });
 
             if (error) {
                 console.error('Error al cargar profesores desde Supabase:', error.message);
@@ -116,12 +136,23 @@
             }
 
             if (data && data.length > 0) {
-                profesoresDisponibles = data.map((p) => ({
-                    id: String(p.id),
-                    nombre: p.nombre,
-                    rol: p.perfil || 'Especialista',
-                    jornada: p.jornada || 'Jornada completa'
-                }));
+                const mapped = data.map((p) => {
+                    const nombreFormatted = p.nombre ? p.nombre.toUpperCase() : '';
+                    const jornadaFormatted = formatJornada(p.jornada);
+                    const rolFormatted = formatRol(p.perfil);
+
+                    return {
+                        id: String(p.id),
+                        nombre: p.nombre,
+                        rol: p.perfil || 'Especialista',
+                        jornada: p.jornada || 'Jornada completa',
+                        labelText: `${nombreFormatted} - ${jornadaFormatted} - ${rolFormatted}`
+                    };
+                });
+
+                // Garantizar ordenación alfabética ascendente estricta
+                mapped.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+                profesoresDisponibles = mapped;
             } else {
                 profesoresDisponibles = [];
             }
@@ -132,14 +163,15 @@
         }
     }
 
-    // Consultar aulas/grupos desde Supabase
+    // Consultar aulas/grupos desde Supabase ordenados alfabéticamente
     async function fetchAulas(curso: string) {
         loading = true;
         try {
             const { data, error } = await supabase
                 .from('aulas')
                 .select('*')
-                .eq('curso_escolar', curso);
+                .eq('curso_escolar', curso)
+                .order('name', { ascending: true });
 
             if (error) {
                 console.error('Error al cargar aulas desde Supabase:', error.message);
@@ -147,12 +179,19 @@
             }
 
             if (data && data.length > 0) {
-                aulasDisponibles = data.map((a) => ({
-                    id: String(a.id),
-                    nombre: a.name || a.nombre || a.code || `Aula ${a.id}`,
-                    edificio: a.edificio || 'Edificio Principal',
-                    capacidad: a.capacidad || 'Estándar'
-                }));
+                const mapped = data.map((a) => {
+                    const aulaNombre = a.name || a.nombre || a.code || `Aula ${a.id}`;
+                    return {
+                        id: String(a.id),
+                        nombre: aulaNombre,
+                        edificio: a.edificio || 'Edificio Principal',
+                        capacidad: a.capacidad || 'Estándar',
+                        labelText: aulaNombre.toUpperCase()
+                    };
+                });
+
+                mapped.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+                aulasDisponibles = mapped;
             } else {
                 aulasDisponibles = [];
             }
@@ -350,10 +389,10 @@
     <!-- Área de Contenido Principal Ampliada -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-4 space-y-4">
         
-        <!-- Pestañas y Selector Unificados -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <!-- Pestañas y Selector Unificados en una sola línea horizontal hacia la izquierda -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-3 flex flex-col md:flex-row md:items-center justify-start gap-4">
             
-            <!-- Pestañas Principales a la izquierda -->
+            <!-- Pestañas Principales -->
             <div class="flex items-center space-x-1 shrink-0">
                 <button
                     type="button"
@@ -372,8 +411,8 @@
                 </button>
             </div>
 
-            <!-- Desplegable Alineado Horizontalmente a la derecha -->
-            <div class="flex items-center space-x-2 w-full md:w-auto flex-1 md:max-w-xl">
+            <!-- Desplegable Alineado Inmediatamente a Continuación -->
+            <div class="flex items-center space-x-2 w-full md:w-auto flex-1 max-w-2xl">
                 <label for="entitySelector" class="text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
                     {activeTab === 'profesorado' ? 'SELECCIONAR PROFESORADO:' : 'SELECCIONAR AULA / GRUPO:'}
                 </label>
@@ -389,7 +428,7 @@
                         <option value="">Sin registros disponibles</option>
                     {:else}
                         {#each selectorOptions as option}
-                            <option value={option.id}>{option.nombre}</option>
+                            <option value={option.id}>{option.labelText || option.nombre}</option>
                         {/each}
                     {/if}
                 </select>
