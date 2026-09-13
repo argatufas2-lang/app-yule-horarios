@@ -32,6 +32,13 @@
         dispatch('selectCurso', target.value);
     }
 
+    function handlePrint() {
+        dispatch('imprimirHorario');
+        if (typeof window !== 'undefined') {
+            window.print();
+        }
+    }
+
     function handleImageError(event: Event) {
         const target = event.target as HTMLElement;
         if (target) {
@@ -39,6 +46,29 @@
         }
     }
 </script>
+
+<style>
+    @media print {
+        @page {
+            size: A4 landscape;
+            margin: 8mm;
+        }
+
+        :global(body) {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        :global(.print-area) {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    }
+</style>
 
 <header class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 shadow-xs">
     
@@ -137,7 +167,7 @@
                 <!-- Imprimir Horario -->
                 <button 
                     type="button"
-                    on:click={() => dispatch('imprimirHorario')}
+                    on:click={handlePrint}
                     class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-white text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-colors shadow-xs"
                 >
                     🖨️ Imprimir Horario

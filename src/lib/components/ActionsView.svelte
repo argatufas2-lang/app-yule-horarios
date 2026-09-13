@@ -122,7 +122,7 @@
         ];
     }
 
-    // Consultar profesores desde Supabase ordenados estrictamente de la A a la Z
+    // Consultar profesores desde Supabase ordenados strictly de la A a la Z
     async function fetchProfesores(curso: string) {
         loading = true;
         try {
@@ -240,10 +240,8 @@
 
             if (data && data.length > 0) {
                 data.forEach((s: { id?: string | number; dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
-                    // Lunes es strictly 0, Martes 1, Miércoles 2...
                     const rawDia = s.dia ?? s.day_of_week ?? 0;
                     const dia = Number(rawDia);
-                    // Tramo exacto empezando en 0
                     const franja = Number(s.franja ?? s.tramo_id ?? s.orden ?? 0);
                     const key = `${dia}_${franja}`;
 
@@ -349,7 +347,7 @@
     }
 
     function handleImprimirHorario() {
-        window.print();
+        // Manejado internamente en ActionToolbar
     }
 
     function handleImprimirTodos() {
@@ -371,29 +369,6 @@
         }
     }
 </script>
-
-<style>
-    @media print {
-        @page {
-            size: A4 landscape;
-            margin: 8mm;
-        }
-
-        :global(body) {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        .print-area {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-    }
-</style>
 
 <div class="flex flex-col min-h-screen bg-slate-50 dark:bg-gray-900 transition-colors">
     <!-- Barra de Herramientas Superior Corporativa Ganivet (Oculta en Impresión) -->
