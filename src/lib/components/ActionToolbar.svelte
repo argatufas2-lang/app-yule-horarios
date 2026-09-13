@@ -22,14 +22,14 @@
     export let profesoresDisponibles: { id: string; nombre: string; rol?: string }[] = [];
     export let activeTab: 'profesorado' | 'aulas' = 'profesorado';
 
-    function handleProfesorChange(event: Event) {
-        const target = event.target as HTMLSelectElement;
-        dispatch('selectProfesor', target.value);
-    }
-
     function toggleCiclo(ciclo: 'LH' | 'HH') {
         selectedCiclo = ciclo;
         dispatch('selectCiclo', ciclo);
+    }
+
+    function handleCursoChange(event: Event) {
+        const target = event.target as HTMLSelectElement;
+        dispatch('selectCurso', target.value);
     }
 
     function handleImageError(event: Event) {
@@ -41,66 +41,82 @@
 </script>
 
 <header class="bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 shadow-xs">
-    <!-- 1. Cabecera Principal (Logo y Título) -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between border-b border-slate-100 dark:border-gray-700/60">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-xs overflow-hidden">
-                <img src="/logo.png" alt="Ganivet Logo" class="w-full h-full object-cover" on:error={handleImageError} />
-                <span class="text-lg">🏫</span>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold text-slate-900 dark:text-gray-100 tracking-tight">
-                    Gestión de Horarios
-                </h1>
-                <p class="text-xs text-slate-500 dark:text-gray-400">
-                    Área de Organización Escolar y Calibración Horaria
-                </p>
-            </div>
+    
+    <!-- 1. Barra Superior de Contexto con fondo amarillo/pastel muy sutil -->
+    <div class="bg-amber-50/80 dark:bg-amber-950/20 px-4 sm:px-6 lg:px-8 py-2 border-b border-amber-200/60 dark:border-amber-900/30 text-xs text-slate-700 dark:text-gray-300 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-4">
+            <span class="inline-flex items-center gap-1.5 font-semibold text-slate-800 dark:text-gray-200">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                Ciclo Activo: <strong class="text-sky-800 dark:text-sky-300 ml-1">{selectedCiclo === 'LH' ? 'Primaria (LH)' : 'Infantil (HH)'}</strong>
+            </span>
+            <span class="text-amber-300 dark:text-amber-800">|</span>
+            <span class="inline-flex items-center gap-1 font-medium">
+                📅 Curso: <strong class="text-slate-900 dark:text-gray-100">{selectedCurso}</strong>
+            </span>
+            <span class="text-amber-300 dark:text-amber-800">|</span>
+            <span class="inline-flex items-center gap-1 font-medium">
+                👥 Total Profesorado: <strong class="text-sky-800 dark:text-sky-300 bg-white dark:bg-gray-800 px-2.5 py-0.5 rounded-full border border-sky-200 dark:border-sky-800 font-bold">{totalProfesorado}</strong>
+            </span>
         </div>
 
-        <!-- Botones de Alternancia de Ciclo -->
-        <div class="flex items-center bg-slate-100 dark:bg-gray-700 p-1 rounded-lg border border-slate-200 dark:border-gray-600">
+        <!-- Botones de Alternancia de Ciclo (Esquina Superior Derecha) -->
+        <div class="flex items-center bg-white dark:bg-gray-800 p-1 rounded-full border border-amber-200 dark:border-amber-900/40 shadow-xs">
             <button
                 type="button"
                 on:click={() => toggleCiclo('HH')}
-                class="px-3 py-1 text-xs font-semibold rounded-md transition-colors {selectedCiclo === 'HH' ? 'bg-white dark:bg-gray-800 text-sky-700 dark:text-sky-300 shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
+                class="px-3 py-1 text-xs font-semibold rounded-full transition-all {selectedCiclo === 'HH' ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
             >
                 Infantil (HH)
             </button>
             <button
                 type="button"
                 on:click={() => toggleCiclo('LH')}
-                class="px-3 py-1 text-xs font-semibold rounded-md transition-colors {selectedCiclo === 'LH' ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
+                class="px-3 py-1 text-xs font-semibold rounded-full transition-all {selectedCiclo === 'LH' ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-600 dark:text-gray-300 hover:text-slate-900'}"
             >
                 Primaria (LH)
             </button>
         </div>
     </div>
 
-    <!-- 2. Franja de Contexto de Información -->
-    <div class="bg-slate-50 dark:bg-gray-800/80 px-4 sm:px-6 lg:px-8 py-2 border-b border-slate-200 dark:border-gray-700 text-xs text-slate-600 dark:text-gray-300 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-4">
-            <span class="inline-flex items-center gap-1.5 font-medium">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                Ciclo Activo: <strong class="text-slate-900 dark:text-gray-100">{selectedCiclo === 'LH' ? 'Primaria (LH)' : 'Infantil (HH)'}</strong>
-            </span>
-            <span class="text-slate-300 dark:text-gray-600">|</span>
-            <span class="inline-flex items-center gap-1 font-medium">
-                📅 Curso: <strong class="text-slate-900 dark:text-gray-100">{selectedCurso}</strong>
-            </span>
-            <span class="text-slate-300 dark:text-gray-600">|</span>
-            <span class="inline-flex items-center gap-1 font-medium">
-                👥 Total Profesorado: <strong class="text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">{totalProfesorado} profesores</strong>
-            </span>
+    <!-- 2. Cabecera Principal (Logotipo y Título) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between border-b border-slate-100 dark:border-gray-700/60">
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-xs overflow-hidden border border-sky-500">
+                <img src="/logo.png" alt="Ganivet Logo" class="w-full h-full object-cover" on:error={handleImageError} />
+                <span class="text-2xl">🏫</span>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-gray-100 tracking-tight font-sans">
+                    Gestión de Horarios
+                </h1>
+                <p class="text-xs text-slate-500 dark:text-gray-400 font-medium">
+                    Colegio Público Ganivet / Ganivet Ikastetxea
+                </p>
+            </div>
         </div>
     </div>
 
-    <!-- 3. Barra de Botones de Acción Corporativos -->
-    <div class="px-4 sm:px-6 lg:px-8 py-3 bg-white dark:bg-gray-800 flex flex-wrap items-center justify-between gap-3">
+    <!-- 3. Barra de Acciones Corporativa -->
+    <div class="px-4 sm:px-6 lg:px-8 py-3 bg-slate-50/50 dark:bg-gray-800/50 flex flex-wrap items-center justify-between gap-3">
         
-        <!-- Grupo de Botones de Acción -->
+        <!-- Desplegable de Curso a la izquierda -->
+        <div class="flex items-center space-x-2">
+            <label for="cursoSelect" class="text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider">
+                Curso:
+            </label>
+            <select
+                id="cursoSelect"
+                value={selectedCurso}
+                on:change={handleCursoChange}
+                class="bg-white dark:bg-gray-700 text-slate-800 dark:text-gray-100 text-xs font-bold rounded-lg border border-slate-300 dark:border-gray-600 px-3 py-1.5 focus:ring-2 focus:ring-sky-500 focus:outline-hidden shadow-xs"
+            >
+                <option value="2026-2027">2026-2027</option>
+            </select>
+        </div>
+
+        <!-- Grupo de Botones de Acción Corporativos -->
         <div class="flex flex-wrap items-center gap-2">
-            <!-- Fin de Curso (LH) -->
+            <!-- Fin de Curso (LH): Naranja Intenso -->
             <button 
                 type="button"
                 on:click={() => dispatch('finDeCurso')}
@@ -109,16 +125,16 @@
                 🎓 Fin de Curso (LH)
             </button>
 
-            <!-- Control de Jornada -->
+            <!-- Control de Jornada: Azul Oscuro Corporativo -->
             <button 
                 type="button"
                 on:click={() => dispatch('controlJornada')}
-                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-white text-xs font-semibold bg-sky-600 hover:bg-sky-700 active:bg-sky-800 transition-colors shadow-xs"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-white text-xs font-semibold bg-sky-700 hover:bg-sky-800 active:bg-sky-900 transition-colors shadow-xs"
             >
                 ⏱️ Control de Jornada
             </button>
 
-            <!-- Imprimir Horario -->
+            <!-- Imprimir Horario: Verde Esmeralda -->
             <button 
                 type="button"
                 on:click={() => dispatch('imprimirHorario')}
@@ -127,7 +143,7 @@
                 🖨️ Imprimir Horario
             </button>
 
-            <!-- Imprimir Todos -->
+            <!-- Imprimir Todos: Púrpura / Violeta -->
             <button 
                 type="button"
                 on:click={() => dispatch('imprimirTodos')}
@@ -136,7 +152,7 @@
                 📑 Imprimir Todos
             </button>
 
-            <!-- Administración -->
+            <!-- Administración: Gris Pizarra Oscuro -->
             <button 
                 type="button"
                 on:click={() => dispatch('administracion')}
@@ -145,11 +161,11 @@
                 ⚙️ Administración
             </button>
 
-            <!-- Importar PDF aSc -->
+            <!-- Importar PDF aSc: Azul Brillante -->
             <button 
                 type="button"
                 on:click={() => dispatch('importarAsc')}
-                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-white text-xs font-semibold bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-xs"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-white text-xs font-semibold bg-sky-500 hover:bg-sky-600 active:bg-sky-700 transition-colors shadow-xs"
             >
                 📄 Importar PDF aSc
             </button>
