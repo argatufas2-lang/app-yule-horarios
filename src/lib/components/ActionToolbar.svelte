@@ -1,5 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
+    import PrintSingleButton from './PrintSingleButton.svelte';
+    import PrintBulkModal from './PrintBulkModal.svelte';
 
     const dispatch = createEventDispatcher<{
         selectCurso: string;
@@ -11,6 +13,7 @@
         imprimirTodos: void;
         administracion: void;
         importarAsc: void;
+        executeBulkPrint: { selectedIds: string[] };
     }>();
 
     // Props
@@ -19,8 +22,10 @@
     export let totalProfesorado: number = 0;
     
     export let selectedProfesor: string = '';
-    export let profesoresDisponibles: { id: string; nombre: string; rol?: string }[] = [];
+    export let profesoresDisponibles: { id: string; nombre: string; rol?: string; labelText?: string }[] = [];
     export let activeTab: 'profesorado' | 'aulas' = 'profesorado';
+
+    let isBulkPrintModalOpen: boolean = false;
 
     function toggleCiclo(ciclo: 'LH' | 'HH') {
         selectedCiclo = ciclo;
@@ -32,11 +37,17 @@
         dispatch('selectCurso', target.value);
     }
 
-    function handlePrint() {
+    function handlePrintSingle() {
         dispatch('imprimirHorario');
-        if (typeof window !== 'undefined') {
-            window.print();
-        }
+    }
+
+    function openBulkModal() {
+        dispatch('imprimirTodos');
+        isBulkPrintModalOpen = true;
+    }
+
+    function handleExecuteBulkPrint(event: CustomEvent<{ selectedIds: string[] }>) {
+        dispatch('executeBulkPrint', event.detail);
     }
 
     function handleImageError(event: Event) {
@@ -144,7 +155,7 @@
                 </select>
             </div>
 
-            <!-- Grupo de Botones de Acción Compactos -->
+            <!-- Grupo de Botones de Acción Modulares -->
             <div class="flex flex-wrap items-center gap-1.5">
                 <!-- Fin de Curso (LH) -->
                 <button 
@@ -164,19 +175,13 @@
                     ⏱️ Control de Jornada
                 </button>
 
-                <!-- Imprimir Horario -->
-                <button 
-                    type="button"
-                    on:click={handlePrint}
-                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-white text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 transition-colors shadow-xs"
-                >
-                    🖨️ Imprimir Horario
-                </button>
+                <!-- Módulo de Impresión Individual Encapsulado -->
+                <PrintSingleButton on:print={handlePrintSingle} />
 
-                <!-- Imprimir Todos -->
+                <!-- Imprimir Todos (Abre Modal de Selección) -->
                 <button 
                     type="button"
-                    on:click={() => dispatch('imprimirTodos')}
+                    on:click={openBulkModal}
                     class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-white text-xs font-semibold bg-purple-600 hover:bg-purple-700 active:bg-purple-800 transition-colors shadow-xs"
                 >
                     📑 Imprimir Todos
@@ -203,3 +208,11 @@
         </div>
     </div>
 </header>
+
+<!-- Componente Modal Modular de Impresión Masiva -->
+<PrintBulkModal
+    bind:isOpen={isBulkPrintModalOpen}
+    {activeTab}
+    items={profesoresDisponibles}
+    on:executeBulkPrint={handleExecuteBulkPrint}
+/>

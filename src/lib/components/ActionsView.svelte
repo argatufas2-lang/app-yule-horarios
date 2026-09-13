@@ -122,7 +122,7 @@
         ];
     }
 
-    // Consultar profesores desde Supabase ordenados strictly de la A a la Z
+    // Consultar profesores desde Supabase ordenados estrictamente de la A a la Z
     async function fetchProfesores(curso: string) {
         loading = true;
         try {
@@ -346,12 +346,8 @@
         console.log('Acción: Control de Jornada');
     }
 
-    function handleImprimirHorario() {
-        // Manejado internamente en ActionToolbar
-    }
-
-    function handleImprimirTodos() {
-        console.log('Acción: Imprimir Todos');
+    function handleExecuteBulkPrint(event: CustomEvent<{ selectedIds: string[] }>) {
+        console.log('Ejecutando impresión masiva de IDs:', event.detail.selectedIds);
     }
 
     function handleAdministracion() {
@@ -385,8 +381,7 @@
             on:selectCiclo={handleSelectCiclo}
             on:finDeCurso={handleFinDeCurso}
             on:controlJornada={handleControlJornada}
-            on:imprimirHorario={handleImprimirHorario}
-            on:imprimirTodos={handleImprimirTodos}
+            on:executeBulkPrint={handleExecuteBulkPrint}
             on:administracion={handleAdministracion}
             on:importarAsc={handleImportarAsc}
         />
