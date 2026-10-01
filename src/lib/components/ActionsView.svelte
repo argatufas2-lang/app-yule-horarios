@@ -95,14 +95,6 @@
             return;
         }
 
-        if (activeTab !== 'profesorado') {
-            activeTab = 'profesorado';
-            timeSlots = await fetchTimeSlots('profesorado');
-            if (profesoresDisponibles.length === 0) {
-                profesoresDisponibles = await fetchProfesores(selectedCurso);
-            }
-        }
-
         selectedEntityId = entityId;
         const reqId = ++activeRequestId;
         loadingSessions = true;
@@ -127,10 +119,8 @@
             aulasDisponibles
         );
 
-        // Si la petición es obsoleta por haber cambiado de entidad/pestaña en el ínterin, se descarta
         if (reqId !== activeRequestId) return;
 
-        // Forzar reactividad de Svelte mediante una nueva referencia
         teacherScheduleGrid = { ...newGrid };
         lastLoadedEntityId = entityId;
         loadingSessions = false;
