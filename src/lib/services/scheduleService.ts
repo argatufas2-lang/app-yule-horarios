@@ -551,3 +551,28 @@ export async function fetchSessionsForEntity(
         return {};
     }
 }
+
+export interface TipoJornadaItem {
+    id?: string | number;
+    nombre?: string;
+    codigo?: string;
+    minutos_lectivos?: number | null;
+    minutos_no_lectivos?: number | null;
+    horas_lectivas?: number | null;
+    horas_no_lectivas?: number | null;
+}
+
+export async function fetchTiposJornada(): Promise<TipoJornadaItem[]> {
+    try {
+        const { data, error } = await supabase
+            .from('tipos_jornada')
+            .select('*');
+
+        if (!error && data) {
+            return data;
+        }
+    } catch (e) {
+        console.error('Error al consultar tipos de jornada:', e);
+    }
+    return [];
+}

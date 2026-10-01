@@ -24,9 +24,11 @@
         fetchProfesores,
         fetchAulas,
         fetchSessionsForEntity,
+        fetchTiposJornada,
         type TimeSlotItem,
         type EntityOption,
-        type GridSessionCell
+        type GridSessionCell,
+        type TipoJornadaItem
     } from '$lib/services/scheduleService';
 
     const dispatch = createEventDispatcher<{
@@ -132,6 +134,7 @@
 
         totalProfesoradoCount = await fetchTotalProfesorado(selectedCurso);
         timeSlots = await fetchTimeSlots(activeTab);
+        tiposJornada = await fetchTiposJornada();
 
         try {
             const rawActividades = await getAdminActividades(selectedCurso);
@@ -202,12 +205,42 @@
         ? formatJornada(currentTeacher.jornada) === 'JC'
         : false;
 
-    // Cálculo dinámico del resumen de jornada para el profesor actual
+    let tiposJornada: TipoJornadaItem[] = [];
+
+    // Obtención dinámica del objetivo de minutos según el registro en `tipos_jornada` de Supabase
+    $: targetJornadaInfo = (() => {
+        if (!currentTeacher?.jornada) {
+            return { minutosLectivos: 900, minutosNoLectivos: 480 };
+        }
+        const teacherJornadaNorm = String(currentTeacher.jornada).trim().toLowerCase();
+
+        const matched = tiposJornada.find((tj) => {
+            const nameNorm = String(tj.nombre || tj.codigo || '').trim().toLowerCase();
+            return nameNorm === teacherJornadaNorm ||
+                   teacherJornadaNorm.includes(nameNorm) ||
+                   nameNorm.includes(teacherJornadaNorm);
+        });
+
+        if (matched) {
+            const minL = matched.minutos_lectivos ?? (matched.horas_lectivas ? Number(matched.horas_lectivas) * 60 : null);
+            const minNL = matched.minutos_no_lectivos ?? (matched.horas_no_lectivas ? Number(matched.horas_no_lectivas) * 60 : null);
+            if (minL !== null && minNL !== null) {
+                return { minutosLectivos: Number(minL), minutosNoLectivos: Number(minNL) };
+            }
+        }
+
+        const isJC = formatJornada(currentTeacher.jornada) === 'JC';
+        return {
+            minutosLectivos: isJC ? 900 : 450,
+            minutosNoLectivos: isJC ? 480 : 240
+        };
+    })();
+
+    // Cálculo dinámico del resumen de jornada
     $: scheduleSummary = (() => {
-        const isJC = isJornadaCompleta;
         const config = {
-            minutosLectivosObjetivo: isJC ? 900 : 450, // 15h JC / 7h 30m parcial
-            minutosNoLectivosObjetivo: isJC ? 480 : 240 // 8h JC / 4h parcial
+            minutosLectivosObjetivo: targetJornadaInfo.minutosLectivos,
+            minutosNoLectivosObjetivo: targetJornadaInfo.minutosNoLectivos
         };
         const catMap = actividadesDisponibles.map(a => ({ nombre: a.nombre, es_lectiva: Boolean(a.es_lectiva) }));
         return calculateScheduleSummary(teacherSessionsList, config, catMap);
@@ -507,7 +540,7 @@
                     </p>
                 </div>
                 <div class="bg-slate-50 dark:bg-gray-700 px-3 py-1 rounded-lg border border-slate-200 dark:border-gray-600 text-xs font-semibold text-slate-700 dark:text-gray-300 print:text-[8px] print:py-0 print:px-1.5 print:border">
-                    Objetivo Oficial: <span class="text-sky-700 dark:text-sky-300 font-bold">{isJornadaCompleta ? '23h 00m' : '11h 30m'}</span>
+                    Objetivo Oficial: <span class="text-sky-700 dark:text-sky-300 font-bold">{formatMinutes(targetJornadaInfo.minutosLectivos + targetJornadaInfo.minutosNoLectivos)}</span>
                 </div>
             </div>
 
@@ -517,7 +550,7 @@
                     <div>
                         <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas Lectivas</span>
                         <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasLectivasFormatted}</strong>
-                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {isJornadaCompleta ? '15h 00m' : '7h 30m'}</span>
+                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {formatMinutes(targetJornadaInfo.minutosLectivos)}</span>
                     </div>
                     <div class="w-9 h-9 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
                         📚
@@ -529,7 +562,7 @@
                     <div>
                         <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas No Lectivas</span>
                         <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasNoLectivasFormatted}</strong>
-                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {isJornadaCompleta ? '8h 00m' : '4h 00m'}</span>
+                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {formatMinutes(targetJornadaInfo.minutosNoLectivos)}</span>
                     </div>
                     <div class="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
                         📝
@@ -541,7 +574,7 @@
                     <div>
                         <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Total Asignado</span>
                         <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasTotalesFormatted}</strong>
-                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Total Jornada: {isJornadaCompleta ? '23h 00m' : '11h 30m'}</span>
+                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Total Jornada: {formatMinutes(targetJornadaInfo.minutosLectivos + targetJornadaInfo.minutosNoLectivos)}</span>
                     </div>
                     <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
                         ⏱️
