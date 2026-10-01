@@ -99,7 +99,7 @@
 			teacherRows = rows;
 		} catch (error) {
 			console.error('Error cargando datos de control de jornada:', error);
-		} fontally {
+		} finally {
 			loading = false;
 		}
 	}
