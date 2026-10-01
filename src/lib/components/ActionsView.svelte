@@ -264,7 +264,7 @@
         selectedEntityId = '';
         try {
             await loadDataForCurrentTab();
-        } finally {
+        } fontally {
             isChangingTab = false;
         }
     }
@@ -497,23 +497,23 @@
                     </div>
                 </div>
             {:else}
-                <div class="flex flex-wrap items-center justify-center gap-4 text-center sm:text-left print:gap-2">
+                <div class="flex flex-wrap items-center justify-center gap-3 text-center sm:text-left print:gap-2">
                     <div class="h-10 sm:h-12 flex items-center justify-center overflow-hidden shrink-0 print:h-7">
                         <img src="/Logo.png" alt="Ganivet Logo" class="h-10 sm:h-12 w-auto object-contain print:h-7" on:error={handleImageError} />
                     </div>
-                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight print:text-lg">
-                        {currentClassroom?.nombre ? currentClassroom.nombre.toUpperCase() : (loading ? 'CARGANDO AULAS...' : 'SIN AULAS DISPONIBLES')}
-                    </h2>
-                    <div class="flex flex-wrap items-center gap-1.5">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-950 dark:bg-sky-950 dark:text-sky-100 border border-sky-300 dark:border-sky-800 print:text-[9px] print:py-0.5 print:px-2">
-                            🧑‍🏫 Tutor/a: {currentTutor ? currentTutor.nombre : 'Sin asignar'}
-                        </span>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200/60 print:text-[9px] print:py-0.5 print:px-2">
-                            {currentClassroom?.edificio || 'Edificio Principal'}
-                        </span>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 dark:text-slate-300 border border-slate-200 print:text-[9px] print:py-0.5 print:px-2">
-                            Capacidad: {currentClassroom?.capacidad || 'Estándar'}
-                        </span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight print:text-lg">
+                            {currentClassroom?.nombre ? currentClassroom.nombre.toUpperCase() : (loading ? 'CARGANDO AULAS...' : 'SIN AULAS DISPONIBLES')}
+                        </h2>
+                        {#if currentTutor}
+                            <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-gray-100 uppercase tracking-tight print:text-lg flex items-center gap-2">
+                                <span class="text-slate-400 dark:text-gray-500 font-light">•</span>
+                                {currentTutor.nombre.toUpperCase()}
+                                <span class="text-xs sm:text-sm font-bold text-sky-800 dark:text-sky-300 bg-sky-100 dark:bg-sky-950/80 px-2.5 py-0.5 rounded-full border border-sky-300 dark:border-sky-800 normal-case tracking-normal">
+                                    Tutor/a
+                                </span>
+                            </span>
+                        {/if}
                     </div>
                 </div>
             {/if}
@@ -535,81 +535,84 @@
                 classroomId={selectedEntityId}
                 selectedEntityId={selectedEntityId}
                 gridData={teacherScheduleGrid}
+                {timeSlots}
                 {showDebug}
                 onCellClick={handleCellClick}
             />
         {/if}
 
         <!-- Bloque de Resumen Inferior -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 space-y-3 print:border-none print:p-0 print:shadow-none print:bg-transparent print:mt-1">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-700 gap-2 print:pb-0.5 print:mb-0.5 print:border-b">
-                <div>
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-gray-100 print:text-[10px]">
-                        Resumen Horario y Balance de Jornada
-                    </h3>
-                    <p class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[8px]">
-                        Tipo de Jornada: <strong class="text-slate-800 dark:text-gray-200">{currentTeacher?.jornada || 'Jornada completa'}</strong>
-                    </p>
+        {#if activeTab === 'profesorado'}
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 space-y-3 print:border-none print:p-0 print:shadow-none print:bg-transparent print:mt-1">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-700 gap-2 print:pb-0.5 print:mb-0.5 print:border-b">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-gray-100 print:text-[10px]">
+                            Resumen Horario y Balance de Jornada
+                        </h3>
+                        <p class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[8px]">
+                            Tipo de Jornada: <strong class="text-slate-800 dark:text-gray-200">{currentTeacher?.jornada || 'Jornada completa'}</strong>
+                        </p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-gray-700 px-3 py-1 rounded-lg border border-slate-200 dark:border-gray-600 text-xs font-semibold text-slate-700 dark:text-gray-300 print:text-[8px] print:py-0 print:px-1.5 print:border">
+                        Objetivo Oficial: <span class="text-sky-700 dark:text-sky-300 font-bold">{formatMinutes(targetJornadaInfo.minutosLectivos + targetJornadaInfo.minutosNoLectivos)}</span>
+                    </div>
                 </div>
-                <div class="bg-slate-50 dark:bg-gray-700 px-3 py-1 rounded-lg border border-slate-200 dark:border-gray-600 text-xs font-semibold text-slate-700 dark:text-gray-300 print:text-[8px] print:py-0 print:px-1.5 print:border">
-                    Objetivo Oficial: <span class="text-sky-700 dark:text-sky-300 font-bold">{formatMinutes(targetJornadaInfo.minutosLectivos + targetJornadaInfo.minutosNoLectivos)}</span>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 print:grid-cols-4 print:gap-1.5">
+                    <!-- Horas Lectivas -->
+                    <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
+                        <div>
+                            <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas Lectivas</span>
+                            <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasLectivasFormatted}</strong>
+                            <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {formatMinutes(targetJornadaInfo.minutosLectivos)}</span>
+                        </div>
+                        <div class="w-9 h-9 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
+                            📚
+                        </div>
+                    </div>
+
+                    <!-- Horas No Lectivas -->
+                    <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
+                        <div>
+                            <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas No Lectivas</span>
+                            <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasNoLectivasFormatted}</strong>
+                            <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {formatMinutes(targetJornadaInfo.minutosNoLectivos)}</span>
+                        </div>
+                        <div class="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
+                            📝
+                        </div>
+                    </div>
+
+                    <!-- Total Asignado -->
+                    <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
+                        <div>
+                            <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Total Asignado</span>
+                            <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasTotalesFormatted}</strong>
+                            <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Total Jornada: {formatMinutes(targetJornadaInfo.minutosLectivos + targetJornadaInfo.minutosNoLectivos)}</span>
+                        </div>
+                        <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
+                            ⏱️
+                        </div>
+                    </div>
+
+                    <!-- Balance Horario -->
+                    <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
+                        <div>
+                            <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Balance Horario</span>
+                            <strong class="text-lg font-bold {scheduleSummary.balanceTotalMinutos >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} mt-0.5 block print:text-[10px]">
+                                {scheduleSummary.balanceTotalFormatted}
+                            </strong>
+                            <span class="text-[11px] {scheduleSummary.balanceTotalMinutos === 0 ? 'text-emerald-600 dark:text-emerald-400' : scheduleSummary.balanceTotalMinutos > 0 ? 'text-sky-600 dark:text-sky-400' : 'text-amber-600 dark:text-amber-400'} font-medium print:text-[7px]">
+                                {scheduleSummary.balanceTotalMinutos === 0 ? 'Jornada equilibrada' : scheduleSummary.balanceTotalMinutos > 0 ? 'Exceso asignado' : 'Horas pendientes'}
+                            </span>
+                        </div>
+                        <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
+                            ⚖️
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 print:grid-cols-4 print:gap-1.5">
-                <!-- Horas Lectivas -->
-                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
-                    <div>
-                        <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas Lectivas</span>
-                        <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasLectivasFormatted}</strong>
-                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {formatMinutes(targetJornadaInfo.minutosLectivos)}</span>
-                    </div>
-                    <div class="w-9 h-9 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
-                        📚
-                    </div>
-                </div>
-
-                <!-- Horas No Lectivas -->
-                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
-                    <div>
-                        <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas No Lectivas</span>
-                        <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasNoLectivasFormatted}</strong>
-                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Objetivo: {formatMinutes(targetJornadaInfo.minutosNoLectivos)}</span>
-                    </div>
-                    <div class="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
-                        📝
-                    </div>
-                </div>
-
-                <!-- Total Asignado -->
-                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
-                    <div>
-                        <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Total Asignado</span>
-                        <strong class="text-lg font-bold text-slate-800 dark:text-gray-100 mt-0.5 block print:text-[10px]">{scheduleSummary.horasTotalesFormatted}</strong>
-                        <span class="text-[11px] text-slate-500 dark:text-gray-400 print:text-[7px]">Total Jornada: {formatMinutes(targetJornadaInfo.minutosLectivos + targetJornadaInfo.minutosNoLectivos)}</span>
-                    </div>
-                    <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
-                        ⏱️
-                    </div>
-                </div>
-
-                <!-- Balance Horario -->
-                <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
-                    <div>
-                        <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Balance Horario</span>
-                        <strong class="text-lg font-bold {scheduleSummary.balanceTotalMinutos >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} mt-0.5 block print:text-[10px]">
-                            {scheduleSummary.balanceTotalFormatted}
-                        </strong>
-                        <span class="text-[11px] {scheduleSummary.balanceTotalMinutos === 0 ? 'text-emerald-600 dark:text-emerald-400' : scheduleSummary.balanceTotalMinutos > 0 ? 'text-sky-600 dark:text-sky-400' : 'text-amber-600 dark:text-amber-400'} font-medium print:text-[7px]">
-                            {scheduleSummary.balanceTotalMinutos === 0 ? 'Jornada equilibrada' : scheduleSummary.balanceTotalMinutos > 0 ? 'Exceso asignado' : 'Horas pendientes'}
-                        </span>
-                    </div>
-                    <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base print:w-5 print:h-5 print:text-[10px]">
-                        ⚖️
-                    </div>
-                </div>
-            </div>
-        </div>
+        {/if}
 
     </main>
 
