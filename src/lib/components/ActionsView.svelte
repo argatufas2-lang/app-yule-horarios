@@ -264,7 +264,7 @@
         selectedEntityId = '';
         try {
             await loadDataForCurrentTab();
-        } fontally {
+        } finally {
             isChangingTab = false;
         }
     }
