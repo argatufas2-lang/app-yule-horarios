@@ -1,8 +1,6 @@
 import { supabase } from './supabaseClient';
 import type { Teacher, TimeSlot, Session } from '../types/schedule';
 
-<<<<<<< HEAD
-=======
 export interface ActividadCatalogoItem {
 	nombre: string;
 	es_lectiva: boolean;
@@ -23,7 +21,6 @@ export async function getActividadesCatalogo(curso: string): Promise<ActividadCa
 	return (data as ActividadCatalogoItem[]) || [];
 }
 
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 export async function getTeachers(curso: string): Promise<Teacher[]> {
 	const { data, error } = await supabase
 		.from('profesores')
@@ -54,11 +51,8 @@ export async function getTimeSlots(): Promise<TimeSlot[]> {
 }
 
 export async function getSessionsForTeacher(curso: string, profesorNombre: string): Promise<Session[]> {
-<<<<<<< HEAD
-=======
 	if (!profesorNombre) return [];
 
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 	const { data, error } = await supabase
 		.from('sesiones')
 		.select('*')
@@ -70,8 +64,6 @@ export async function getSessionsForTeacher(curso: string, profesorNombre: strin
 		throw new Error(`Error al obtener las sesiones del profesor: ${error.message}`);
 	}
 
-<<<<<<< HEAD
-=======
 	return ((data as Session[]) || []).map((s) => ({
 		...s,
 		minutos: s.minutos ?? 45
@@ -92,7 +84,6 @@ export async function getSessionsForClassroom(curso: string, aulaNombre: string)
 		throw new Error(`Error al obtener las sesiones del aula: ${error.message}`);
 	}
 
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 	return (data as Session[]) || [];
 }
 

@@ -25,32 +25,15 @@ export interface ScheduleSummary {
  */
 export function formatMinutes(minutes: number): string {
 	const isNegative = minutes < 0;
-<<<<<<< HEAD
-	const absMinutes = Math.abs(minutes);
-	const hours = Math.floor(absMinutes / 60);
-	const mins = absMinutes % 60;
-=======
 	const totalRounded = Math.round(Math.abs(minutes));
 	const hours = Math.floor(totalRounded / 60);
 	const mins = totalRounded % 60;
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 	
 	const formatted = `${hours}h ${mins}m`;
 	return isNegative ? `-${formatted}` : formatted;
 }
 
 /**
-<<<<<<< HEAD
- * Determina si una sesión se considera lectiva o no lectiva.
- */
-export function isLectivaSession(session: Session): boolean {
-	if (!session.actividad) return false;
-	const actLower = session.actividad.toLowerCase();
-	// Si la actividad indica explícitamente no lectiva o guardia/recreo/coordinación
-	if (actLower.includes('no lectiva') || actLower.includes('recreo') || actLower.includes('coordinacion')) {
-		return false;
-	}
-=======
  * Normaliza cadenas de texto quitando tildes, diacríticos, mayúsculas y espacios sobrantes.
  */
 function normalizeText(text: string | null | undefined): string {
@@ -134,7 +117,6 @@ export function isLectivaSession(
 	}
 
 	// 4. Por defecto se considera lectiva
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 	return true;
 }
 
@@ -143,23 +125,12 @@ export function isLectivaSession(
  */
 export function calculateScheduleSummary(
 	sessions: Session[],
-<<<<<<< HEAD
-	jornadaConfig: JornadaConfig
-=======
 	jornadaConfig: JornadaConfig,
 	actividadesCatalogo?: Array<{ nombre: string; es_lectiva: boolean }>
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 ): ScheduleSummary {
 	let minutosLectivos = 0;
 	let minutosNoLectivos = 0;
 
-<<<<<<< HEAD
-	for (const session of sessions) {
-		const mins = session.minutos ?? 0;
-		if (mins <= 0) continue;
-
-		if (isLectivaSession(session)) {
-=======
 	const franjasProcesadas = new Map<string, Session>();
 
 	for (const session of sessions) {
@@ -206,7 +177,6 @@ export function calculateScheduleSummary(
 		if (mins <= 0) continue;
 
 		if (isLectivaSession(session, actividadesCatalogo)) {
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 			minutosLectivos += mins;
 		} else {
 			minutosNoLectivos += mins;
