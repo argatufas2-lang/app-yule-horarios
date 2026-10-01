@@ -114,7 +114,22 @@
 		dispatch('close');
 	}
 
+	let filtroBalance: 'todos' | 'exceso' | 'equilibrado' | 'pendiente' = 'todos';
+
+	function toggleFiltroBalance(tipo: 'exceso' | 'equilibrado' | 'pendiente') {
+		filtroBalance = filtroBalance === tipo ? 'todos' : tipo;
+	}
+
+	// Métricas globales sobre el total de profesores cargados
+	$: totalExceso = teacherRows.filter((r) => r.summary.balanceTotalMinutos > 0).length;
+	$: totalEquilibrado = teacherRows.filter((r) => r.summary.balanceTotalMinutos === 0).length;
+	$: totalPendiente = teacherRows.filter((r) => r.summary.balanceTotalMinutos < 0).length;
+
 	$: filteredRows = teacherRows.filter((r) => {
+		if (filtroBalance === 'exceso' && r.summary.balanceTotalMinutos <= 0) return false;
+		if (filtroBalance === 'equilibrado' && r.summary.balanceTotalMinutos !== 0) return false;
+		if (filtroBalance === 'pendiente' && r.summary.balanceTotalMinutos >= 0) return false;
+
 		if (!searchTerm) return true;
 		const term = searchTerm.toLowerCase().trim();
 		return (
@@ -122,11 +137,6 @@
 			(r.teacher.perfil && r.teacher.perfil.toLowerCase().includes(term))
 		);
 	});
-
-	// Métricas dinámicas para las tarjetas superiores de resumen
-	$: totalExceso = filteredRows.filter((r) => r.summary.balanceTotalMinutos > 0).length;
-	$: totalEquilibrado = filteredRows.filter((r) => r.summary.balanceTotalMinutos === 0).length;
-	$: totalPendiente = filteredRows.filter((r) => r.summary.balanceTotalMinutos < 0).length;
 </script>
 
 {#if isOpen}
@@ -176,40 +186,52 @@
 				</div>
 			</div>
 
-			<!-- Tarjetas de Resumen Global -->
+			<!-- Tarjetas de Resumen Global Interactivas -->
 			<div class="px-6 pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
 				<!-- Tarjeta Exceso de Horas -->
-				<div class="bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 rounded-xl p-3 flex items-center justify-between">
+				<button
+					type="button"
+					on:click={() => toggleFiltroBalance('exceso')}
+					class="text-left rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer border {filtroBalance === 'exceso' ? 'bg-sky-100 dark:bg-sky-900 border-sky-500 shadow-md ring-2 ring-sky-400' : 'bg-sky-50 dark:bg-sky-950/40 border-sky-200 dark:border-sky-800 hover:border-sky-400'}"
+				>
 					<div>
 						<span class="block text-[11px] font-extrabold uppercase tracking-wider text-sky-800 dark:text-sky-300">Exceso de Horas</span>
-						<span class="text-xs text-sky-600 dark:text-sky-400 font-medium">Balance &gt; 0 min</span>
+						<span class="text-xs text-sky-600 dark:text-sky-400 font-medium">Balance &gt; 0 min {filtroBalance === 'exceso' ? '✓' : ''}</span>
 					</div>
 					<div class="text-2xl font-black text-sky-900 dark:text-sky-100 bg-sky-200/60 dark:bg-sky-900 px-3 py-1 rounded-lg">
 						{totalExceso}
 					</div>
-				</div>
+				</button>
 
 				<!-- Tarjeta Jornada Equilibrada -->
-				<div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 flex items-center justify-between">
+				<button
+					type="button"
+					on:click={() => toggleFiltroBalance('equilibrado')}
+					class="text-left rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer border {filtroBalance === 'equilibrado' ? 'bg-emerald-100 dark:bg-emerald-900 border-emerald-500 shadow-md ring-2 ring-emerald-400' : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 hover:border-emerald-400'}"
+				>
 					<div>
 						<span class="block text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Jornada Equilibrada</span>
-						<span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Balance = 0 min</span>
+						<span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Balance = 0 min {filtroBalance === 'equilibrado' ? '✓' : ''}</span>
 					</div>
 					<div class="text-2xl font-black text-emerald-900 dark:text-emerald-100 bg-emerald-200/60 dark:bg-emerald-900 px-3 py-1 rounded-lg">
 						{totalEquilibrado}
 					</div>
-				</div>
+				</button>
 
 				<!-- Tarjeta Horas Pendientes -->
-				<div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-3 flex items-center justify-between">
+				<button
+					type="button"
+					on:click={() => toggleFiltroBalance('pendiente')}
+					class="text-left rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer border {filtroBalance === 'pendiente' ? 'bg-amber-100 dark:bg-amber-900 border-amber-500 shadow-md ring-2 ring-amber-400' : 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800 hover:border-amber-400'}"
+				>
 					<div>
 						<span class="block text-[11px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300">Horas Pendientes</span>
-						<span class="text-xs text-amber-600 dark:text-amber-400 font-medium">Balance &lt; 0 min</span>
+						<span class="text-xs text-amber-600 dark:text-amber-400 font-medium">Balance &lt; 0 min {filtroBalance === 'pendiente' ? '✓' : ''}</span>
 					</div>
 					<div class="text-2xl font-black text-amber-900 dark:text-amber-100 bg-amber-200/60 dark:bg-amber-900 px-3 py-1 rounded-lg">
 						{totalPendiente}
 					</div>
-				</div>
+				</button>
 			</div>
 
 			<!-- Body / Table -->

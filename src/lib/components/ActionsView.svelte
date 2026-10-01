@@ -85,13 +85,21 @@
     let teacherSessionsList: Session[] = [];
 
     // Carga explícita de entidad con control estricto de petición asíncrona
-    async function switchEntity(entityId: string) {
+    export async function switchEntity(entityId: string) {
         if (!entityId) {
             teacherScheduleGrid = {};
             teacherSessionsList = [];
             selectedEntityId = '';
             lastLoadedEntityId = '';
             return;
+        }
+
+        if (activeTab !== 'profesorado') {
+            activeTab = 'profesorado';
+            timeSlots = await fetchTimeSlots('profesorado');
+            if (profesoresDisponibles.length === 0) {
+                profesoresDisponibles = await fetchProfesores(selectedCurso);
+            }
         }
 
         selectedEntityId = entityId;
@@ -125,6 +133,10 @@
         teacherScheduleGrid = { ...newGrid };
         lastLoadedEntityId = entityId;
         loadingSessions = false;
+    }
+
+    $: if (selectedEntityId && selectedEntityId !== lastLoadedEntityId && !loading) {
+        switchEntity(selectedEntityId);
     }
 
     // Cargar los datos correspondientes según la pestaña y el curso activo
