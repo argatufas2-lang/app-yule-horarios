@@ -5,6 +5,10 @@ export interface ProfesorRecord {
     nombre: string;
     perfil: string | null;
     jornada: string | null;
+<<<<<<< HEAD
+=======
+    clase_base?: string | null;
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
     curso_escolar: string | null;
     orden?: number | null;
 }
@@ -26,6 +30,20 @@ export interface AulaRecord {
     curso_escolar: string | null;
 }
 
+<<<<<<< HEAD
+=======
+export interface TramoHorarioRecord {
+    id: number;
+    franja: string;
+    minutos_maximos: number;
+    nombre?: string | null;
+    hora_inicio?: string | null;
+    hora_fin?: string | null;
+    es_lectivo?: boolean | null;
+    orden?: number | null;
+}
+
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 // --- PROFESORES ---
 export async function getAdminProfesores(curso: string): Promise<ProfesorRecord[]> {
     const { data, error } = await supabase
@@ -157,3 +175,49 @@ export async function deleteAdminAula(id: string): Promise<void> {
 
     if (error) throw new Error(`Error al eliminar aula: ${error.message}`);
 }
+<<<<<<< HEAD
+=======
+
+// --- TRAMOS HORARIOS PRIMARIA ---
+export async function getAdminTramosHorarios(): Promise<TramoHorarioRecord[]> {
+    const { data, error } = await supabase
+        .from('tramos_horarios_primaria')
+        .select('*')
+        .order('orden', { ascending: true });
+
+    if (error) throw new Error(`Error al cargar tramos horarios: ${error.message}`);
+    return data || [];
+}
+
+export async function createAdminTramoHorario(tramo: Omit<TramoHorarioRecord, 'id'>): Promise<TramoHorarioRecord> {
+    const { data, error } = await supabase
+        .from('tramos_horarios_primaria')
+        .insert([tramo])
+        .select()
+        .single();
+
+    if (error) throw new Error(`Error al crear tramo horario: ${error.message}`);
+    return data;
+}
+
+export async function updateAdminTramoHorario(id: number, updates: Partial<TramoHorarioRecord>): Promise<TramoHorarioRecord> {
+    const { data, error } = await supabase
+        .from('tramos_horarios_primaria')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) throw new Error(`Error al actualizar tramo horario: ${error.message}`);
+    return data;
+}
+
+export async function deleteAdminTramoHorario(id: number): Promise<void> {
+    const { error } = await supabase
+        .from('tramos_horarios_primaria')
+        .delete()
+        .eq('id', id);
+
+    if (error) throw new Error(`Error al eliminar tramo horario: ${error.message}`);
+}
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)

@@ -25,6 +25,11 @@
     export let profesoresDisponibles: { id: string; nombre: string; rol?: string; labelText?: string }[] = [];
     export let activeTab: 'profesorado' | 'aulas' = 'profesorado';
 
+<<<<<<< HEAD
+=======
+    $: void selectedProfesor;
+
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
     let isBulkPrintModalOpen: boolean = false;
 
     function toggleCiclo(ciclo: 'LH' | 'HH') {
@@ -207,13 +212,21 @@
                     ⚙️ Administración
                 </button>
 
+<<<<<<< HEAD
                 <!-- Importar PDF aSc -->
+=======
+                <!-- Importar Excel / Staging -->
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
                 <button 
                     type="button"
                     on:click={() => dispatch('importarAsc')}
                     class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-white text-xs font-semibold bg-sky-500 hover:bg-sky-600 active:bg-sky-700 transition-colors shadow-xs"
                 >
+<<<<<<< HEAD
                     📄 Importar PDF aSc
+=======
+                    📄 Importar Excel / Staging
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
                 </button>
             </div>
         </div>
