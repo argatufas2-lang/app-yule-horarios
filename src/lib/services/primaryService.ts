@@ -1,6 +1,29 @@
 import { supabase } from './supabaseClient';
 import type { Teacher, TimeSlot, Session } from '../types/schedule';
 
+<<<<<<< HEAD
+=======
+export interface ActividadCatalogoItem {
+	nombre: string;
+	es_lectiva: boolean;
+	curso_escolar?: string;
+}
+
+export async function getActividadesCatalogo(curso: string): Promise<ActividadCatalogoItem[]> {
+	const { data, error } = await supabase
+		.from('actividades')
+		.select('nombre, es_lectiva, curso_escolar')
+		.eq('curso_escolar', curso);
+
+	if (error) {
+		console.error('Error fetching actividades catalogo:', error);
+		return [];
+	}
+
+	return (data as ActividadCatalogoItem[]) || [];
+}
+
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 export async function getTeachers(curso: string): Promise<Teacher[]> {
 	const { data, error } = await supabase
 		.from('profesores')
@@ -31,6 +54,11 @@ export async function getTimeSlots(): Promise<TimeSlot[]> {
 }
 
 export async function getSessionsForTeacher(curso: string, profesorNombre: string): Promise<Session[]> {
+<<<<<<< HEAD
+=======
+	if (!profesorNombre) return [];
+
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 	const { data, error } = await supabase
 		.from('sesiones')
 		.select('*')
@@ -42,6 +70,29 @@ export async function getSessionsForTeacher(curso: string, profesorNombre: strin
 		throw new Error(`Error al obtener las sesiones del profesor: ${error.message}`);
 	}
 
+<<<<<<< HEAD
+=======
+	return ((data as Session[]) || []).map((s) => ({
+		...s,
+		minutos: s.minutos ?? 45
+	}));
+}
+
+export async function getSessionsForClassroom(curso: string, aulaNombre: string): Promise<Session[]> {
+	if (!aulaNombre) return [];
+
+	const { data, error } = await supabase
+		.from('sesiones')
+		.select('*')
+		.eq('curso_escolar', curso)
+		.or(`aula.eq.${aulaNombre},clase.eq.${aulaNombre}`);
+
+	if (error) {
+		console.error('Error fetching sessions for classroom:', error);
+		throw new Error(`Error al obtener las sesiones del aula: ${error.message}`);
+	}
+
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 	return (data as Session[]) || [];
 }
 
