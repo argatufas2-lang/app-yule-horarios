@@ -77,6 +77,7 @@
 
     let loading: boolean = false;
     let loadingSessions: boolean = false;
+    let isChangingTab: boolean = false;
     let lastLoadedEntityId: string = '';
 
     // Tramos horarios y Sesiones dinámicas
@@ -135,7 +136,7 @@
         loadingSessions = false;
     }
 
-    $: if (selectedEntityId && selectedEntityId !== lastLoadedEntityId && !loading) {
+    $: if (selectedEntityId && selectedEntityId !== lastLoadedEntityId && !loading && !isChangingTab) {
         switchEntity(selectedEntityId);
     }
 
@@ -187,7 +188,9 @@
         }
 
         selectedEntityId = targetId;
-        await switchEntity(targetId);
+        if (targetId) {
+            await switchEntity(targetId);
+        }
     }
 
     onMount(() => {
@@ -263,12 +266,17 @@
     // Al cambiar de pestaña
     async function handleTabChange(tab: 'profesorado' | 'aulas') {
         if (activeTab === tab) return;
+        isChangingTab = true;
         activeRequestId++;
         activeTab = tab;
         teacherScheduleGrid = {};
         lastLoadedEntityId = '';
         selectedEntityId = '';
-        await loadDataForCurrentTab();
+        try {
+            await loadDataForCurrentTab();
+        } finally {
+            isChangingTab = false;
+        }
     }
 
     function handleEntitySelectChange(event: Event) {
