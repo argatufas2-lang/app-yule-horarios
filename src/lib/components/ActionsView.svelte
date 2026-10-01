@@ -207,33 +207,35 @@
 
     let tiposJornada: TipoJornadaItem[] = [];
 
-    // Obtención dinámica del objetivo de minutos según el registro en `tipos_jornada` de Supabase
     $: targetJornadaInfo = (() => {
         if (!currentTeacher?.jornada) {
-            return { minutosLectivos: 900, minutosNoLectivos: 480 };
+            return { minutosLectivos: 0, minutosNoLectivos: 0 };
         }
+
         const teacherJornadaNorm = String(currentTeacher.jornada).trim().toLowerCase();
 
-        const matched = tiposJornada.find((tj) => {
-            const nameNorm = String(tj.nombre || tj.codigo || '').trim().toLowerCase();
-            return nameNorm === teacherJornadaNorm ||
-                   teacherJornadaNorm.includes(nameNorm) ||
-                   nameNorm.includes(teacherJornadaNorm);
+        const matched = tiposJornada.find((tj: any) => {
+            const dbName = String(tj.nombre || '').trim().toLowerCase();
+            if (!dbName) return false;
+
+            return dbName === teacherJornadaNorm ||
+                   teacherJornadaNorm.includes(dbName) ||
+                   dbName.includes(teacherJornadaNorm);
         });
 
         if (matched) {
-            const minL = matched.minutos_lectivos ?? (matched.horas_lectivas ? Number(matched.horas_lectivas) * 60 : null);
-            const minNL = matched.minutos_no_lectivos ?? (matched.horas_no_lectivas ? Number(matched.horas_no_lectivas) * 60 : null);
-            if (minL !== null && minNL !== null) {
-                return { minutosLectivos: Number(minL), minutosNoLectivos: Number(minNL) };
+            const horasLectivas = Number(matched.objetivo_lectivas_horas);
+            const horasNoLectivas = Number(matched.objetivo_no_lectivas_horas);
+
+            if (!isNaN(horasLectivas) && !isNaN(horasNoLectivas)) {
+                return {
+                    minutosLectivos: Math.round(horasLectivas * 60),
+                    minutosNoLectivos: Math.round(horasNoLectivas * 60)
+                };
             }
         }
 
-        const isJC = formatJornada(currentTeacher.jornada) === 'JC';
-        return {
-            minutosLectivos: isJC ? 900 : 450,
-            minutosNoLectivos: isJC ? 480 : 240
-        };
+        return { minutosLectivos: 0, minutosNoLectivos: 0 };
     })();
 
     // Cálculo dinámico del resumen de jornada
