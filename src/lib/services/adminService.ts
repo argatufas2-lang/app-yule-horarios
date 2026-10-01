@@ -5,10 +5,7 @@ export interface ProfesorRecord {
     nombre: string;
     perfil: string | null;
     jornada: string | null;
-<<<<<<< HEAD
-=======
     clase_base?: string | null;
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
     curso_escolar: string | null;
     orden?: number | null;
 }
@@ -30,8 +27,6 @@ export interface AulaRecord {
     curso_escolar: string | null;
 }
 
-<<<<<<< HEAD
-=======
 export interface TramoHorarioRecord {
     id: number;
     franja: string;
@@ -43,7 +38,6 @@ export interface TramoHorarioRecord {
     orden?: number | null;
 }
 
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 // --- PROFESORES ---
 export async function getAdminProfesores(curso: string): Promise<ProfesorRecord[]> {
     const { data, error } = await supabase
@@ -175,8 +169,6 @@ export async function deleteAdminAula(id: string): Promise<void> {
 
     if (error) throw new Error(`Error al eliminar aula: ${error.message}`);
 }
-<<<<<<< HEAD
-=======
 
 // --- TRAMOS HORARIOS PRIMARIA ---
 export async function getAdminTramosHorarios(): Promise<TramoHorarioRecord[]> {
@@ -220,4 +212,3 @@ export async function deleteAdminTramoHorario(id: number): Promise<void> {
 
     if (error) throw new Error(`Error al eliminar tramo horario: ${error.message}`);
 }
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
