@@ -1,20 +1,12 @@
-<<<<<<< HEAD
-import { supabase } from '$lib/services/supabaseClient';
-import { formatJornada, formatRol } from '$lib/utils/formatters';
-=======
 import { supabase } from './supabaseClient';
 import { formatJornada, formatRol } from '../utils/formatters';
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 
 export interface TimeSlotItem {
     orden: number;
     time: string;
     label: string;
     type: 'lectiva' | 'recreo' | 'comedor' | 'presencia';
-<<<<<<< HEAD
-=======
     minutos_maximos?: number;
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 }
 
 export interface EntityOption {
@@ -22,10 +14,7 @@ export interface EntityOption {
     nombre: string;
     rol?: string;
     jornada?: string;
-<<<<<<< HEAD
-=======
     clase_base?: string;
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
     edificio?: string;
     capacidad?: string;
     labelText?: string;
@@ -36,12 +25,6 @@ export interface GridSessionCell {
     actividad: string;
     clase?: string;
     aula?: string;
-<<<<<<< HEAD
-    rawData?: any;
-}
-
-export function fallbackTimeSlots(): TimeSlotItem[] {
-=======
     profesor?: string;
     apoyoProfesor?: string;
     esTutor?: boolean;
@@ -117,7 +100,6 @@ export function fallbackTimeSlotsProfesorado(): TimeSlotItem[] {
 
 // Estructura horaria especial de Aulas
 export function fallbackTimeSlotsAulas(): TimeSlotItem[] {
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
     return [
         { orden: 0, time: '09:00 - 09:30', label: '1ª Franja', type: 'lectiva' },
         { orden: 1, time: '09:30 - 10:30', label: '2ª Franja', type: 'lectiva' },
@@ -125,15 +107,6 @@ export function fallbackTimeSlotsAulas(): TimeSlotItem[] {
         { orden: 3, time: '11:00 - 11:30', label: 'ATSEDENALDIA', type: 'recreo' },
         { orden: 4, time: '11:30 - 12:30', label: '4ª Franja', type: 'lectiva' },
         { orden: 5, time: '12:30 - 13:00', label: '5ª Franja', type: 'lectiva' },
-<<<<<<< HEAD
-        { orden: 6, time: '13:00 - 14:00', label: '6ª Franja', type: 'lectiva' },
-        { orden: 7, time: '14:00 - 15:00', label: 'BAZKARIA', type: 'comedor' },
-        { orden: 8, time: '15:00 - 16:00', label: '7ª Franja', type: 'lectiva' },
-        { orden: 9, time: '16:00 - 17:00', label: '8ª Franja', type: 'lectiva' }
-    ];
-}
-
-=======
         { orden: 6, time: '13:00 - 15:00', label: 'BAZKARIA', type: 'comedor' },
         { orden: 7, time: '15:00 - 16:00', label: '7ª Franja (Tarde)', type: 'lectiva' },
         { orden: 8, time: '16:00 - 17:00', label: '8ª Franja (Tarde)', type: 'lectiva' }
@@ -144,7 +117,6 @@ export function fallbackTimeSlots(): TimeSlotItem[] {
     return fallbackTimeSlotsProfesorado();
 }
 
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 // Consultar el total global de profesores en Supabase
 export async function fetchTotalProfesorado(selectedCurso: string): Promise<number> {
     try {
@@ -162,54 +134,6 @@ export async function fetchTotalProfesorado(selectedCurso: string): Promise<numb
     return 0;
 }
 
-<<<<<<< HEAD
-// Consultar tramos horarios de Supabase
-export async function fetchTimeSlots(): Promise<TimeSlotItem[]> {
-    try {
-        const { data, error } = await supabase
-            .from('tramos_horarios_primaria')
-            .select('*')
-            .order('orden', { ascending: true });
-
-        if (error) {
-            console.error('Error al cargar tramos horarios de Supabase:', error.message);
-            return fallbackTimeSlots();
-        }
-
-        if (data && data.length > 0) {
-            return data.map((t: { hora_inicio?: string; hora_fin?: string; tipo?: string; descripcion?: string; orden?: number; id: number }) => {
-                const horaInicio = t.hora_inicio ? t.hora_inicio.slice(0, 5) : '';
-                const horaFin = t.hora_fin ? t.hora_fin.slice(0, 5) : '';
-                const timeRange = `${horaInicio} - ${horaFin}`;
-                
-                let type: 'lectiva' | 'recreo' | 'comedor' | 'presencia' = 'lectiva';
-                const tipoLower = (t.tipo || '').toLowerCase();
-                const descLower = (t.descripcion || '').toLowerCase();
-
-                if ((timeRange.includes('11:00') && timeRange.includes('11:30')) || tipoLower.includes('recreo') || descLower.includes('recreo') || descLower.includes('atseden')) {
-                    type = 'recreo';
-                } else if ((timeRange.includes('14:00') && timeRange.includes('15:00')) || tipoLower.includes('comedor') || descLower.includes('comedor') || descLower.includes('bazkaria')) {
-                    type = 'comedor';
-                } else if (tipoLower.includes('guardia') || descLower.includes('zaintza') || tipoLower.includes('presencia')) {
-                    type = 'presencia';
-                }
-
-                return {
-                    orden: t.orden ?? 0,
-                    time: timeRange,
-                    label: t.descripcion || `Franja ${t.orden ?? 0}`,
-                    type
-                };
-            });
-        }
-    } catch (e) {
-        console.error('Error al obtener tramos horarios:', e);
-    }
-    return fallbackTimeSlots();
-}
-
-// Consultar profesores desde Supabase ordenados strictly de la A a la Z
-=======
 // Consultar tramos horarios diferenciados según la pestaña activa
 export async function fetchTimeSlots(activeTab: 'profesorado' | 'aulas' = 'profesorado'): Promise<TimeSlotItem[]> {
     if (activeTab === 'profesorado') {
@@ -275,7 +199,6 @@ export async function fetchTimeSlots(activeTab: 'profesorado' | 'aulas' = 'profe
 }
 
 // Consultar profesores desde Supabase ordenados alfabéticamente
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 export async function fetchProfesores(curso: string): Promise<EntityOption[]> {
     try {
         const { data, error } = await supabase
@@ -290,11 +213,7 @@ export async function fetchProfesores(curso: string): Promise<EntityOption[]> {
         }
 
         if (data && data.length > 0) {
-<<<<<<< HEAD
-            const mapped: EntityOption[] = data.map((p: { id: string | number; nombre: string; jornada?: string; perfil?: string }) => {
-=======
             const mapped: EntityOption[] = data.map((p: { id: string | number; nombre: string; jornada?: string; perfil?: string; clase_base?: string }) => {
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
                 const nombreFormatted = p.nombre ? p.nombre.toUpperCase() : '';
                 const jornadaFormatted = formatJornada(p.jornada);
                 const rolFormatted = formatRol(p.perfil);
@@ -304,10 +223,7 @@ export async function fetchProfesores(curso: string): Promise<EntityOption[]> {
                     nombre: p.nombre,
                     rol: p.perfil || 'Especialista',
                     jornada: p.jornada || 'Jornada completa',
-<<<<<<< HEAD
-=======
                     clase_base: p.clase_base || undefined,
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
                     labelText: `${nombreFormatted} - ${jornadaFormatted} - ${rolFormatted}`
                 };
             });
@@ -324,17 +240,6 @@ export async function fetchProfesores(curso: string): Promise<EntityOption[]> {
 // Consultar aulas/grupos desde Supabase ordenados alfabéticamente
 export async function fetchAulas(curso: string): Promise<EntityOption[]> {
     try {
-<<<<<<< HEAD
-        const { data, error } = await supabase
-            .from('aulas')
-            .select('*')
-            .eq('curso_escolar', curso)
-            .order('name', { ascending: true });
-
-        if (error) {
-            console.error('Error al cargar aulas desde Supabase:', error.message);
-            return [];
-=======
         let { data, error } = await supabase
             .from('aulas')
             .select('*')
@@ -348,16 +253,11 @@ export async function fetchAulas(curso: string): Promise<EntityOption[]> {
             if (!fallback.error && fallback.data) {
                 data = fallback.data;
             }
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
         }
 
         if (data && data.length > 0) {
             const mapped: EntityOption[] = data.map((a: { id: string | number; name?: string; nombre?: string; code?: string; edificio?: string; capacidad?: string }) => {
-<<<<<<< HEAD
-                const aulaNombre = a.name || a.nombre || a.code || `Aula ${a.id}`;
-=======
                 const aulaNombre = a.nombre || a.name || a.code || `Aula ${a.id}`;
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
                 return {
                     id: String(a.id),
                     nombre: aulaNombre,
@@ -376,76 +276,17 @@ export async function fetchAulas(curso: string): Promise<EntityOption[]> {
     return [];
 }
 
-<<<<<<< HEAD
-// Consultar las sesiones reales del profesor o aula seleccionada
-=======
 // Consultar sesiones para un profesor o aula respetando la vista activa
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 export async function fetchSessionsForEntity(
     entityId: string,
     activeTab: 'profesorado' | 'aulas',
     selectedCurso: string,
-<<<<<<< HEAD
-    profesoresDisponibles: EntityOption[]
-=======
     profesoresDisponibles: EntityOption[],
     aulasDisponibles: EntityOption[] = []
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 ): Promise<Record<string, Record<string, GridSessionCell>>> {
     if (!entityId) return {};
 
     try {
-<<<<<<< HEAD
-        const selectedProfesorObj = profesoresDisponibles.find(p => p.id === entityId);
-        const profesorNombre = selectedProfesorObj?.nombre;
-
-        let query = supabase
-            .from('sesiones')
-            .select('*')
-            .eq('curso_escolar', selectedCurso);
-
-        if (activeTab === 'profesorado') {
-            if (profesorNombre) {
-                query = query.eq('profesor_nombre', profesorNombre);
-            } else {
-                query = query.eq('professor_id', entityId);
-            }
-        } else {
-            query = query.eq('classroom_id', entityId);
-        }
-
-        const { data, error } = await query;
-
-        if (error) {
-            console.error('Error al consultar sesiones:', error.message);
-            return {};
-        }
-
-        const grid: Record<string, Record<string, GridSessionCell>> = {
-            [entityId]: {}
-        };
-
-        if (data && data.length > 0) {
-            data.forEach((s: { id?: string | number; dia?: number; day_of_week?: number; franja?: number; tramo_id?: number; orden?: number; actividad?: string; group_name?: string; clase?: string; grupo?: string; aula?: string }) => {
-                const rawDia = s.dia ?? s.day_of_week ?? 0;
-                const dia = Number(rawDia);
-                const franja = Number(s.franja ?? s.tramo_id ?? s.orden ?? 0);
-                const key = `${dia}_${franja}`;
-
-                grid[entityId][key] = {
-                    id: s.id ? String(s.id) : undefined,
-                    actividad: s.actividad || s.group_name || 'Asignatura',
-                    clase: s.clase || s.grupo || '',
-                    aula: s.aula || '',
-                    rawData: s
-                };
-            });
-        }
-
-        return grid;
-    } catch (e) {
-        console.error('Error procesando sesiones:', e);
-=======
         const selectedProfesorObj = profesoresDisponibles.find(p => p.id === entityId || p.nombre === entityId);
         const profesorNombre = selectedProfesorObj?.nombre || (activeTab === 'profesorado' ? entityId : undefined);
 
@@ -707,7 +548,6 @@ export async function fetchSessionsForEntity(
 
     } catch (err) {
         console.error('Excepción en fetchSessionsForEntity:', err);
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
         return {};
     }
 }

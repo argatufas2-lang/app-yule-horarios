@@ -1,10 +1,5 @@
 <script lang="ts">
 	import ActionsView from '$lib/components/ActionsView.svelte';
-<<<<<<< HEAD
-</script>
-
-<ActionsView />
-=======
 	import ControlJornadaModal from '$lib/components/ControlJornadaModal.svelte';
 	import ImportStagingModal from '$lib/components/import/ImportStagingModal.svelte';
 	import AdminModal from '$lib/components/AdminModal.svelte';
@@ -92,4 +87,3 @@
 		on:close={handleCloseAdmin}
 	/>
 </div>
->>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
