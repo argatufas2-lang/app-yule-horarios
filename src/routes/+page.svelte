@@ -8,15 +8,13 @@
 	let showImportModal: boolean = false;
 	let isAdminOpen: boolean = false;
 	let selectedCurso: string = '2026-2027';
+	let selectedEntityId: string = '';
 
-	let profesoresLista: Array<{
-		id: string;
-		nombre: string;
-		jornada?: string | null;
-		horasLectivas?: number;
-		horasNoLectivas?: number;
-		balanceMinutos?: number;
-	}> = [];
+	function handleSelectTeacherFromModal(event: CustomEvent<{ id: string; nombre: string }>) {
+		if (event.detail && event.detail.id) {
+			selectedEntityId = String(event.detail.id);
+		}
+	}
 
 	function handleControlJornada() {
 		isControlJornadaOpen = true;
@@ -58,6 +56,7 @@
 	<main class="max-w-7xl mx-auto p-4">
 		<!-- Contenido principal con selectores y vistas de cuadrante/horarios -->
 		<ActionsView
+			bind:selectedEntityId={selectedEntityId}
 			on:controlJornada={handleControlJornada}
 			on:importarAsc={handleOpenImportStaging}
 			on:administracion={handleOpenAdmin}
@@ -70,6 +69,7 @@
 		bind:isOpen={isControlJornadaOpen}
 		{selectedCurso}
 		on:close={handleCloseControlJornada}
+		on:selectTeacher={handleSelectTeacherFromModal}
 	/>
 
 	<!-- Módulo / Modal de Importación Staging -->
