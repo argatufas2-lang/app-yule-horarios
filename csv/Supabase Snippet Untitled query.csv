@@ -1,0 +1,18 @@
+tabla_origen,columna_origen,tipo_clave,tabla_destino,columna_destino
+actividades,id,PRIMARY KEY,actividades,id
+ajustes_minutos,profesor_nombre,FOREIGN KEY,profesores,nombre
+ajustes_minutos,id,PRIMARY KEY,ajustes_minutos,id
+anotaciones,profesor_nombre,FOREIGN KEY,profesores,nombre
+anotaciones,id,PRIMARY KEY,anotaciones,id
+aulas,id,PRIMARY KEY,aulas,id
+historial_importaciones,id,PRIMARY KEY,historial_importaciones,id
+infantil_actividades,id,PRIMARY KEY,infantil_actividades,id
+infantil_clases,id,PRIMARY KEY,infantil_clases,id
+infantil_profesores,id,PRIMARY KEY,infantil_profesores,id
+infantil_sesiones_horario,profesor_nombre,FOREIGN KEY,infantil_profesores,nombre
+infantil_sesiones_horario,id,PRIMARY KEY,infantil_sesiones_horario,id
+profesores,id,PRIMARY KEY,profesores,id
+roles_profesor,id,PRIMARY KEY,roles_profesor,id
+sesiones,id,PRIMARY KEY,sesiones,id
+tipos_jornada,id,PRIMARY KEY,tipos_jornada,id
+tramos_horarios_primaria,id,PRIMARY KEY,tramos_horarios_primaria,id

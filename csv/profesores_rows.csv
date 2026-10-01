@@ -1,0 +1,39 @@
+id,nombre,perfil,clase_base,jornada,orden,created_at,curso_escolar
+03121a27-0b87-4f31-9521-2243e10661f6,KEVIN,Tutor,5A,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+0a92c392-37f2-491e-8261-2f8cdcdf541e,SARA,Especialista,,2/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+1fb0fa0c-00dd-4f78-a6b2-2fec62fc2824,Yuleren 1/3,Especialista,,1/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+2444ac71-d79d-4f4d-b303-769b76ae2545,LEIRE A.,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+3729e7be-cca7-4724-98ba-a5b803864fc3,Andoni,Tutor,4A,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+38a5e63a-de20-4885-932b-b71d3ca9668e,PABLO PT,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+3fbdbbfa-2e61-4017-a9bc-2181aeacc2e0,Amaia 1/3,Especialista,,1/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+41737224-8a5a-4390-bb33-9432ceed4450,EDURNE,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+42573674-643a-47d7-a487-2337719970ac,Arrate PT,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+472f6956-48fe-4d53-8a72-619547048c22,CRISTINA PT,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+52cede2f-5a9b-4643-bb9f-c6519e3720a6,Unai,Tutor,6D,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+5817cd25-238a-4071-810b-b5e164dd30e4,ANE,Especialista,,1/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+5e04e161-08cd-4b1d-86c7-bedb9c186476,CRISTINA,Tutor,6B,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+66ec3637-c358-4a89-9893-1bce02bdf153,Jessica,Tutor,2A,2/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+6943f999-c0ce-45df-b5a8-d2d0d404b171,Jessicaren 1/3,Tutor,2A,1/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+817b7fa9-6e15-4d3c-82b8-69983231e028,AINHOA,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+82ddf417-9928-43ae-a197-3bbc3f9d3ba0,ALBA,Especialista,,2/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+868db26c-1466-4454-8f8d-925b5d261283,Nagore,Tutor,1B,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+8f2c1beb-d71c-4ab7-8070-690cfde3f1f2,Jone,Tutor,2D,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+93329500-feb8-443b-aafe-707f79c36757,Eba,Tutor,4B,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+93628cee-7a26-495c-932c-644a073187f8,YULE,Especialista,,2/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+94616ffc-2047-45a3-801a-1204a91b97ba,Yurena,Tutor,4D,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+97f13b3b-aed4-44bb-8f3b-e45521f3b300,MIREN Ma PT,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+9b1d5fe9-990c-449b-ae5c-d755f567dfff,ANDER M,Tutor,6A,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+9b814e98-1a5f-4ecb-9ae6-79deec8e1a07,Itziar,Tutor,3A,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+a3144fc2-2802-4506-ad21-e8e0ed1c00d5,Tutorea,Tutor,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+a32b0677-3443-410a-a50e-f3b3b3f86a4f,IKER PT,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+aabcd31d-0293-4d95-9bb2-f56d1089bf9a,JON PT,Especialista,,2/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+b4abcd32-4d76-410c-b759-6de44cd1256c,Danel,Tutor,1A,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+bf6ddeec-5c9d-437b-b98c-b9a072d270d9,Ander P.,Tutor,6C,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+c60feab3-0821-48b5-b01e-daa9c32f82b8,Edurne R PT,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+c8c5822f-6cfc-4ddb-9801-5bc65916995a,AMAIA,Especialista,,2/3 de jornada,0,2026-09-11 22:01:31.925715+00,2026-2027
+dd356dc4-2d0d-4cf5-aa2a-380b1c2015b7,MARKEL,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+e1ce18b0-8960-4742-be87-8a60f1a10a3f,Mikel,Tutor,2B,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+eda754b6-5e02-4e3a-a25c-492add2aa79b,Iker,Tutor,3B,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+eec5bc02-f14d-4e7c-a1eb-d5cf29d97abb,IZARO,Especialista,,Media jornada (1/2),0,2026-09-11 22:01:31.925715+00,2026-2027
+f27c02df-9f8b-46c3-98d8-ab93d3da3873,LEIRE Z.,Especialista,,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027
+f3b52287-a884-4a53-a0b8-2853c0e3c066,Gema,Tutor,5B,Jornada completa,0,2026-09-11 22:01:31.925715+00,2026-2027

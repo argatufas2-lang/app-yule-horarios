@@ -1,0 +1,287 @@
+ 📄 Informe Completo de Auditoría y Radiografía de Arquitectura (SvelteKit +   ┃
+┃ Supabase)                                                                     ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+---------------------------------------------------------------------------------
+
+
+1. Mapa Jerárquico y Estructura de Archivos                                      
+
+                                                                                 
+src/                                                                             
+├── routes/                                                                      
+│   └── +page.svelte                      --> Vista contenedora principal de la  
+app. Gestiona estados globales de modales y el selector de curso escolar.        
+├── types/                                                                       
+│   └── database.ts                       --> Definiciones de interfaces         
+TypeScript que representan el esquema de tablas en Supabase.                     
+└── lib/                                                                         
+    ├── constants/                                                               
+    │   └── calendar.ts                   --> Definición de constantes para los  
+días de la semana en euskera (0=Astelehena..4=Ostirala).                         
+    ├── types/                                                                   
+    │   └── schedule.ts                   --> Tipos del dominio de horarios:     
+Session, Teacher, TimeSlot, Classroom, etc.                                      
+    ├── utils/                                                                   
+    │   └── formatters.ts                 --> Funciones puras de formateo visual 
+para roles (Tutor/Especialista) y jornadas (JC/Parcial).                         
+    ├── repositories/                                                            
+    │   └── scheduleRepository.ts         --> Repositorio para operaciones CRUD  
+directas sobre la tabla 'sesiones' con joins de Supabase.                        
+    ├── services/                                                                
+    │   ├── supabaseClient.ts             --> Inicializador y singleton del      
+cliente SDK de Supabase.                                                         
+    │   ├── primaryService.ts             --> Servicio central de lecturas y     
+escrituras de profesores, sesiones y sincronización de 'ajustes_minutos'.        
+    │   ├── scheduleService.ts            --> Motor de transformación,           
+normalización y mapeo de sesiones hacia las cuadrículas UI (profesores y aulas). 
+    │   ├── adminService.ts               --> Servicio para administración CRUD  
+de profesores, actividades, aulas y tramos horarios.                             
+    │   ├── importService.ts              --> Servicio para gestión de borradores
+en 'sesiones_staging' e implantación hacia 'sesiones'.                           
+    │   ├── excelImportService.ts         --> Parser de archivos Excel/HTML      
+(bloques aSc y matrices) y generador de borradores staging.                      
+    │   └── timeCalculationService.ts    --> Motor de cálculo y balance de horas 
+lectivas/no lectivas respecto a objetivos de jornada.                            
+    └── components/                                                              
+        ├── ActionsView.svelte            --> Vista principal de trabajo.        
+Contiene la barra de herramientas, selector de profesor/aula y montado de        
+rejillas.                                                                        
+        ├── ActionToolbar.svelte          --> Barra de acciones superiores       
+(cambio de curso, botones para modales de administración e importación).         
+        ├── ScheduleGrid.svelte           --> Componente de cuadrícula semanal   
+genérico con renderizado por celdas.                                             
+        ├── TeacherScheduleGrid.svelte    --> Contenedor wrapper para la         
+cuadrícula del profesorado con compatibilidad de debug.                          
+        ├── ClassroomScheduleGrid.svelte  --> Contenedor wrapper para la         
+cuadrícula de aulas y grupos.                                                    
+        ├── ScheduleRenderer.svelte       --> Renderizador base de tabla semanal 
+que aplica los estilos visuales de cada celda.                                   
+        ├── SesionModal.svelte            --> [MODAL ACTIVO] Editor modal de     
+celdas para asignación de actividad, grupo, aula, rol y ajuste de duración.      
+        ├── SessionEditModal.svelte       --> [OBSOLETO] Formulario de edición   
+modal alternativo no enlazado en la vista activa.                                
+        ├── AdminModal.svelte             --> Modal de gestión administrativa    
+para mantenimiento de tablas auxiliares.                                         
+        ├── ControlJornadaModal.svelte    --> Modal de auditoría y desglose de   
+horas asignadas vs objetivos por profesor.                                       
+        └── import/                                                              
+            ├── ImportStagingModal.svelte --> Modal interactivo para carga,      
+previsualización, edición e implantación de archivos Excel.                      
+            ├── StagingScheduleGrid.svelte--> Rejilla de vista previa para       
+horarios en borradores de staging.                                               
+            └── excelCellParser.ts        --> Parser de contenido multilínea para
+celdas de Excel (separación de actividad y clase).                               
+                                                                                 
+
+---------------------------------------------------------------------------------
+
+
+2. Inventario de Componentes UI y Modales                                        
+
+A. Vistas y Cuadrículas Principales                                              
+
+1. ActionsView.svelte                                                            
+
+ • Propósito: Es la vista principal de la aplicación. Mantiene el estado de la   
+   pestaña activa (profesorado vs aulas), gestiona la selección del profesor o   
+   aula activa, orquesta las llamadas a la carga de datos y dispara el modal de  
+   edición de sesión.                                                            
+ • Props recibidas:                                                              
+    • selectedCurso: string (por defecto '2026-2027')                            
+    • selectedCiclo: 'LH' | 'HH' (por defecto 'LH')                              
+    • profesoresDisponibles: EntityOption[]                                      
+    • aulasDisponibles: EntityOption[]                                           
+    • actividadesDisponibles: Array<{ id; nombre; es_lectiva }>                  
+    • totalProfesoradoCount: number                                              
+    • selectedEntityId: string                                                   
+ • Eventos disparados: controlJornada, finDeCurso, importarAsc, selectCurso.     
+ • Servicios invocados: syncAllAjustesMinutosFromSessions,                       
+   syncDefaultAjustesMinutosForTeacher, fetchTotalProfesorado, fetchTimeSlots,   
+   getAdminActividades, fetchProfesores, fetchAulas, fetchSessionsForEntity,     
+   getAjusteMinutos, updateSession, createSession, upsertAjusteMinutos.          
+
+2. TeacherScheduleGrid.svelte / ScheduleRenderer.svelte                          
+
+ • Propósito: Muestra la rejilla semanal de 5 días (Lunes a Viernes) y 10 tramos 
+   horarios para un profesor. Maneja la asignación de colores y permite hacer    
+   clic en cualquier casilla para editarla.                                      
+ • Props recibidas: selectedEntityId, teacherId, classroomId, gridData,          
+   timeSlots, isJornadaCompleta, showDebug, onCellClick.                         
+ • Eventos/Callbacks: Ejecuta onCellClick(dayId, dayName, slot, session) para    
+   abrir la edición en ActionsView.                                              
+
+3. ClassroomScheduleGrid.svelte                                                  
+
+ • Propósito: Muestra el cuadrante semanal de ocupación de un aula o grupo con la
+   estructura horaria propia de aulas (9 tramos). Muestra actividades y          
+   profesores asignados.                                                         
+
+---------------------------------------------------------------------------------
+
+B. Modales de la Aplicación                                                      
+
+1. SesionModal.svelte (MODAL ACTIVO EN PRODUCCIÓN)                               
+
+ • Propósito: Permite crear, modificar o eliminar la asignación de una celda     
+   horaria. Permite seleccionar tipo de actividad (lectiva / no lectiva),        
+   asignatura, grupo/clase, aula, rol (Principal, PT, Laguntza, Eusle,           
+   Hezitzaile) y duración ajustada en minutos (ajusteMinutos y ajusteParte).     
+ • Props recibidas:                                                              
+    • isOpen: boolean                                                            
+    • profesorNombre: string                                                     
+    • dia: number | null, franja: number | null                                  
+    • diaNombre: string, franjaNombre: string                                    
+    • sesionData: { id, actividad, clase, aula, rol_aula, es_lectiva }           
+    • actividadesDisponibles: Array<...>                                         
+    • aulasDisponibles: Array<...>                                               
+    • maxMinutosFranja: number, ajusteMinutos: number, ajusteParte: 'inicio' |   
+      'final'                                                                    
+ • Eventos disparados: close, save, delete.                                      
+ • Servicios invocados: getAdminAulas (como fallback si no recibe la lista de    
+   aulas por prop).                                                              
+
+2. ImportStagingModal.svelte                                                     
+
+ • Propósito: Permite subir archivos de Excel (de aSc Timetables o matriz),      
+   procesar los borradores a la tabla sesiones_staging, previsualizarlos en tabla
+   o rejilla, editar campos en línea e implantar los resultados a la tabla       
+   sesiones.                                                                     
+ • Props recibidas: isOpen: boolean, selectedCurso: string.                      
+ • Eventos disparados: close, imported (retorna { count: number }).              
+ • Servicios invocados: processAndUploadExcel, getStagingRowsByBatch,            
+   updateStagingRow, implantarStaging, desecharStaging, vaciarTablaStaging.      
+
+3. ControlJornadaModal.svelte                                                    
+
+ • Propósito: Desglosa el cómputo global de horas asignadas a los profesores para
+   auditar excesos o defectos respecto a la jornada contratada.                  
+ • Props recibidas: isOpen: boolean, selectedCurso: string.                      
+ • Eventos disparados: close.                                                    
+
+4. AdminModal.svelte                                                             
+
+ • Propósito: Ofrece paneles CRUD para administrar directamente los catálogos    
+   base de la base de datos: Profesores, Actividades, Aulas y Tramos Horarios.   
+ • Props recibidas: isOpen: boolean, selectedCurso: string.                      
+ • Eventos disparados: close.                                                    
+
+5. SessionEditModal.svelte (OBSOLETO / DESUSO)                                   
+
+ • Estado: No está integrado en la vista activa (ActionsView.svelte). Es un      
+   componente legacy sustituido por SesionModal.svelte.                          
+
+---------------------------------------------------------------------------------
+
+
+3. Capa de Servicios y Lógica de Negocio                                         
+
+A. primaryService.ts                                                             
+
+ • getTeachers(curso): Consulta la tabla profesores filtrando por curso_escolar y
+   ordenando por orden.                                                          
+ • getTimeSlots(): Consulta los tramos de la tabla tramos_horarios_primaria      
+   ordenados por orden.                                                          
+ • getSessionsForTeacher(curso, profesorNombre): Carga las entradas de sesiones  
+   asignadas a un profesor.                                                      
+ • getSessionsForClassroom(curso, aulaNombre): Carga las entradas de sesiones    
+   filtrando por campo aula o clase para aislamiento del horario de aulas.       
+ • createSession(session) / updateSession(sessionId, updates) /                  
+   deleteSession(sessionId): Operaciones de escritura directa en la tabla        
+   sesiones.                                                                     
+ • getAjusteMinutos(profesorNombre, dia, franja): Consulta en ajustes_minutos    
+   para obtener minutos asignados y posición (inicio o final).                   
+ • upsertAjusteMinutos(ajuste): Inserta o actualiza un registro en               
+   ajustes_minutos.                                                              
+ • syncDefaultAjustesMinutosForTeacher(profesorNombre, cursoEscolar): Garantiza  
+   que las sesiones del profesor que no tengan registro explícito en             
+   ajustes_minutos se inicialicen con el tiempo por defecto del tramo horario.   
+ • syncAllAjustesMinutosFromSessions(cursoEscolar): Sincronización masiva inicial
+   en segundo plano.                                                             
+
+B. scheduleService.ts                                                            
+
+ • fetchSessionsForEntity(entityId, activeTab, selectedCurso, ...): Función      
+   encargada de descargar de forma paginada (en bloques de 1.000) todas las      
+   sesiones desde Supabase, aplicar la normalización de texto y construir la     
+   matriz indexada cellMap["${dia}_${franja}"] para que los componentes UI       
+   rendericen las celdas en $O(1)$.                                              
+ • fetchTimeSlots(activeTab): Carga los tramos de la base de datos o retorna     
+   fallbacks estáticos diferenciados para profesorado (10 tramos) y aulas (9     
+   tramos).                                                                      
+ • fetchProfesores(curso) / fetchAulas(curso): Carga y prepara las opciones de   
+   los selectores.                                                               
+
+C. importService.ts & excelImportService.ts                                      
+
+ • processAndUploadExcel(file, format, cursoEscolar): Parsea mediante la librería
+   XLSX o DOMParser el contenido del archivo subido, aplica parseExcelCellContent
+   para separar actividad/clase, consolida duetos por (profesor, dia, franja) e  
+   inserta los resultados en sesiones_staging.                                   
+ • implantarStaging(batchId, cursoEscolar, reemplazarExistentes): Lee las filas  
+   válidas de sesiones_staging e inserta los registros definitivos en la tabla   
+   sesiones. Si reemplazarExistentes es verdadero, limpia previamente las        
+   sesiones del curso.                                                           
+
+D. adminService.ts                                                               
+
+ • Métodos CRUD: Proporciona funciones directas para profesores, actividades,    
+   aulas y tramos_horarios_primaria.                                             
+
+E. timeCalculationService.ts                                                     
+
+ • calculateScheduleSummary(sessions, jornadaConfig): Recorre las sesiones de un 
+   profesor, acumula minutos lectivos y no lectivos basándose en la función      
+   isLectivaSession, y retorna los balances formateados en horas y minutos.      
+
+---------------------------------------------------------------------------------
+
+
+4. Flujo de Datos y Estado (Data Flow)                                           
+
+                                                                                 
+[ Supabase Database ]                                                            
+   │                                                                             
+   ├── Tablas Producción: profesores, actividades, aulas, sesiones,              
+ajustes_minutos                                                                  
+   └── Tabla Borrador: sesiones_staging                                          
+             │                                                                   
+             │ (Paginación / Selects)                                            
+             ▼                                                                   
+[ Capa de Servicios (lib/services/*) ]                                           
+   ├── scheduleService.ts      --> Normaliza texto, resuelve días/franjas y      
+construye el 'grid'                                                              
+   ├── primaryService.ts       --> Ejecuta CRUDs de sesiones y upserts de        
+ajustes_minutos                                                                  
+   └── importService.ts        --> Mueve bloques de Staging -> Producción        
+             │                                                                   
+             │ (Estado Reactivo Svelte)                                          
+             ▼                                                                   
+[ Componentes UI (lib/components/*) ]                                            
+   ├── ActionsView.svelte      --> Maneja 'selectedEntityId', 'activeTab' y abre 
+'SesionModal'                                                                    
+   ├── TeacherScheduleGrid     --> Renderiza matriz Lunes-Viernes                
+   └── SesionModal.svelte      --> Captura cambios del usuario                   
+             │                                                                   
+             │ (Eventos save/delete)                                             
+             ▼                                                                   
+[ Persistencia en Supabase ]                                                     
+   ├── updateSession() / createSession()  --> Guarda en 'sesiones'               
+   └── upsertAjusteMinutos()             --> Guarda en 'ajustes_minutos'         
+                                                                                 
+
+Pasos del Flujo de Datos:                                                        
+
+ 1 Inicio de la App: +page.svelte monta ActionsView.svelte.                      
+ 2 Carga Inicial: ActionsView ejecuta loadDataForCurrentTab(), la cual llama a   
+   fetchProfesores / fetchAulas y a fetchTimeSlots.                              
+ 3 Carga de Horario: Al seleccionar una entidad, se invoca                       
+   switchEntity(entityId). Se llama a fetchSessionsForEntity, procesando de forma
+   asíncrona paginada todas las sesiones. Las sesiones se normalizan en un mapa  
+   reactivo teacherScheduleGrid con claves de coordenadas ${dia}_${franja}.      
+ 4 Edición: Al hacer clic en una celda, handleCellClick obtiene los datos        
+   existentes y abre SesionModal.svelte.                                         
+ 5 Persistencia: Al guardar en el modal, ActionsView ejecuta secuencialmente     
+   createSession / updateSession en la tabla sesiones y upsertAjusteMinutos en   
+   ajustes_minutos. Tras la escritura, invalida la caché local y reejecuta       
+   switchEntity para refrescar los datos directamente desde la base de datos.    

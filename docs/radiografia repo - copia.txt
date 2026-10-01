@@ -1,0 +1,234 @@
+Aquí tienes la radiografía detallada de la aplicación basada en los archivos      
+disponibles en el repositorio:                                                    
+
+----------------------------------------------------------------------------------
+
+1. Visión General de la Aplicación                                                
+
+La aplicación es un gestor de horarios y asignaciones académicas (para            
+primaria/colegios) desarrollado con SvelteKit, TypeScript y Supabase. Permite     
+gestionar profesores, aulas, asignaturas, franjas horarias, ajustar minutos       
+lectivos/no lectivos, e importar/exportar la carga horaria a partir de plantillas 
+Excel en diversos formatos.                                                       
+
+----------------------------------------------------------------------------------
+
+2. Desglose de Archivos por Módulo y Funcionalidad                                
+
+📊 Servicios Principales y Repositorios (Acceso a Datos y Lógica)                 
+
+ 1 src/lib/services/primaryService.ts                                             
+    • ¿Qué hace?: Es el servicio central para la gestión del calendario principal 
+      de horarios. Consulta profesores, tramos horarios, sesiones de profesores o 
+      aulas, y catálogo de actividades. También calcula y sincroniza              
+      recortes/ajustes de minutos lectivos/no lectivos por tramo.                 
+    • ¿Gestión en la App?: Horario principal de profesores y aulas.               
+    • ¿Modifica la Base de Datos? SÍ.                                             
+       • updateSession: Modifica registros en sesiones (UPDATE).                  
+       • createSession: Inserta registros en sesiones (INSERT).                   
+       • deleteSession: Elimina sesiones de sesiones (DELETE).                    
+       • upsertAjusteMinutos: Inserta o actualiza ajustes en ajustes_minutos      
+         (UPSERT).                                                                
+       • syncDefaultAjustesMinutosForTeacher / syncAllAjustesMinutosFromSessions: 
+         Sincroniza y crea recortes automáticos de minutos en ajustes_minutos.    
+ 2 src/lib/services/adminService.ts                                               
+    • ¿Qué hace?: Proporciona las operaciones CRUD para los maestros/catálogos del
+      sistema (profesores, actividades/asignaturas, aulas y tramos horarios).     
+    • ¿Gestión en la App?: Panel de administración y mantenimiento de tablas      
+      maestras.                                                                   
+    • ¿Modifica la Base de Datos? SÍ.                                             
+       • Profesores (profesores): Inserta (createAdminProfesor), actualiza        
+         (updateAdminProfesor), elimina (deleteAdminProfesor).                    
+       • Actividades (actividades): Inserta (createAdminActividad), actualiza     
+         (updateAdminActividad), elimina (deleteAdminActividad).                  
+       • Aulas (aulas): Inserta (createAdminAula), actualiza (updateAdminAula),   
+         elimina (deleteAdminAula).                                               
+       • Tramos Horarios (tramos_horarios_primaria): Inserta                      
+         (createAdminTramoHorario), actualiza (updateAdminTramoHorario), elimina  
+         (deleteAdminTramoHorario).                                               
+ 3 src/lib/services/excelImportService.ts                                         
+    • ¿Qué hace?: Procesa y analiza (parsea) archivos Excel cargados por el       
+      usuario. Soporta formatos de matriz por profesor y periodos multilínea      
+      (HTML/Excel), limpiando celdas, extrayendo metadatos de profesores y        
+      mapeando días y tramos a índices numéricos.                                 
+    • ¿Gestión en la App?: Módulo de importación de datos desde Excel.            
+    • ¿Modifica la Base de Datos? SÍ (a través de processAndUploadExcel).         
+       • Sube las sesiones procesadas en lote a la tabla temporal/borrador        
+         sesiones_staging (INSERT).                                               
+ 4 src/lib/services/importService.ts                                              
+    • ¿Qué hace?: Controla el ciclo de vida de las sesiones en la tabla           
+      staging/borrador antes de ser definitivas. Permite consultar filas,         
+      editarlas en borrador, implantarlas al horario definitivo o descartarlas.   
+    • ¿Gestión en la App?: Revisión, edición e implantación de datos importados.  
+    • ¿Modifica la Base de Datos? SÍ.                                             
+       • updateStagingRow: Actualiza registros en sesiones_staging (UPDATE).      
+       • implantarStaging: Copia la información aprobada de sesiones_staging a la 
+         tabla definitiva sesiones (INSERT). Opcionalmente vacía o reemplaza      
+         sesiones previas.                                                        
+       • desecharStaging: Elimina un lote completo de sesiones_staging (DELETE).  
+       • vaciarTablaStaging: Borra todos los borradores en sesiones_staging       
+         (DELETE).                                                                
+ 5 src/lib/repositories/scheduleRepository.ts                                     
+    • ¿Qué hace?: Repositorio de consulta e interacciones directas con la base de 
+      datos para sesiones y sus relaciones (con join a actividades y aulas).      
+    • ¿Gestión en la App?: Consultas específicas del cuadrante y persistencia de  
+      sesiones.                                                                   
+    • ¿Modifica la Base de Datos? SÍ.                                             
+       • saveSession: Inserta nuevas sesiones en sesiones (INSERT).               
+       • deleteSession: Elimina sesiones en sesiones (DELETE).                    
+ 6 src/lib/services/timeCalculationService.ts                                     
+    • ¿Qué hace?: Contiene funciones puras para calcular balances de minutos/horas
+      lectivas, no lectivas y totales frente a los objetivos según el tipo de     
+      jornada.                                                                    
+    • ¿Gestión en la App?: Resumen de horas y cómputo horaria del profesorado.    
+    • ¿Modifica la Base de Datos? NO (Es puramente analítico en memoria).         
+
+----------------------------------------------------------------------------------
+
+🛠️ Utilidades, Tipos y Constantes                                                 
+
+ 7 src/types/database.ts & src/lib/types/schedule.ts                              
+    • ¿Qué hace?: Definen las interfaces TypeScript de las entidades del dominio  
+       (Session, Teacher, Classroom, TimeSlot, Actividad, etc.).                  
+     • ¿Modifica la Base de Datos? NO.                                            
+  8 src/lib/utils/formatters.ts                                                   
+     • ¿Qué hace?: Formatea tipos de jornada (JC / Completa) y roles/perfiles     
+       (Tutor / Especialista).                                                    
+     • ¿Modifica la Base de Datos? NO.                                            
+  9 src/lib/constants/calendar.ts & src/lib/components/import/excelCellParser.ts  
+     • ¿Qué hace?: Estructuras relativas a días de la semana y parseo de celdas   
+       específicas de Excel.                                                      
+     • ¿Modifica la Base de Datos? NO.                                            
+
+----------------------------------------------------------------------------------
+
+⚙️ Archivos Generados e Internos de SvelteKit (.svelte-kit/)                      
+
+ • .svelte-kit/generated/client/app.js, .svelte-kit/generated/server/internal.js, 
+   .svelte-kit/non-ambient.d.ts, .svelte-kit/types/src/routes/$types.d.ts:        
+    • ¿Qué hacen?: Archivos internos de rutas, tipos y runtime autogenerados por  
+      el framework SvelteKit.                                                     
+    • ¿Modifican la Base de Datos? NO.                                            
+
+----------------------------------------------------------------------------------
+
+3. Resumen de Tablas Afectadas en la BD Supabase                                  
+
+| Tabla en BD | Archivos que la modifican | Operaciones |                         
+
+| :--- | :--- | :--- |                                                            
+
+| sesiones | primaryService.ts, scheduleRepository.ts, importService.ts | INSERT, 
+UPDATE, DELETE |                                                                  
+
+| sesiones_staging | excelImportService.ts, importService.ts | INSERT, UPDATE,    
+DELETE |                                                                          
+
+| profesores | adminService.ts | INSERT, UPDATE, DELETE |                         
+
+| actividades | adminService.ts | INSERT, UPDATE, DELETE |                        
+
+| aulas | adminService.ts | INSERT, UPDATE, DELETE |                              
+
+| tramos_horarios_primaria | adminService.ts | INSERT, UPDATE, DELETE |           
+
+| ajustes_minutos | primaryService.ts | INSERT, UPDATE (UPSERT) |                 
+
+
+Tokens: 8.0k sent, 1.9k received. Cost: $0.01 message, $0.01 session.
+
+.svelte-kit\generated\client\app.js
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]: y     
+
+.svelte-kit\generated\server\internal.js
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+.svelte-kit\non-ambient.d.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+.svelte-kit\types\src\routes\$types.d.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\components\import\excelCellParser.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\constants\calendar.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\repositories\scheduleRepository.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\services\adminService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\services\excelImportService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\services\importService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\services\primaryService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\services\timeCalculationService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\types\schedule.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\utils\formatters.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\types\database.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+Para tener un panorama completo del frontend y los componentes visuales           
+principales (especialmente el renderizado de horarios, la navegación y las vistas 
+de usuario), sería muy conveniente añadir a la conversación los siguientes        
+componentes Svelte si se desea auditarlos o modificarlos:                         
+
+ • src/routes/+page.svelte                                                        
+ • src/routes/import/+page.svelte (o las rutas equivalentes dentro de src/routes/)
+ • src/lib/components/ScheduleGrid.svelte                                         
+ • src/lib/components/TeacherScheduleGrid.svelte                                  
+ • src/lib/components/ClassroomScheduleGrid.svelte                                
+ • src/lib/components/import/ImportStagingModal.svelte                            
+
+Actualmente no se requiere realizar cambios de código inmediatos. Si deseas       
+realizar alguna modificación específica en los archivos cargados, dime qué cambios
+necesitas y los aplicaré.                                                         
+
+
+Tokens: 22k sent, 184 received. Cost: $0.02 message, $0.03 session.
+
+src\lib\components\ClassroomScheduleGrid.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\components\ScheduleGrid.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+Warning: it's best to only add files that need changes to the chat.
+https://aider.chat/docs/troubleshooting/edit-errors.html
+
+src\lib\components\TeacherScheduleGrid.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\lib\components\import\ImportStagingModal.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+
+src\routes\+page.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:       
+Gracias por incluir los componentes adicionales. Con esto ya contamos con la vista
+principal, los cuadrantes de horarios (ClassroomScheduleGrid, ScheduleGrid,       
+TeacherScheduleGrid) y la interfaz de importación (ImportStagingModal).           
+
+Para completar completamente el mapa de archivos de la aplicación si fuera        
+necesario en el futuro, los únicos archivos restantes del código fuente serían:   
+
+ • src/lib/components/ActionsView.svelte                                          
+ • src/lib/components/AdminModal.svelte                                           
+ • src/lib/components/ControlJornadaModal.svelte                                  
+ • src/lib/components/ScheduleRenderer.svelte                                     
+ • src/lib/components/import/StagingScheduleGrid.svelte                           
+
+De momento tenemos acceso a todos los servicios clave, la gestión de base de      
+datos, el flujo de importación de archivos Excel y los visores de cuadrantes      
+principales.                                                                      

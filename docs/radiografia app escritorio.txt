@@ -1,0 +1,274 @@
+ 🔎 RADIOGRAFÍA COMPLETA DE LA APLICACIÓN                                       ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Ubicación: Escritorio/App Horarios Angel Ganivet                                  
+
+Tecnologías: SvelteKit, TypeScript, TailwindCSS, Supabase (PostgreSQL), SheetJS   
+(XLSX).                                                                           
+
+----------------------------------------------------------------------------------
+
+
+1. MÓDULO DE RUTAS Y VISTA PRINCIPAL                                              
+
+📄 src/routes/+page.svelte                                                        
+
+ • ¿Qué hace?: Es la página principal (/) de la aplicación. Actúa como el         
+   orquestador global de la interfaz, unificando los modals de control de jornada,
+   importación mediante staging y administración general.                         
+ • Gestión en la App: Vista principal y control de estado de ventanas emergentes  
+   (modals).                                                                      
+ • Base de Datos: NO interactúa directamente. Delega las acciones a sus           
+   componentes y servicios subyacentes.                                           
+
+----------------------------------------------------------------------------------
+
+
+2. COMPONENTES VISUALES Y CUADRANTES DE HORARIOS (src/lib/components/)            
+
+📄 src/lib/components/ActionsView.svelte                                          
+
+ • ¿Qué hace?: Contiene el panel superior y la vista central de la aplicación.    
+   Permite alternar entre la pestaña de Profesorado y Aulas y Grupos, seleccionar 
+   el profesor o aula activa, visualizar el perfil corporativo del docente,       
+   consultar el resumen dinámico del cómputo de horas (lectivas, no lectivas,     
+   total y balance) y abrir los modals correspondientes.                          
+ • Gestión en la App: Vista principal de interacción, barra de acciones y panel de
+   balance de jornada.                                                            
+ • Base de Datos: SÍ (a través de llamadas a primaryService y scheduleService).   
+    • Ejecuta syncAllAjustesMinutosFromSessions al cambiar de pestaña.            
+    • Llama a syncDefaultAjustesMinutosForTeacher al seleccionar un profesor.     
+    • Invoca updateSession, createSession y upsertAjusteMinutos al guardar cambios
+      desde la parrilla.                                                          
+
+📄 src/lib/components/ScheduleRenderer.svelte                                     
+
+ • ¿Qué hace?: Componente presentacional puro (protegido). Renderiza la tabla     
+   HTML/Tailwind del horario semanal (de Lunes a Viernes), con franjas fijos      
+   (Recreo/Atsedenaldia, Comida/Bazkaria, Presencia/Zaintza y Formakuntza).       
+   Soporta modo impresión y depuración visual (Debug).                            
+ • Gestión en la App: Renderizado visual accesible y print-friendly del cuadrante.
+ • Base de Datos: NO. Es un componente 100% puro y reactivo.                      
+
+📄 src/lib/components/TeacherScheduleGrid.svelte                                  
+
+ • ¿Qué hace?: Envoltorio adaptado para el cuadrante del profesorado. Recibe los  
+   datos indexados por profesor y calcula la franja/día adecuada pasando la lógica
+   de selección de celda al ScheduleRenderer.                                     
+ • Gestión en la App: Cuadrante específico de profesores.                         
+ • Base de Datos: NO.                                                             
+
+📄 src/lib/components/ClassroomScheduleGrid.svelte                                
+
+ • ¿Qué hace?: Envoltorio adaptado para el cuadrante de aulas. Mapea la presencia 
+   de docentes (destacando especialistas en cursiva o dejando en blanco si es el  
+   tutor) en la vista de aula.                                                    
+ • Gestión en la App: Cuadrante específico de aulas y espacios.                   
+ • Base de Datos: NO.                                                             
+
+📄 src/lib/components/ScheduleGrid.svelte                                         
+
+ • ¿Qué hace?: Componente alternativo de cuadrante para renderizar vistas         
+   genéricas o tabulares simples de horarios de profesores y aulas.               
+ • Gestión en la App: Renderizado alternativo de tablas de horario.               
+ • Base de Datos: NO.                                                             
+
+📄 src/lib/components/AdminModal.svelte                                           
+
+ • ¿Qué hace?: Módulo de administración global del colegio. Permite gestionar     
+   mediante pestañas:                                                             
+    1 Profesorado (crear, editar campos en línea, eliminar).                      
+    2 Asignaturas / Actividades (crear, editar, eliminar).                        
+    3 Aulas y Espacios (crear, editar, eliminar).                                 
+    4 Tramos Horarios de Primaria (crear, editar duración, eliminar).             
+    5 Ajustes personalizados de minutos por sesión y posición del tramo           
+      (inicio/final).                                                             
+ • Gestión en la App: Ventana modal de administración general.                    
+ • Base de Datos: SÍ. Invoca adminService y primaryService:                       
+    • Inserta, actualiza (UPDATE) y elimina (DELETE) registros en profesores,     
+      actividades, aulas y tramos_horarios_primaria.                              
+    • Guarda ajustes de duración mediante upsertAjusteMinutos en ajustes_minutos. 
+
+📄 src/lib/components/ControlJornadaModal.svelte                                  
+
+ • ¿Qué hace?: Modal de auditoría y control de horas. Lista a todos los profesores
+   del centro con su tipo de jornada (JC / Parcial), calculando y comparando las  
+   horas lectivas y no lectivas reales frente al objetivo oficial de 23h (o       
+   proporcional). Permite filtrado por nombre/especialidad.                       
+ • Gestión en la App: Panel de control de balance de jornada del claustro.        
+ • Base de Datos: NO directamente (lee los datos a través de primaryService).     
+
+----------------------------------------------------------------------------------
+
+
+3. MÓDULO DE IMPORTACIÓN EXCEL Y STAGING (src/lib/components/import/ y Servicios) 
+
+📄 src/lib/components/import/ImportStagingModal.svelte                            
+
+ • ¿Qué hace?: Modal completo para la importación masiva de horarios desde        
+   archivos Excel (formatos aSc Timetables y Matriz por profesor). Permite:       
+    • Elegir si se actualiza el curso activo o un nuevo curso lectivo.            
+    • Detectar y recuperar borradores pendientes.                                 
+    • Inspeccionar y editar en línea el borrador antes de llevarlo a producción.  
+    • Conmutar a vista de parrilla semanal (StagingScheduleGrid).                 
+    • Ejecutar la implantación definitiva con cuenta atrás de seguridad.          
+ • Gestión en la App: Proceso de ingesta y validación de horarios.                
+ • Base de Datos: SÍ.                                                             
+    • Carga archivos a sesiones_staging.                                          
+    • Modifica registros en sesiones_staging.                                     
+    • Transfiere datos de sesiones_staging a sesiones (con opción de reemplazo).  
+    • Desecha y vacía la tabla sesiones_staging.                                  
+
+📄 src/lib/components/import/StagingScheduleGrid.svelte                           
+
+ • ¿Qué hace?: Muestra una vista previa en formato de parrilla semanal del        
+   borrador que está almacenado en la tabla sesiones_staging para un profesor     
+   seleccionado.                                                                  
+ • Gestión en la App: Previsualización de horarios en staging.                    
+ • Base de Datos: NO.                                                             
+
+📄 src/lib/components/import/excelCellParser.ts                                   
+
+ • ¿Qué hace?: Utilidad que toma el texto bruto de las celdas de un Excel de aSc  
+   Timetables (con saltos de línea y múltiples datos) y lo separa limpiamente en  
+   la asignatura/actividad (línea 1) y la clase/aula/grupo (líneas siguientes).   
+ • Gestión en la App: Normalización del contenido de celdas importadas.           
+ • Base de Datos: NO.                                                             
+
+----------------------------------------------------------------------------------
+
+
+4. SERVICIOS DE LÓGICA DE NEGOCIO Y BASE DE DATOS (src/lib/services/)             
+
+📄 src/lib/services/primaryService.ts                                             
+
+ • ¿Qué hace?: Es la capa de servicios central para las operaciones habituales del
+   calendario lectivo y recortes de tiempo.                                       
+ • Gestión en la App: CRUD de sesiones de horario y control de ajustes_minutos.   
+ • Base de Datos: SÍ (Supabase):                                                  
+    • sesiones: Consultas (SELECT), actualización (updateSession -> UPDATE),      
+      creación (createSession -> INSERT), eliminación (deleteSession -> DELETE).  
+    • ajustes_minutos: Consultas (SELECT), inserción/actualización                
+      (upsertAjusteMinutos -> UPSERT), y sincronizaciones automáticas masivas     
+      (syncAllAjustesMinutosFromSessions).                                        
+    • actividades, profesores, tramos_horarios_primaria: Consultas (SELECT).      
+
+📄 src/lib/services/adminService.ts                                               
+
+ • ¿Qué hace?: Proporciona todas las funciones de persistencia para el módulo de  
+   administración.                                                                
+ • Gestión en la App: Mantenimiento de tablas maestras del sistema.               
+ • Base de Datos: SÍ (Supabase):                                                  
+    • profesores: getAdminProfesores, createAdminProfesor, updateAdminProfesor,   
+      deleteAdminProfesor.                                                        
+    • actividades: getAdminActividades, createAdminActividad,                     
+      updateAdminActividad, deleteAdminActividad.                                 
+    • aulas: getAdminAulas, createAdminAula, updateAdminAula, deleteAdminAula.    
+    • tramos_horarios_primaria: getAdminTramosHorarios, createAdminTramoHorario,  
+      updateAdminTramoHorario, deleteAdminTramoHorario.                           
+
+📄 src/lib/services/excelImportService.ts                                         
+
+ • ¿Qué hace?: Parsea el archivo binario del Excel utilizando SheetJS (xlsx).     
+   Procesa bloques aSc, mapea franjas a los tramos de la base de datos (0 a 9)    
+   respetando recreo y comida, limpia residuos HTML/CSS y consolida las sesiones  
+   resultantes.                                                                   
+ • Gestión en la App: Motor de parseo y volcado inicial a borrador.               
+ • Base de Datos: SÍ (Supabase):                                                  
+    • sesiones_staging: Vuelca en bloques de 1.000 registros los datos procesados 
+      (processAndUploadExcel -> INSERT).                                          
+
+📄 src/lib/services/importService.ts                                              
+
+ • ¿Qué hace?: Gestiona las operaciones de la tabla borrador sesiones_staging y la
+   implantación final a producción.                                               
+ • Gestión en la App: Flujo de staging a producción.                              
+ • Base de Datos: SÍ (Supabase):                                                  
+    • sesiones_staging: getStagingRowsByBatch (SELECT), updateStagingRow (UPDATE),
+      desecharStaging (DELETE), vaciarTablaStaging (DELETE).                      
+    • sesiones: implantarStaging (DELETE de previas si se indica reemplazo e      
+      INSERT masivo de sesiones aprobadas).                                       
+
+📄 src/lib/services/timeCalculationService.ts                                     
+
+ • ¿Qué hace?: Contiene los algoritmos para clasificar cada sesión como Lectiva o 
+   No Lectiva (según catálogo o patrones como tutoretza, guardia, bilera, etc.) y 
+   calcular los balances en minutos y horas formateadas (Xh Ym).                  
+ • Gestión en la App: Cálculo del cómputo horaria.                                
+ • Base de Datos: NO. Funciona puramente en memoria.                              
+
+📄 src/lib/repositories/scheduleRepository.ts                                     
+
+ • ¿Qué hace?: Repositorio de persistencia adicional para la entidad sesiones     
+   vinculando relaciones con actividades y aulas.                                 
+ • Gestión en la App: Capa de datos para sesiones.                                
+ • Base de Datos: SÍ (Supabase):                                                  
+    • sesiones: getProfessorSessions (SELECT), saveSession (INSERT), deleteSession
+      (DELETE).                                                                   
+
+----------------------------------------------------------------------------------
+
+
+5. REPOSITORIO DE MODELOS, UTILIDADES Y CONSTANTES                                
+
+📄 src/types/database.ts & src/lib/types/schedule.ts                              
+
+ • ¿Qué hacen?: Definen los contratos de datos y tipos TypeScript (Profesor,      
+   Actividad, Aula, Sesion, TimeSlot, Teacher, Session, Classroom).               
+ • Base de Datos: NO.                                                             
+
+📄 src/lib/utils/formatters.ts                                                    
+
+ • ¿Qué hace?: Formatea strings de jornadas (JC) y perfiles (Tutor /              
+   Especialista).                                                                 
+ • Base de Datos: NO.                                                             
+
+📄 src/lib/constants/calendar.ts                                                  
+
+ • ¿Qué hace?: Define los días lectivos de la semana en Euskera (Astelehena,      
+   Asteartea, Asteazkena, Osteguna, Ostirala) mapeados a base 0 (0..4).           
+ • Base de Datos: NO.                                                             
+
+----------------------------------------------------------------------------------
+
+
+6. ARCHIVOS GENERADOS E INTERNOS DE FRAMEWORK (.svelte-kit/)                      
+
+ • .svelte-kit/generated/client/app.js                                            
+ • .svelte-kit/generated/server/internal.js                                       
+ • .svelte-kit/non-ambient.d.ts                                                   
+ • .svelte-kit/types/src/routes/$types.d.ts                                       
+    • ¿Qué hacen?: Archivos de infraestructura autogenerados por SvelteKit para   
+      gestionar las rutas (/ e /import), inyección de HMR en desarrollo,          
+      adaptadores de renderizado y tipado estático del enrutador.                 
+    • Base de Datos: NO.                                                          
+
+----------------------------------------------------------------------------------
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ 📊 RESUMEN DE MODIFICACIONES EN LA BASE DE DATOS (SUPABASE)                    ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+| Tabla de Base de Datos | Operaciones | Archivos / Servicios Responsables |      
+
+| :--- | :--- | :--- |                                                            
+
+| sesiones | INSERT, UPDATE, DELETE, SELECT | primaryService.ts, importService.ts,
+scheduleRepository.ts, ActionsView.svelte |                                       
+
+| sesiones_staging | INSERT, UPDATE, DELETE, SELECT | excelImportService.ts,      
+importService.ts, ImportStagingModal.svelte |                                     
+
+| profesores | INSERT, UPDATE, DELETE, SELECT | adminService.ts, AdminModal.svelte
+|                                                                                 
+
+| actividades | INSERT, UPDATE, DELETE, SELECT | adminService.ts,                 
+AdminModal.svelte |                                                               
+
+| aulas | INSERT, UPDATE, DELETE, SELECT | adminService.ts, AdminModal.svelte |   
+
+| tramos_horarios_primaria | INSERT, UPDATE, DELETE, SELECT | adminService.ts,    
+AdminModal.svelte |                                                               
+
+| ajustes_minutos | UPSERT (INSERT/UPDATE), SELECT | primaryService.ts,           
+AdminModal.svelte, ActionsView.svelte |                 

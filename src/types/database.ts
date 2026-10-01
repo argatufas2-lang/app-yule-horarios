@@ -31,6 +31,10 @@ export interface Sesion {
     start_time: string;
     end_time: string;
     group_name: string;
+<<<<<<< HEAD
+=======
+    grupo_desdoble?: string | null;
+>>>>>>> 4938176 (Reiniciar repositorio limpio - App Horarios)
 }
 
 export interface SesionWithRelations extends Sesion {

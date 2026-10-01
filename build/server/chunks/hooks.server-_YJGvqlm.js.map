@@ -1,0 +1,1 @@
+{"version":3,"file":"hooks.server-_YJGvqlm.js","sources":["../../../.svelte-kit/output/server/entries/hooks.server.js"],"sourcesContent":["import WebSocket from \"ws\";\nglobalThis.WebSocket = WebSocket;\n"],"names":[],"mappings":";;AACA,UAAU,CAAC,SAAS,GAAG,SAAS"}

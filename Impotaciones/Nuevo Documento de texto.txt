@@ -1,0 +1,734 @@
+He revisado la estructura del archivo src/lib/services/excelImportService.ts.     
+
+Para extraer la lógica de procesamiento de Excel en varias páginas y dejar el     
+código listo, se requiere modificar src/lib/services/excelImportService.ts para   
+abstraer la iteración por pestañas/hojas en una función auxiliar dedicada         
+(parseMultiSheetMatrixExcel) y usarla en el flujo principal de importación.       
+
+A continuación tienes las instrucciones exactas de modificación del código:       
+
+Cambios a realizar en src/lib/services/excelImportService.ts                      
+
+1. Añadir la función parseMultiSheetMatrixExcel                                   
+
+Añade la siguiente función al archivo para centralizar la iteración y extracción  
+de páginas múltiples:                                                             
+
+                                                                                  
+/**                                                                               
+ * Recorre todas las hojas del libro Excel, descartando metadatos u hojas         
+especiales,                                                                       
+ * y extrae la lista de sesiones de cada matriz por profesor.                     
+ */                                                                               
+export function parseMultiSheetMatrixExcel(                                       
+    workbook: XLSX.WorkBook,                                                      
+    profesorMetadataMap: Map<string, ProfesorMetadata>                            
+): {                                                                              
+    profesor: string;                                                             
+    perfil: string;                                                               
+    claseBase: string;                                                            
+    jornada: string;                                                              
+    dia: number;                                                                  
+    franja: number;                                                               
+    actividad: string;                                                            
+    clase: string;                                                                
+    aula: string;                                                                 
+    grupo_desdoble?: string | null;                                               
+}[] {                                                                             
+    const rawSessions: {                                                          
+        profesor: string;                                                         
+        perfil: string;                                                           
+        claseBase: string;                                                        
+        jornada: string;                                                          
+        dia: number;                                                              
+        franja: number;                                                           
+        actividad: string;                                                        
+        clase: string;                                                            
+        aula: string;                                                             
+        grupo_desdoble?: string | null;                                           
+    }[] = [];                                                                     
+                                                                                  
+    for (const sheetName of workbook.SheetNames) {                                
+        const profesorNombre = cleanCellText(sheetName);                          
+                                                                                  
+        if (isSheetOrMetadataToIgnore(profesorNombre)) {                          
+            continue;                                                             
+        }                                                                         
+                                                                                  
+        const sheet = workbook.Sheets[sheetName];                                 
+        if (!sheet) continue;                                                     
+                                                                                  
+        const data = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw:     
+false, defval: '' });                                                             
+        if (!data || data.length < 2) continue;                                   
+                                                                                  
+        const meta = profesorMetadataMap.get(profesorNombre.toLowerCase());       
+        const perfilProfesor = meta?.perfil || '';                                
+        const claseBase = meta?.claseBase || '';                                  
+        const tipoJornada = meta?.jornada || '';                                  
+                                                                                  
+        let currentFranjaCounter = -1;                                            
+                                                                                  
+        for (let rowIndex = 1; rowIndex < data.length; rowIndex++) {              
+            const row = data[rowIndex];                                           
+            if (!row || row.length === 0) continue;                               
+                                                                                  
+            const colAValue = row[0] ? cleanCellText(row[0]) : '';                
+            const upperColA = colAValue.toUpperCase();                            
+                                                                                  
+            if (upperColA.includes('CONTROL DE JORNADA')) {                       
+                break;                                                            
+            }                                                                     
+                                                                                  
+            if (!colAValue || isDayNameString(colAValue) ||                       
+isSheetOrMetadataToIgnore(colAValue)) {                                           
+                continue;                                                         
+            }                                                                     
+                                                                                  
+            currentFranjaCounter++;                                               
+            const franja = mapTimeSlotToFranjaIndex0(colAValue ||                 
+currentFranjaCounter);                                                            
+                                                                                  
+            for (let diaIndex = 0; diaIndex < 5; diaIndex++) {                    
+                const colActividadIdx = 1 + diaIndex * 2;                         
+                const colClaseIdx = colActividadIdx + 1;                          
+                                                                                  
+                let rawActividad = row[colActividadIdx] ?                         
+cleanCellText(row[colActividadIdx]) : '';                                         
+                let rawClase = row[colClaseIdx] ? cleanCellText(row[colClaseIdx]) 
+: '';                                                                             
+                                                                                  
+                if (!rawActividad && !rawClase) continue;                         
+                if (isSheetOrMetadataToIgnore(rawActividad) ||                    
+isSheetOrMetadataToIgnore(rawClase)) continue;                                    
+                                                                                  
+                if (rawActividad && (isDayNameString(rawActividad) ||             
+isTimeString(rawActividad))) {                                                    
+                    rawActividad = '';                                            
+                }                                                                 
+                if (rawClase && (isDayNameString(rawClase) ||                     
+isTimeString(rawClase))) {                                                        
+                    rawClase = '';                                                
+                }                                                                 
+                                                                                  
+                const parsed = parseExcelCellContent(rawActividad, rawClase);     
+                if (!parsed.actividad && !parsed.clase) continue;                 
+                                                                                  
+                let rawGroup = '';                                                
+                let cleanClass = parsed.clase;                                    
+                if (cleanClass && cleanClass.toLowerCase().includes('grupo')) {   
+                    rawGroup = cleanClass;                                        
+                    cleanClass = '';                                              
+                }                                                                 
+                                                                                  
+                rawSessions.push({                                                
+                    profesor: profesorNombre || 'Sin Nombre',                     
+                    perfil: perfilProfesor,                                       
+                    claseBase: claseBase,                                         
+                    jornada: tipoJornada,                                         
+                    dia: diaIndex,                                                
+                    franja: franja,                                               
+                    actividad: parsed.actividad,                                  
+                    clase: cleanClass,                                            
+                    aula: '',                                                     
+                    grupo_desdoble: rawGroup.trim() ? rawGroup.trim() : null      
+                });                                                               
+            }                                                                     
+        }                                                                         
+    }                                                                             
+                                                                                  
+    return rawSessions;                                                           
+}                                                                                 
+                                                                                  
+
+2. Reemplazar la rama format === 'matriz_profesor' en processAndUploadExcel       
+
+Sustituye la iteración del bloque if (format === 'matriz_profesor') { ... } dentro
+de processAndUploadExcel por la llamada a la nueva función:                       
+
+                                                                                  
+    if (format === 'matriz_profesor') {                                           
+        const extracted = parseMultiSheetMatrixExcel(workbook,                    
+profesorMetadataMap);                                                             
+        tempRawList.push(...extracted);                                           
+    } else if (format === 'periodo_multilinea') {                                 
+                                                                                  
+
+
+Tokens: 12k sent, 1.2k received. Cost: $0.01 message, $0.02 session.
+Aquí tienes el archivo actualizado con la extracción de la lógica de procesamiento
+en varias páginas a la función parseMultiSheetMatrixExcel y su integración en     
+processAndUploadExcel.                                                            
+
+src\lib\services\excelImportService.ts                                            
+
+                                                                                  
+@@ -1,4 +1,5 @@                                                                   
+ import { parseExcelCellContent } from '../components/import/excelCellParser';    
+    while (i < data.length) {                                                     
+        const val0 = row && row[0] !== undefined && row[0] !== null ?             
+        if (val0 && val0 !== 'Período' && !/^\d+$/.test(val0) &&                  
+=== '2' || str === 'm') return 1;                                                 
+- * Lee la pestaña 'Profesorado' si existe y extrae un mapa de metadatos por      
+profesor.                                                                         
+- */                                                                              
++ * Recorre todas las hojas del libro Excel, descartando metadatos u hojas        
+especiales,                                                                       
++ * y extrae la lista de sesiones de cada matriz por profesor.                    
++ */                                                                              
++export function parseMultiSheetMatrixExcel(                                      
++   workbook: XLSX.WorkBook,                                                      
++   profesorMetadataMap: Map<string, ProfesorMetadata>                            
++): {                                                                             
++   profesor: string;                                                             
++   perfil: string;                                                               
++   claseBase: string;                                                            
++   jornada: string;                                                              
++   dia: number;                                                                  
++   franja: number;                                                               
++   actividad: string;                                                            
++   clase: string;                                                                
+-                                                                                 
+-   for (let i = 4; i < data.length; i++) {                                       
+-       const row = data[i];                                                      
+-       if (!row || row.length === 0) continue;                                   
+-                                                                                 
+-       const rawNombre = row[0] ? cleanCellText(row[0]) : null;                  
+-       if (!rawNombre || isSheetOrMetadataToIgnore(rawNombre)) continue;         
+-                                                                                 
+-       const perfil = row[1] ? cleanCellText(row[1]) : '';                       
+-       const claseBase = row[2] ? cleanCellText(row[2]) : '';                    
+-       const jornada = row[3] ? cleanCellText(row[3]) : '';                      
+-                                                                                 
+-       metaMap.set(rawNombre.toLowerCase(), {                                    
+-           nombre: rawNombre,                                                    
+-           perfil: perfil || '',                                                 
+-           claseBase: claseBase || '',                                           
+-           jornada: jornada || ''                                                
+-       });                                                                       
+-   }                                                                             
+-                                                                                 
+-   return metaMap;                                                               
+-}                                                                                
+-                                                                                 
+-function parseHtmlOrArrayToMatrix(arrayBuffer: ArrayBuffer, textContent: string):
+string[][] {                                                                      
+-   const isHtml = /^\s*<(!DOCTYPE|html|table)/i.test(textContent);               
+-                                                                                 
+-   if (isHtml && typeof DOMParser !== 'undefined') {                             
+-       const parser = new DOMParser();                                           
+-       const doc = parser.parseFromString(textContent, 'text/html');             
+-       const rows = Array.from(doc.querySelectorAll('tr'));                      
+-                                                                                 
+-       return rows.map((tr) => {                                                 
+-           const cells = Array.from(tr.querySelectorAll('td, th'));              
+-           return cells.map((td) => {                                            
+-               let inner = td.innerHTML.replace(/<br\s*\/?>/gi, '\n');           
+-               return cleanCellText(inner);                                      
+-           });                                                                   
+-       });                                                                       
+-   }                                                                             
+-                                                                                 
+-   const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true, raw:
+false });                                                                         
+-   const allRows: string[][] = [];                                               
+-                                                                                 
+-   for (const sheetName of workbook.SheetNames) {                                
+-       if (isSheetOrMetadataToIgnore(sheetName)) continue;                       
+-       const sheet = workbook.Sheets[sheetName];                                 
+-       if (!sheet) continue;                                                     
+-                                                                                 
+-       const rawMatrix = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw:
+false, defval: '' });                                                             
+-       const cleanSheetRows = rawMatrix.map((row) => row.map((cell) =>           
+cleanCellText(cell)));                                                            
+-       allRows.push(...cleanSheetRows);                                          
+-   }                                                                             
+-                                                                                 
+-   return allRows;                                                               
+-}                                                                                
+-                                                                                 
+-/**                                                                              
+- * Agrupa y fusiona registros que pertenezcan al mismo (Profesor, Día, Franja).  
+- */                                                                              
+-function mergeAndConsolidateSessions(                                            
+-   rawList: {                                                                    
++ * Recorre todas las hojas del libro Excel, descartando metadatos u hojas        
+especiales,                                                                       
++ * y extrae la lista de sesiones de cada matriz por profesor.                    
++ */                                                                              
++export function parseMultiSheetMatrixExcel(                                      
++   workbook: XLSX.WorkBook,                                                      
++   profesorMetadataMap: Map<string, ProfesorMetadata>                            
++): {                                                                             
++   profesor: string;                                                             
++   perfil: string;                                                               
++   claseBase: string;                                                            
++   jornada: string;                                                              
++   dia: number;                                                                  
++   franja: number;                                                               
++   actividad: string;                                                            
++   clase: string;                                                                
++   aula: string;                                                                 
++   grupo_desdoble?: string | null;                                               
++}[] {                                                                            
++   const rawSessions: {                                                          
+        profesor: string;                                                         
+        perfil: string;                                                           
+        claseBase: string;                                                        
+        jornada: string;                                                          
+        dia: number;                                                              
+        franja: number;                                                           
+-                                                                                 
+-   for (const item of rawList) {                                                 
+-       const key = `${item.profesor.toUpperCase()}__${item.dia}__${item.franja}`;
+-       let existing = map.get(key);                                              
+-                                                                                 
+-       if (!existing) {                                                          
+-           existing = {                                                          
+-               profesor: item.profesor,                                          
+-               perfil: item.perfil,                                              
+-               claseBase: item.claseBase,                                        
+-               jornada: item.jornada,                                            
+-               dia: item.dia,                                                    
+-               franja: item.franja,                                              
+-               actividades: new Set(),                                           
+-               clases: new Set(),                                                
+-               aulas: new Set(),                                                 
+-               gruposDesdoble: new Set()                                         
+-           };                                                                    
+-           map.set(key, existing);                                               
+-       }                                                                         
+-                                                                                 
+-       if (item.actividad) existing.actividades.add(item.actividad);             
+-                                                                                 
+-       if (item.clase) {                                                         
+-           item.clase.split(',').forEach((c) => {                                
+-               const trimmed = c.trim();                                         
+-               if (trimmed.toLowerCase().includes('grupo')) {                    
+-                   existing.gruposDesdoble.add(trimmed);                         
+-               } else if (trimmed) {                                             
+-                   existing.clases.add(trimmed);                                 
+-               }                                                                 
+-           });                                                                   
+-       }                                                                         
+-                                                                                 
+-       if (item.aula) {                                                          
+-           item.aula.split(',').forEach((a) => {                                 
+-               const trimmed = a.trim();                                         
+-               if (trimmed.toLowerCase().includes('grupo')) {                    
+-                   existing.gruposDesdoble.add(trimmed);                         
+-               } else if (trimmed) {                                             
+-                   existing.aulas.add(trimmed);                                  
+-               }                                                                 
+-           });                                                                   
+-       }                                                                         
+-                                                                                 
+-       if (item.grupo_desdoble) {                                                
+-           item.grupo_desdoble.split(',').forEach((g) => {                       
+-               const trimmed = g.trim();                                         
+-               if (trimmed) existing.gruposDesdoble.add(trimmed);                
+-           });                                                                   
+-       }                                                                         
+-   }                                                                             
+-                                                                                 
+-   const result: StagingSessionRow[] = [];                                       
+-                                                                                 
+-   for (const entry of map.values()) {                                           
+-       const actFinal = Array.from(entry.actividades).join(' / ') || '';         
+-       const claseFinal = Array.from(entry.clases).join(', ') || '';             
+-       const aulaFinal = Array.from(entry.aulas).join(', ') || '';               
+-       const grupoDesdobleFinal = Array.from(entry.gruposDesdoble).join(', ') || 
+null;                                                                             
+-                                                                                 
+-       result.push({                                                             
+-           batch_id: batchId,                                                    
+-           profesor_nombre: entry.profesor || 'Sin Nombre',                      
+-           perfil_profesor: entry.perfil || '',                                  
+-           clase_base: entry.claseBase || '',                                    
+-           tipo_jornada: entry.jornada || '',                                    
+-           dia: entry.dia,                                                       
+-           franja: entry.franja,                                                 
+-           actividad: actFinal,                                                  
+-           clase: claseFinal,                                                    
+-           aula: aulaFinal,                                                      
+-           grupo_desdoble: grupoDesdobleFinal,                                   
+-           rol_aula: 'principal',                                                
+-           fuente: 'excel_import',                                               
+-           minutos: calculateMinutos(entry.franja),                              
+-           curso_escolar: cursoEscolar || '',                                    
+-           estado_validacion: 'valido',                                          
+-           errores: []                                                           
+-       });                                                                       
+-   }                                                                             
+-                                                                                 
+-   return result;                                                                
+-}                                                                                
+-                                                                                 
+-export async function processAndUploadExcel(                                     
+-   file: File,                                                                   
+-   format: ImportFormat,                                                         
+-   cursoEscolar: string                                                          
+-): Promise<{ batchId: string; totalProcessed: number; validCount: number;        
+errorCount: number }> {                                                           
+-   const batchId = crypto.randomUUID();                                          
+-   const arrayBuffer = await file.arrayBuffer();                                 
+-                                                                                 
+-   const textDecoder = new TextDecoder('utf-8');                                 
+-   const textContent = textDecoder.decode(arrayBuffer);                          
+-                                                                                 
+-   const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true, raw:
+false });                                                                         
+-   const profesorMetadataMap = extractProfesoradoMetadata(workbook);             
+-                                                                                 
+-   const tempRawList: {                                                          
++ * Recorre todas las hojas del libro Excel, descartando metadatos u hojas        
+especiales,                                                                       
++ * y extrae la lista de sesiones de cada matriz por profesor.                    
++ */                                                                              
++export function parseMultiSheetMatrixExcel(                                      
++   workbook: XLSX.WorkBook,                                                      
++   profesorMetadataMap: Map<string, ProfesorMetadata>                            
++): {                                                                             
++   profesor: string;                                                             
++   perfil: string;                                                               
++   claseBase: string;                                                            
++   jornada: string;                                                              
++   dia: number;                                                                  
++   franja: number;                                                               
++   actividad: string;                                                            
++   clase: string;                                                                
++   aula: string;                                                                 
++   grupo_desdoble?: string | null;                                               
++}[] {                                                                            
++   const rawSessions: {                                                          
+        profesor: string;                                                         
+        perfil: string;                                                           
+        claseBase: string;                                                        
+        jornada: string;                                                          
+        dia: number;                                                              
+@@ -531,5 +346,7 @@                                                               
+        clase: string;                                                            
+        aula: string;                                                             
+        grupo_desdoble?: string | null;                                           
+    }[] = [];                                                                     
+                                                                                  
+-   if (format === 'matriz_profesor') {                                           
+-       for (const sheetName of workbook.SheetNames) {                            
+-           const profesorNombre = cleanCellText(sheetName);                      
+-                                                                                 
+-           if (isSheetOrMetadataToIgnore(profesorNombre)) {                      
+-               continue;                                                         
+-           }                                                                     
+-                                                                                 
+-           const sheet = workbook.Sheets[sheetName];                             
+-           if (!sheet) continue;                                                 
+-                                                                                 
+-           const data = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw: 
+false, defval: '' });                                                             
+-           if (!data || data.length < 2) continue;                               
+-                                                                                 
+-           const meta = profesorMetadataMap.get(profesorNombre.toLowerCase());   
+-           const perfilProfesor = meta?.perfil || '';                            
+-           const claseBase = meta?.claseBase || '';                              
+-           const tipoJornada = meta?.jornada || '';                              
+-                                                                                 
+-           let currentFranjaCounter = -1;                                        
+-                                                                                 
+-           for (let rowIndex = 1; rowIndex < data.length; rowIndex++) {          
+-               const row = data[rowIndex];                                       
+-               if (!row || row.length === 0) continue;                           
+-                                                                                 
+-               const colAValue = row[0] ? cleanCellText(row[0]) : '';            
+-               const upperColA = colAValue.toUpperCase();                        
+-                                                                                 
+-               if (upperColA.includes('CONTROL DE JORNADA')) {                   
+-                   break;                                                        
+-               }                                                                 
+-                                                                                 
+-               if (!colAValue || isDayNameString(colAValue) ||                   
+isSheetOrMetadataToIgnore(colAValue)) {                                           
+-                   continue;                                                     
+-               }                                                                 
+-                                                                                 
+-               currentFranjaCounter++;                                           
+-               const franja = mapTimeSlotToFranjaIndex0(colAValue ||             
+currentFranjaCounter);                                                            
+-                                                                                 
+-               for (let diaIndex = 0; diaIndex < 5; diaIndex++) {                
+-                   const colActividadIdx = 1 + diaIndex * 2;                     
+-                   const colClaseIdx = colActividadIdx + 1;                      
+-                                                                                 
+-                   let rawActividad = row[colActividadIdx] ?                     
+cleanCellText(row[colActividadIdx]) : '';                                         
+-                   let rawClase = row[colClaseIdx] ?                             
+cleanCellText(row[colClaseIdx]) : '';                                             
+-                                                                                 
+-                   if (!rawActividad && !rawClase) continue;                     
+-                   if (isSheetOrMetadataToIgnore(rawActividad) ||                
+isSheetOrMetadataToIgnore(rawClase)) continue;                                    
+-                                                                                 
+-                   if (rawActividad && (isDayNameString(rawActividad) ||         
+isTimeString(rawActividad))) {                                                    
+-                       rawActividad = '';                                        
+-                   }                                                             
+-                   if (rawClase && (isDayNameString(rawClase) ||                 
+isTimeString(rawClase))) {                                                        
+-                       rawClase = '';                                            
+-                   }                                                             
+-                                                                                 
+-                   const parsed = parseExcelCellContent(rawActividad, rawClase); 
+-                   if (!parsed.actividad && !parsed.clase) continue;             
+-                                                                                 
+-                   let rawGroup = '';                                            
+-                   let cleanClass = parsed.clase;                                
+-                   if (cleanClass && cleanClass.toLowerCase().includes('grupo')) 
+{                                                                                 
+-                       rawGroup = cleanClass;                                    
+-                       cleanClass = '';                                          
+-                   }                                                             
+-                                                                                 
+-                   tempRawList.push({                                            
+-                       profesor: profesorNombre || 'Sin Nombre',                 
+-                       perfil: perfilProfesor,                                   
+-                       claseBase: claseBase,                                     
+-                       jornada: tipoJornada,                                     
+-                       dia: diaIndex,                                            
+-                       franja: franja,                                           
+-                       actividad: parsed.actividad,                              
+-                       clase: cleanClass,                                        
+-                       aula: '',                                                 
+-                       grupo_desdoble: rawGroup.trim() ? rawGroup.trim() : null  
+-                   });                                                           
+-               }                                                                 
+-           }                                                                     
++   for (const sheetName of workbook.SheetNames) {                                
++       const profesorNombre = cleanCellText(sheetName);                          
++                                                                                 
++       if (isSheetOrMetadataToIgnore(profesorNombre)) {                          
++           continue;                                                             
+        }                                                                         
+-   } else if (format === 'periodo_multilinea') {                                 
+-       const importedSessions = parseAscBlockExcel(arrayBuffer);                 
+-       for (const session of importedSessions) {                                 
+-           const meta = profesorMetadataMap.get(session.teacher.toLowerCase());  
++       const data = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw:     
+-                                                                                 
+-           let cleanAula = session.classroom ? session.classroom.trim() : '';    
+-           let groupVal = session.grupo_desdoble || session.group || '';         
+-                                                                                 
+-           if (cleanAula) {                                                      
+-               const grupoMatch = cleanAula.match(/grupo\s*[\w\d]*/gi);          
+-               if (grupoMatch) {                                                 
+-                   if (!groupVal) {                                              
+-                       groupVal = grupoMatch.join(', ');                         
+-                   }                                                             
+-                   cleanAula = cleanAula.replace(/grupo\s*[\w\d]*/gi, '').trim();
+-               }                                                                 
+-           }                                                                     
+-                                                                                 
+-           tempRawList.push({                                                    
+-               profesor: session.teacher,                                        
+-               perfil: meta?.perfil || '',                                       
+-               claseBase: meta?.claseBase || '',                                 
+-               jornada: meta?.jornada || '',                                     
+-               dia: diaIndex0,                                                   
+-               franja: session.dbFranja,                                         
+-               actividad: session.subject,                                       
+-               clase: '',                                                        
+-               aula: cleanAula,                                                  
+-               grupo_desdoble: groupVal.trim() ? groupVal.trim() : null          
+-           });                                                                   
+-       }                                                                         
+-   }                                                                             
+-                                                                                 
++                                                                                 
++       const sheet = workbook.Sheets[sheetName];                                 
++       if (!sheet) continue;                                                     
++                                                                                 
++       const data = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw:     
+false, defval: '' });                                                             
++       if (!data || data.length < 2) continue;                                   
++                                                                                 
++       const meta = profesorMetadataMap.get(profesorNombre.toLowerCase());       
++                                                                                 
++       const sheet = workbook.Sheets[sheetName];                                 
++       if (!sheet) continue;                                                     
++                                                                                 
++       const data = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw:     
+false, defval: '' });                                                             
++       if (!data || data.length < 2) continue;                                   
++                                                                                 
++       const meta = profesorMetadataMap.get(profesorNombre.toLowerCase());       
++       const perfilProfesor = meta?.perfil || '';                                
++       const claseBase = meta?.claseBase || '';                                  
++       const tipoJornada = meta?.jornada || '';                                  
++                                                                                 
++       let currentFranjaCounter = -1;                                            
++                                                                                 
++       const claseBase = meta?.claseBase || '';                                  
++       const tipoJornada = meta?.jornada || '';                                  
++                                                                                 
++       let currentFranjaCounter = -1;                                            
++                                                                                 
++       for (let rowIndex = 1; rowIndex < data.length; rowIndex++) {              
++           const row = data[rowIndex];                                           
++           if (!row || row.length === 0) continue;                               
++               rawSessions.push({                                                
++                   profesor: profesorNombre || 'Sin Nombre',                     
++                   perfil: perfilProfesor,                                       
++                   claseBase: claseBase,                                         
++                   jornada: tipoJornada,                                         
++                   dia: diaIndex,                                                
+-   } else if (format === 'periodo_multilinea') {                                 
+-       const importedSessions = parseAscBlockExcel(arrayBuffer);                 
+-       for (const session of importedSessions) {                                 
+-           const meta = profesorMetadataMap.get(session.teacher.toLowerCase());  
+-           const diaIndex0 = mapDayNameToNumberIndex0(session.day);              
+-                                                                                 
+-           let cleanAula = session.classroom ? session.classroom.trim() : '';    
+-           let groupVal = session.grupo_desdoble || session.group || '';         
+-                                                                                 
+-           if (cleanAula) {                                                      
+-               const grupoMatch = cleanAula.match(/grupo\s*[\w\d]*/gi);          
+-               if (grupoMatch) {                                                 
+-                   if (!groupVal) {                                              
+-                       groupVal = grupoMatch.join(', ');                         
+-                   }                                                             
+-                   cleanAula = cleanAula.replace(/grupo\s*[\w\d]*/gi, '').trim();
+-               }                                                                 
+-           }                                                                     
+-                                                                                 
+-           tempRawList.push({                                                    
+-               profesor: session.teacher,                                        
+-               perfil: meta?.perfil || '',                                       
+-               claseBase: meta?.claseBase || '',                                 
+-               jornada: meta?.jornada || '',                                     
+-               dia: diaIndex0,                                                   
+-               franja: session.dbFranja,                                         
+-               actividad: session.subject,                                       
+-               clase: '',                                                        
+-               aula: cleanAula,                                                  
+-               grupo_desdoble: groupVal.trim() ? groupVal.trim() : null          
+-           });                                                                   
+-       }                                                                         
+-   }                                                                             
+-                                                                                 
++   }                                                                             
++                                                                                 
++                                                                                 
++   return rawSessions;                                                           
++}                                                                                
++                                                                                 
++/**                                                                              
++ * Lee la pestaña 'Profesorado' si existe y extrae un mapa de metadatos por      
++   return rawSessions;                                                           
++}                                                                                
++                                                                                 
++/**                                                                              
++ * Lee la pestaña 'Profesorado' si existe y extrae un mapa de metadatos por      
+profesor.                                                                         
++ */                                                                              
++function extractProfesoradoMetadata(workbook: XLSX.WorkBook): Map<string,        
+ProfesorMetadata> {                                                               
++   const metaMap = new Map<string, ProfesorMetadata>();                          
++                                                                                 
++   const sheetName = workbook.SheetNames.find((name) => {                        
++       const clean = cleanCellText(name).toUpperCase();                          
++       return clean === 'PROFESORADO';                                           
++   });                                                                           
++                                                                                 
++   if (!sheetName) return metaMap;                                               
++                                                                                 
++   const sheet = workbook.Sheets[sheetName];                                     
++   if (!sheet) return metaMap;                                                   
++                                                                                 
++   const data = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw: true });
++   if (!data || data.length < 5) return metaMap;                                 
++                                                                                 
++   for (let i = 4; i < data.length; i++) {                                       
++       const row = data[i];                                                      
++       if (!row || row.length === 0) continue;                                   
++                                                                                 
++       const rawNombre = row[0] ? cleanCellText(row[0]) : null;                  
++       if (!rawNombre || isSheetOrMetadataToIgnore(rawNombre)) continue;         
++                                                                                 
++       const perfil = row[1] ? cleanCellText(row[1]) : '';                       
++           perfil: perfil || '',                                                 
++           claseBase: claseBase || '',                                           
++           jornada: jornada || ''                                                
++       });                                                                       
++   }                                                                             
++                                                                                 
++   return metaMap;                                                               
++           jornada: jornada || ''                                                
++       });                                                                       
++   }                                                                             
++                                                                                 
++   return metaMap;                                                               
++}                                                                                
++                                                                                 
++function parseHtmlOrArrayToMatrix(arrayBuffer: ArrayBuffer, textContent: string):
+string[][] {                                                                      
++}                                                                                
++                                                                                 
++function parseHtmlOrArrayToMatrix(arrayBuffer: ArrayBuffer, textContent: string):
+string[][] {                                                                      
++   const isHtml = /^\s*<(!DOCTYPE|html|table)/i.test(textContent);               
++                                                                                 
++   if (isHtml && typeof DOMParser !== 'undefined') {                             
++       const parser = new DOMParser();                                           
++       const doc = parser.parseFromString(textContent, 'text/html');             
++       const rows = Array.from(doc.querySelectorAll('tr'));                      
+-                                                                                 
+-   // Consolida las sesiones por (profesor, dia, franja)                         
+-   const rowsToInsert = mergeAndConsolidateSessions(tempRawList, batchId,        
+cursoEscolar);                                                                    
+-                                                                                 
++       });                                                                       
++   }                                                                             
++                                                                                 
++   const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true, raw:
+false });                                                                         
++   const allRows: string[][] = [];                                               
++                                                                                 
++   for (const sheetName of workbook.SheetNames) {                                
+${error.message}`);                                                               
+-       }                                                                         
+-   }                                                                             
+-                                                                                 
++       });                                                                       
++   }                                                                             
++                                                                                 
++   const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true, raw:
+false });                                                                         
++   const allRows: string[][] = [];                                               
++                                                                                 
++   for (const sheetName of workbook.SheetNames) {                                
++       if (isSheetOrMetadataToIgnore(sheetName)) continue;                       
++       const sheet = workbook.Sheets[sheetName];                                 
++       if (!sheet) continue;                                                     
++                                                                                 
++       const rawMatrix = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw:
+false, defval: '' });                                                             
++       const cleanSheetRows = rawMatrix.map((row) => row.map((cell) =>           
+cleanCellText(cell)));                                                            
++       allRows.push(...cleanSheetRows);                                          
++   }                                                                             
++                                                                                 
++                                                                                 
++   return allRows;                                                               
++}                                                                                
++                                                                                 
++/**                                                                              
++ * Agrupa y fusiona registros que pertenezcan al mismo (Profesor, Día, Franja).  
++ */                                                                              
++function mergeAndConsolidateSessions(                                            
++   rawList: {                                                                    
++       profesor: string;                                                         
++       perfil: string;                                                           
++       claseBase: string;                                                        
++       jornada: string;                                                          
++       dia: number;                                                              
++ 668 / 675 lines [█████████████████████████████░]  99%                           
+                                                         

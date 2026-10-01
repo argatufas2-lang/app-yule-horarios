@@ -1,0 +1,765 @@
+MARKEL									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2				BAT					
+									
+									
+3				BAT					
+									
+									
+4	HF	Pedagogika	HF	HF	HF				
+	6A		5A	1B	6A				
+									
+5	HF	Pedagogika	HF	HF	HF				
+	6B		5B	1A	6B				
+									
+6	HF	HF			HF				
+	5A	1A			1A				
+									
+7	HF	HF			HF				
+	5B	1B			1B				
+									
+									
+EDURNE									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA			OSTIRALA		
+1									
+2							Euskara	Euskara	Euskara
+							2B	2A	2D
+							Grupo 2	Grupo 2	Grupo 2
+3									
+4		Pedagogika	HF	Inguru	Inguru	Inguru	HF		
+			2B	2B	2D	2A	2B		
+				Grupo 2	Grupo 2	Grupo 2			
+5	Inguru	Pedagogika	HF				HF		
+	2A,2B,2D		2D				2A		
+									
+6	HF	HF		HF					
+	2A	2D		2D					
+									
+7	HF			HF					
+	2B			2A					
+									
+									
+HF 1/2									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2									
+3									
+4	HF		HF		HF				
+	6D		4D		4B				
+									
+5	HF		HF		HF				
+	6C		3B		4A				
+									
+6	HF	HF		HF	HF				
+	3A	4B		4D	6C				
+									
+7	HF	HF		HF	HF				
+	3B	4A		3A	6D				
+									
+									
+ALBA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2	Ingelesa	Ingelesa	Ingelesa	BAT					
+	2A	2D	2B						
+									
+3	Ingelesa	Ingelesa	Ingelesa	BAT	Ingelesa				
+	2D	2B	2A		2D				
+									
+4									
+5									
+6				Ingelesa					
+				2A					
+									
+7				Ingelesa					
+				2B					
+									
+									
+ALBA 1/3									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2									
+3									
+4			Ingelesa						
+			5B						
+									
+5			Ingelesa						
+			5A						
+									
+6	Ingelesa	Ingelesa			Ingelesa				
+	5B	5A			5B				
+									
+7	Ingelesa	Ingelesa			Ingelesa				
+	5A	5B			5A				
+									
+									
+LEIRE Z.									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2				BAT					
+									
+									
+3	Ingelesa			BAT	Ingelesa				
+	3 urte				3 urte				
+									
+4		Pedagogika	Ingelesa	Ingelesa	Ingelesa				
+			4A	3 urte	4A				
+									
+5	Ingelesa	Pedagogika	Ingelesa	Ingelesa	Ingelesa				
+	4A		3A	3 urte	3B				
+									
+6	Ingelesa	Ingelesa		Ingelesa	Ingelesa				
+	3B	4A		3A	3A				
+									
+7	Ingelesa	Ingelesa		Ingelesa					
+	3A	3B		3B					
+									
+									
+LEIRE A.									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2	Euskara		Euskara		Euskara				
+	4A		4A		4D				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Ingelesa	Inguru	Ingelesa					
+	4B	6D	4B	6C					
+	Grupo 1		Grupo 1						
+4	Ingelesa		Ingelesa	Euskara	Ingelesa				
+	6C		6D	4D	6C				
+				Grupo 1					
+5	Ingelesa		Ingelesa		Ingelesa				
+	6D		6C		6D				
+									
+6		Robotika		Robotika	Robotika				
+		6D		5B	6A				
+									
+7	Robotika	Robotika			Robotika				
+	6C	5A			6B				
+									
+									
+AMAIA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2			Ingelesa						
+			1A						
+									
+3	Ingelesa	Ingelesa	Ingelesa	Ingelesa	Ingelesa				
+	1A	4B	1B	4D	1B				
+									
+4	Ingelesa	Ingelesa	Ingelesa		Ingelesa				
+	4B	1B	4B		4D				
+									
+5	Ingelesa	Ingelesa	Ingelesa		Ingelesa				
+	4D	1A	4D		4B				
+									
+6									
+7									
+									
+AMAIA 1/3									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2									
+3									
+4									
+5									
+6	Ingelesa	Ingelesa		Ingelesa	Ingelesa				
+	6A	6B		6A	6B				
+									
+7	Ingelesa	Ingelesa		Ingelesa	Ingelesa				
+	6B	6A		6B	6A				
+									
+									
+MUSIKA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2					Irratsaioa				
+									
+									
+3		Mus		Mus	Irratsaioa				
+		2A		4A					
+									
+4	Mus		Mus	Mus					
+	6B		3B	1A					
+									
+5	Mus		Mus	Mus	Mus				
+	6A		6D	1B	4D				
+									
+6	Mus	Mus		Mus	Mus				
+	6C	3A		2B	5A				
+									
+7		Mus		Mus	Mus				
+		4B		2D	5B				
+									
+									
+YULE									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Eusle	Eusle	Eusle	Eusle	Eusle				
+	3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C	3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C	3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C	3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C	3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C				
+	Grupo 2	Grupo 2	Grupo 2	Grupo 2	Grupo 2				
+2	Eusle		Eusle		Eusle				
+	3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C				
+	Grupo 2		Grupo 2		Grupo 2				
+3	Eusle		Eusle		Eusle				
+	3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C				
+	Grupo 2		Grupo 2		Grupo 2				
+4		Eusle		Eusle					
+		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C					
+		Grupo 2		Grupo 2					
+5		Eusle		Eusle					
+		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C		3A,3B,4A,4B,4D,5A,5B,6A,6B,6D,6C					
+		Grupo 2		Grupo 2					
+6									
+7									
+									
+AINHOA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2									
+3									
+4									
+5									
+6									
+7									
+									
+DANEL									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	1A	1A	1A	1A	1A				
+									
+2	Euskara	Mate		Mate	Euskara				
+	1A	1A		1A	1A				
+									
+3	Buruketa Tailerra	Mate	Euskara	Euskara	Buruketa Tailerra				
+	1B	1A	1A	1A	1A				
+	Grupo 2				Grupo 1				
+4	Gazte	Liburutegia	Inguru		Gazte				
+	1A	1A	1A		1A				
+									
+5	Inguru		Gazte		Gazte				
+	1A		1A		1A				
+									
+6	Tutoretza			Inguru					
+	1A			1A					
+									
+7	Plastika	Inguru		Jolas autonomoa	Jolas autonomoa				
+	1A	1A		1A	1A				
+									
+									
+NAGORE									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	1B	1B	1B	1B	1B				
+									
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	1B	1B	1B	1B	1B				
+									
+3	Buruketa Tailerra	Mate		Euskara	Buruketa Tailerra				
+	1B	1B		1B	1A				
+	Grupo 1				Grupo 2				
+4	Gazte		Inguru		Gazte				
+	1B		1B		1B				
+									
+5	Inguru	Liburutegia	Gazte		Gazte				
+	1B	1B	1B		1B				
+									
+6	Tutoretza	Inguru		Inguru	Jolas autonomoa				
+	1B	1B		1B	1B				
+									
+7	Plastika			Jolas autonomoa					
+	1B			1B					
+									
+									
+JESSICA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	2A	2A	2A	2A	2A				
+									
+2	Buruketa Tailerra	Euskara	Euskara	Mate	Euskara				
+	2B	2A	2A	2A	2A				
+	Grupo 2				Grupo 1				
+3	Euskara			Mate	Mate				
+	2A			2A	2A				
+				Grupo 1	Grupo 1				
+4	Gazte	Mate	Gazte	Inguru	Inguru				
+	2A	2A	2A	2A	2A				
+		Grupo 1		Grupo 1					
+5	Inguru	Inguru	Gazte	Liburutegia					
+	2A,2B,2D	2A	2A	2A					
+									
+6		Gazte			Jolas autonomoa				
+		2A			2A				
+									
+7	Tutoretza	Plastika			Jolas autonomoa				
+	2A	2A			2A				
+									
+									
+MIKEL									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	2B	2B	2B	2B	2B				
+									
+2	Buruketa Tailerra	Euskara	Buruketa Tailerra	Mate	Euskara				
+	2B	2B	2D	2B	2B				
+	Grupo 1		Grupo 2						
+3	Euskara		Euskara	Mate	Mate				
+	2B		2B	2B	2B				
+									
+4	Gazte	Gazte		Inguru					
+	2B	2B		2B					
+				Grupo 1					
+5	Inguru	Inguru	Liburutegia	Gazte	Inguru				
+	2A,2B,2D	2B	2B	2B	2B				
+									
+6	Tutoretza	Gazte			Jolas autonomoa				
+	2B	2B			2B				
+									
+7		Plastika			Jolas autonomoa				
+		2B			2B				
+									
+									
+JONE									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	2D	2D	2D	2D	2D				
+									
+2	Euskara		Mate	Mate	Euskara				
+	2D		2D	2D	2D				
+			Grupo 1		Grupo 1				
+3		Euskara	Euskara	Mate	Buruketa Tailerra				
+		2D	2D	2D	2A				
+					Grupo 2				
+4	Tutoretza	Gazte	Liburutegia	Inguru	Mate				
+	2D	2D	2D	2D	2D				
+				Grupo 1					
+5	Inguru	Inguru		Gazte	Inguru				
+	2A,2B,2D	2D		2D	2D				
+									
+6	Gazte				Jolas autonomoa				
+	2D				2D				
+									
+7	Gazte	Plastika			Jolas autonomoa				
+	2D	2D			2D				
+									
+									
+ITZIAR									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	3A	3A	3A	3A	3A				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	3A	3A	3A	3A	3A				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Mate	Inguru	Gazte	Inguru				
+	3A	3A	3A	3A	3A				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Liburutegia	Euskara	Gazte	Euskara	Gazte				
+	3A	3A	3A	3A	3A				
+		Grupo 1		Grupo 1					
+5	Buruketa Tailerra	Inguru		Inguru	Tutoretza				
+	3A	3A		3A	3A				
+	Grupo 1	Grupo 1		Grupo 1					
+6				Buruketa Tailerra					
+				4A					
+				Grupo 2					
+7		Gazte			Plastika				
+		3A			3A				
+									
+									
+IKER									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	3B	3B	3B	3B	3B				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	3B	3B	3B	3B	3B				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Mate	Inguru	Gazte	Inguru				
+	3B	3B	3B	3B	3B				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Gazte	Euskara		Euskara	Liburutegia				
+	3B	3B		3B	3B				
+		Grupo 1		Grupo 1					
+5	Buruketa Tailerra	Inguru		Inguru					
+	3B	3B		3B					
+	Grupo 1	Grupo 1		Grupo 1					
+6		Gazte		Tutoretza	Gazte				
+		3B		3B	3B				
+									
+7				Buruketa Tailerra	Plastika				
+				4D	3B				
+				Grupo 2					
+									
+ANDONI									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	4A	4A	4A	4A	4A				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Gazte	Euskara				
+	4A	4A	4A	4A	4A				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Mate	Inguru		Inguru				
+	4A	4A	4A		4A				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Mate	Euskara		Euskara					
+	4A	4A		4A					
+		Grupo 1		Grupo 1					
+5	Buruketa Tailerra	Inguru	Gazte	Inguru					
+	3A	4A	4A	4A					
+	Grupo 2	Grupo 1		Grupo 1					
+6	Gazte			Buruketa Tailerra	Gazte				
+	4A			4A	4A				
+				Grupo 1					
+7	Tutoretza			Plastika	Liburutegia				
+	4A			4A	4A				
+									
+									
+EBA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	4B	4B	4B	4B	4B				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	4B	4B	4B	4B	4B				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru		Inguru	Mate	Inguru				
+	4B		4B	4B	4B				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Buruketa Tailerra	Euskara		Euskara					
+	5B	4B		4B					
+	Grupo 2	Grupo 1		Grupo 1					
+5	Gazte	Inguru	Gazte	Inguru					
+	4B	4B	4B	4B					
+		Grupo 1		Grupo 1					
+6	Liburutegia			Gazte	Gazte				
+	4B			4B	4B				
+									
+7	Buruketa Tailerra			Plastika	Tutoretza				
+	4B			4B	4B				
+	Grupo 1								
+									
+YURENA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	4D	4D	4D	4D	4D				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Gazte	Euskara				
+	4D	4D	4D	4D	4D				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Mate	Inguru		Inguru				
+	4D	4D	4D		4D				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Mate	Euskara		Euskara					
+	4D	4D		4D					
+		Grupo 1		Grupo 1					
+5	Buruketa Tailerra	Inguru		Inguru					
+	3B	4D		4D					
+	Grupo 2	Grupo 1		Grupo 1					
+6	Gazte	Gazte			Liburutegia				
+	4D	4D			4D				
+									
+7	Tutoretza	Gazte		Buruketa Tailerra	Plastika				
+	4D	4D		4D	4D				
+				Grupo 1					
+									
+KEVIN									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	5A	5A	5A	5A	5A				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Mate	Balioak				
+	5A	5A	5A	5A	5A				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Mate	Inguru	Gazte	Euskara				
+	5A	5A	5A	5A	5A				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Gazte	Euskara		Tutoretza	Buruketa Tailerra				
+	5A	5A		5A	5A				
+		Grupo 1		Grupo 1	Grupo 1				
+5	Gazte	Inguru		Inguru	Liburutegia				
+	5A	5A		5A	5A				
+		Grupo 1		Grupo 1					
+6	Idazketa Tailerra			Plastika					
+	6B			5A					
+	Grupo 2								
+7	Idazketa Tailerra			Idazketa Tailerra					
+	6A			5A					
+	Grupo 2			Grupo 1					
+									
+GEMA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	5B	5B	5B	5B	5B				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Gazte	Euskara				
+	5B	5B	5B	5B	5B				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Mate	Inguru	Mate	Balioak				
+	5B	5B	5B	5B	5B				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Buruketa Tailerra	Euskara	Buruketa Tailerra	Inguru	Gazte				
+	5B	5B	6B	5B	5B				
+	Grupo 1	Grupo 1	Grupo 2	Grupo 1					
+5	Gazte	Inguru		Tutoretza	Idazketa Tailerra				
+	5B	5B		5B	5B				
+		Grupo 1		Grupo 1	Grupo 1				
+6		Liburutegia							
+		5B							
+									
+7	Buruketa Tailerra			Plastika					
+	4B			5B					
+	Grupo 2								
+									
+ANDER M									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	6A	6A	6A	6A	6A				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	6A	6A	6A	6A	6A				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Gazte	Inguru	Mate	Balioak				
+	6A	6A	6A	6A	6A				
+	Grupo 1		Grupo 1		Grupo 1				
+4		Euskara	Buruketa Tailerra	Inguru					
+		6A	6A	6A					
+		Grupo 1	Grupo 1	Grupo 1					
+5		Inguru	Gazte	Tutoretza	Gazte				
+		6A	6A	6A	6A				
+		Grupo 1		Grupo 1					
+6	Idazketa Tailerra	Plastika		Buruketa Tailerra					
+	6D	6A		6C					
+	Grupo 2			Grupo 2					
+7	Idazketa Tailerra			Liburutegia					
+	6A			6A					
+	Grupo 1								
+									
+CRISTINA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	6C	6C	6C	6C	6C				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	6B	6B	6B	6B	6B				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Gazte	Inguru	Mate	Balioak				
+	6B	6B	6B	6B	6B				
+	Grupo 1		Grupo 1		Grupo 1				
+4		Euskara	Buruketa Tailerra	Tutoretza	Gazte				
+		6B	6B	6B	6B				
+		Grupo 1	Grupo 1	Grupo 1					
+5		Inguru	Gazte	Inguru	Idazketa Tailerra				
+		6B	6B	6B	6C				
+		Grupo 1		Grupo 1	Grupo 2				
+6	Idazketa Tailerra			Liburutegia					
+	6B			6B					
+	Grupo 1								
+7		Plastika		Idazketa Tailerra					
+		6B		5A					
+				Grupo 2					
+									
+ANDER P.									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	6B	6B	6B	6B	6B				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Inguru	Mate	Euskara	Mate	Euskara				
+	6C	6C	6C	6C	6C				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Euskara	Mate	Inguru	Buruketa Tailerra	Balioak				
+	6C	6C	6C	6D	6C				
+	Grupo 1		Grupo 1	Grupo 2	Grupo 1				
+4		Euskara	Gazte	Inguru	Buruketa Tailerra				
+		6C	6C	6C	5A				
+		Grupo 1		Grupo 1	Grupo 2				
+5		Inguru		Tutoretza	Idazketa Tailerra				
+		6C		6C	6C				
+		Grupo 1		Grupo 1	Grupo 1				
+6		Gazte		Buruketa Tailerra					
+		6C		6C					
+				Grupo 1					
+7		Liburutegia		Gazte	Plastika				
+		6C		6C	6C				
+									
+									
+UNAI									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	6D	6D	6D	6D	6D				
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1	Grupo 1				
+2	Euskara	Mate	Euskara	Mate	Balioak				
+	6D	6D	6D	6D	6D				
+	Grupo 1		Grupo 1	Grupo 1	Grupo 1				
+3	Inguru		Inguru	Buruketa Tailerra	Euskara				
+	6D		6D	6D	6D				
+	Grupo 1		Grupo 1	Grupo 1	Grupo 1				
+4		Euskara	Buruketa Tailerra	Inguru	Mate				
+		6D	6A	6D	6D				
+		Grupo 1	Grupo 2	Grupo 1					
+5		Inguru		Tutoretza	Idazketa Tailerra				
+		6D		6D	5B				
+		Grupo 1		Grupo 1	Grupo 2				
+6	Idazketa Tailerra			Gazte	Gazte				
+	6D			6D	6D				
+	Grupo 1								
+7	Liburutegia	Plastika		Gazte					
+	6D	6D		6D					
+									
+									
+TUTOREA									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2									
+3									
+4									
+5									
+6									
+7									
+									
+IKER PT									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	3A	1B	3B	1B	1A				
+	Grupo 1		Grupo 1						
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	1A	3A	1B	3A	1B				
+									
+3	Inguru	Mate	Inguru	Euskara	Inguru				
+	3B	3B	3A	1A	3B				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Gazte	Euskara	Inguru	Euskara	Gazte				
+	1B	3A	1B	3B	3A				
+		Grupo 1		Grupo 1					
+5	Inguru	Inguru	Gazte		Gazte				
+	1B	3A	1A		1B				
+		Grupo 1							
+6		Gazte		Inguru					
+		3B		1B					
+									
+7		Inguru							
+		1A							
+									
+									
+MIREN Ma PT									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1	Tantai	Tantai	Tantai	Tantai	Tantai				
+	2A	2A	2B	2B	2D				
+									
+2	Buruketa Tailerra	Euskara	Mate	Mate	Euskara				
+	2B	2A	2D	2B	2A				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Euskara	Euskara	Euskara	Mate	Mate				
+	2B	2D	2D	2A	2A				
+				Grupo 1	Grupo 1				
+4	Gazte	Mate	Gazte	Inguru	Inguru				
+	2A	2A	2A	2A	2A				
+		Grupo 1		Grupo 1					
+5		Inguru		Gazte	Inguru				
+		2D		2B	2B				
+									
+6	Gazte	Gazte							
+	2D	2B							
+									
+7	Gazte	Plastika							
+	2D	2D							
+									
+									
+PABLO PT									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA		OSTIRALA			
+1	Tantai	Tantai	Tantai	Tantai		Tantai			
+	4D	4A	4B	4D		4A			
+	Grupo 1	Grupo 1	Grupo 1	Grupo 1		Grupo 1			
+2	Euskara	Mate	Euskara	Gazte	Mate	Euskara			
+	4B	4D	4D	4D	4B	4A			
+	Grupo 1		Grupo 1			Grupo 1			
+3	Inguru	Mate	Inguru	Mate		Inguru			
+	4A	4A	4A	4B		4D			
+	Grupo 1		Grupo 1			Grupo 1			
+4	Mate	Euskara		Euskara		Ingelesa			
+	4A	4D		4A		4D			
+		Grupo 1		Grupo 1					
+5	Gazte	Inguru	Gazte	Inguru					
+	4B	4B	4A	4D					
+		Grupo 1		Grupo 1					
+6	Gazte	Gazte		Gazte		Gazte			
+	4D	4D		4B		4B			
+									
+7		Gazte							
+		4D							
+									
+									
+JON PT									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1									
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	5A	5A	5A	5A	5B				
+	Grupo 1		Grupo 1		Grupo 1				
+3	Inguru	Mate	Inguru	Mate	Euskara				
+	5A	5B	5B	5B	5A				
+	Grupo 1		Grupo 1		Grupo 1				
+4	Gazte	Euskara		Inguru	Gazte				
+	5A	5B		5B	5B				
+		Grupo 1		Grupo 1					
+5	Gazte	Inguru	Ingelesa	Inguru					
+	5B	5A	5A	5A					
+		Grupo 1		Grupo 1					
+6									
+7									
+									
+CRISTINA PT									
+									
+Período	ASTELEHENA	ASTEARTEA	ASTEAZKENA	OSTEGUNA	OSTIRALA				
+1			Tantai						
+			6D						
+			Grupo 1						
+2	Euskara	Mate	Euskara	Mate	Euskara				
+	6D	6A	6B	6D	6A				
+	Grupo 1		Grupo 1	Grupo 1	Grupo 1				
+3	Euskara	Mate	Inguru	Mate	Euskara				
+	6C	6C	6C	6B	6D				
+	Grupo 1		Grupo 1		Grupo 1				
+4		Euskara	Gazte	Inguru	Gazte				
+		6B	6C	6C	6B				
+		Grupo 1		Grupo 1					
+5		Inguru	Gazte	Inguru					
+		6A	6A	6B					
+		Grupo 1		Grupo 1					
+6	Idazketa Tailerra	Gazte		Gazte	Gazte				
+	6D	6C		6D	6D				
+	Grupo 1								
+7	Ingelesa	Ingelesa		Gazte					
+	6B	6A		6C					
+									
