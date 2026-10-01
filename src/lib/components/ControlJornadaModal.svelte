@@ -7,7 +7,8 @@
 		getTimeSlots,
 		type ActividadCatalogoItem
 	} from '../services/primaryService';
-	import { calculateScheduleSummary, type ScheduleSummary } from '../services/timeCalculationService';
+	import { fetchTiposJornada, type TipoJornadaItem } from '$lib/services/scheduleService';
+	import { calculateScheduleSummary, formatMinutes, type ScheduleSummary } from '../services/timeCalculationService';
 	import type { Teacher, Session } from '../types/schedule';
 	import { formatJornada } from '$lib/utils/formatters';
 
@@ -16,12 +17,15 @@
 
 	const dispatch = createEventDispatcher<{
 		close: void;
+		selectTeacher: { id: string; nombre: string };
 	}>();
 
 	interface TeacherSummaryRow {
 		teacher: Teacher;
 		summary: ScheduleSummary;
 		sessionsCount: number;
+		targetLectivasMinutos: number;
+		targetNoLectivasMinutos: number;
 	}
 
 	let loading: boolean = false;
@@ -33,55 +37,61 @@
 		loadControlJornadaData();
 	}
 
-	// Función auxiliar para obtener objetivos en minutos según la jornada
-	function getJornadaMinutosObjetivo(jornadaRaw?: string | null) {
-		const j = formatJornada(jornadaRaw);
+	let tiposJornada: TipoJornadaItem[] = [];
 
-		// Jornada Completa (JC): 15h lectivas (900 min) + 8h no lectivas/presenciales (480 min) = 23h (1380 min)
-		if (j === 'JC') {
-			return {
-				minutosLectivosObjetivo: 900,   // 15 horas lectivas
-				minutosNoLectivosObjetivo: 480  // 8 horas no lectivas
-			};
+	function getJornadaMinutosObjetivo(jornadaRaw?: string | null, tiposList: any[] = []) {
+		if (!jornadaRaw) {
+			return { minutosLectivosObjetivo: 0, minutosNoLectivosObjetivo: 0 };
 		}
 
-		// Jornadas parciales (p. ej., 50% o 1/2)
-		if (j.includes('1/2') || j.includes('50%')) {
-			return {
-				minutosLectivosObjetivo: 450,   // 7.5 horas lectivas
-				minutosNoLectivosObjetivo: 240  // 4 horas no lectivas
-			};
+		const teacherJornadaNorm = String(jornadaRaw).trim().toLowerCase();
+
+		const matched = tiposList.find((tj: any) => {
+			const dbName = String(tj.nombre || '').trim().toLowerCase();
+			if (!dbName) return false;
+			return dbName === teacherJornadaNorm ||
+				   teacherJornadaNorm.includes(dbName) ||
+				   dbName.includes(teacherJornadaNorm);
+		});
+
+		if (matched) {
+			const hL = Number(matched.objetivo_lectivas_horas);
+			const hNL = Number(matched.objetivo_no_lectivas_horas);
+			if (!isNaN(hL) && !isNaN(hNL)) {
+				return {
+					minutosLectivosObjetivo: Math.round(hL * 60),
+					minutosNoLectivosObjetivo: Math.round(hNL * 60)
+				};
+			}
 		}
 
-		// Fallback por defecto a Jornada Completa
-		return {
-			minutosLectivosObjetivo: 900,
-			minutosNoLectivosObjetivo: 480
-		};
+		return { minutosLectivosObjetivo: 0, minutosNoLectivosObjetivo: 0 };
 	}
 
 	async function loadControlJornadaData() {
 		loading = true;
 		try {
-			// 1. Cargar en paralelo lista de profesores, tramos horarios y catálogo de actividades de primaryService
-			const [teachers, tramos, catalogo] = await Promise.all([
+			const [teachers, tramos, catalogo, tiposJ] = await Promise.all([
 				getTeachers(selectedCurso),
 				getTimeSlots(),
-				getActividadesCatalogo(selectedCurso)
+				getActividadesCatalogo(selectedCurso),
+				fetchTiposJornada()
 			]);
 
 			actividadesCatalogo = catalogo;
+			tiposJornada = tiposJ;
 
-			// 2. Procesar sesiones por profesor y calcular el balance con el catálogo oficial
 			const rows: TeacherSummaryRow[] = await Promise.all(
 				teachers.map(async (teacher) => {
 					const sessions = await getSessionsForTeacher(selectedCurso, teacher.nombre);
-					const jornadaConfig = getJornadaMinutosObjetivo(teacher.jornada);
-					const summary = calculateScheduleSummary(sessions, jornadaConfig, actividadesCatalogo);
+					const targets = getJornadaMinutosObjetivo(teacher.jornada, tiposJornada);
+					const summary = calculateScheduleSummary(sessions, targets, actividadesCatalogo);
 					return {
 						teacher,
 						summary,
-						sessionsCount: sessions.length
+						sessionsCount: sessions.length,
+						targetLectivasMinutos: targets.minutosLectivosObjetivo,
+						targetNoLectivasMinutos: targets.minutosNoLectivosObjetivo
 					};
 				})
 			);
@@ -92,6 +102,11 @@
 		} finally {
 			loading = false;
 		}
+	}
+
+	function handleSelectTeacher(teacher: Teacher) {
+		dispatch('selectTeacher', { id: teacher.id, nombre: teacher.nombre });
+		handleClose();
 	}
 
 	function handleClose() {
@@ -180,11 +195,11 @@
 									<th class="p-3 text-center">Horas No Lectivas</th>
 									<th class="p-3 text-center">Total Asignado</th>
 									<th class="p-3 text-center">Balance</th>
+									<th class="p-3 text-center">Acciones</th>
 								</tr>
 							</thead>
 							<tbody class="divide-y divide-slate-200 dark:divide-gray-700">
 								{#each filteredRows as row}
-									{@const isJC = formatJornada(row.teacher.jornada) === 'JC'}
 									<tr class="hover:bg-slate-50 dark:hover:bg-gray-800/60 transition-colors">
 										<td class="p-3">
 											<div class="font-bold text-slate-800 dark:text-gray-100 uppercase">
@@ -196,25 +211,35 @@
 										</td>
 										<td class="p-3 text-center">
 											<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-gray-700 dark:text-gray-300 border border-slate-200 dark:border-gray-600">
-												{isJC ? 'JC (23h)' : 'Parcial'}
+												{row.teacher.jornada || 'Jornada completa'}
 											</span>
 										</td>
 										<td class="p-3 text-center">
 											<span class="font-bold text-slate-800 dark:text-gray-200">{row.summary.horasLectivasFormatted}</span>
-											<span class="block text-[10px] text-slate-400">Obj: {isJC ? '15h' : '7h 30m'}</span>
+											<span class="block text-[10px] text-slate-400">Obj: {formatMinutes(row.targetLectivasMinutos)}</span>
 										</td>
 										<td class="p-3 text-center">
 											<span class="font-bold text-slate-800 dark:text-gray-200">{row.summary.horasNoLectivasFormatted}</span>
-											<span class="block text-[10px] text-slate-400">Obj: {isJC ? '8h' : '4h'}</span>
+											<span class="block text-[10px] text-slate-400">Obj: {formatMinutes(row.targetNoLectivasMinutos)}</span>
 										</td>
 										<td class="p-3 text-center">
 											<span class="font-bold text-slate-900 dark:text-gray-100">{row.summary.horasTotalesFormatted}</span>
-											<span class="block text-[10px] text-slate-400">Obj: {isJC ? '23h' : '11h 30m'}</span>
+											<span class="block text-[10px] text-slate-400">Obj: {formatMinutes(row.targetLectivasMinutos + row.targetNoLectivasMinutos)}</span>
 										</td>
 										<td class="p-3 text-center">
 											<span class="font-extrabold px-2 py-1 rounded-md text-xs {row.summary.balanceTotalMinutos === 0 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : row.summary.balanceTotalMinutos > 0 ? 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}">
 												{row.summary.balanceTotalFormatted}
 											</span>
+										</td>
+										<td class="p-3 text-center">
+											<button
+												type="button"
+												on:click={() => handleSelectTeacher(row.teacher)}
+												class="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-lg text-xs transition-colors shadow-xs flex items-center justify-center gap-1 mx-auto cursor-pointer"
+												title="Ver horario individual"
+											>
+												👁️ Ver Horario
+											</button>
 										</td>
 									</tr>
 								{/each}
