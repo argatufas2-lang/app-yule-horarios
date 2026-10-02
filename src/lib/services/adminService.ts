@@ -38,6 +38,12 @@ export interface TramoHorarioRecord {
     orden?: number | null;
 }
 
+export interface RolProfesorRecord {
+    id: number;
+    codigo: string;
+    nombre: string;
+}
+
 // --- PROFESORES ---
 export async function getAdminProfesores(curso: string): Promise<ProfesorRecord[]> {
     const { data, error } = await supabase
@@ -211,4 +217,15 @@ export async function deleteAdminTramoHorario(id: number): Promise<void> {
         .eq('id', id);
 
     if (error) throw new Error(`Error al eliminar tramo horario: ${error.message}`);
+}
+
+// --- ROLES PROFESOR ---
+export async function getAdminRolesProfesor(): Promise<RolProfesorRecord[]> {
+    const { data, error } = await supabase
+        .from('roles_profesor')
+        .select('*')
+        .order('id', { ascending: true });
+
+    if (error) throw new Error(`Error al cargar roles de profesor: ${error.message}`);
+    return data || [];
 }
