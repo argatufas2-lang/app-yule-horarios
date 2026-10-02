@@ -353,15 +353,17 @@
 
         const detail = event.detail || {};
         const profNombre = currentTeacher?.nombre || '';
+        // Forzar que el día venga directamente del evento del modal (y usar selectedCellDia como fallback seguro)
+        const targetDia = detail.dia !== undefined && detail.dia !== null ? detail.dia : selectedCellDia;
 
-        if (profNombre && selectedCellDia !== null && selectedCellFranja !== null) {
+        if (profNombre && targetDia !== null && selectedCellFranja !== null) {
             try {
                 const minVal = detail.minutos !== undefined ? detail.minutos : ajusteMinutosValor;
                 const minutosValidados = Math.max(1, Math.min(minVal, maxMinutosFranja));
 
                 const sessionPayload = {
                     profesor_nombre: profNombre,
-                    dia: selectedCellDia,
+                    dia: targetDia,
                     franja: selectedCellFranja,
                     actividad: detail.actividad || null,
                     clase: detail.clase || null,
