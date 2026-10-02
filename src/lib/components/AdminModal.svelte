@@ -17,10 +17,12 @@
         createAdminTramoHorario,
         updateAdminTramoHorario,
         deleteAdminTramoHorario,
+        getAdminRolesProfesor,
         type ProfesorRecord,
         type ActividadRecord,
         type AulaRecord,
-        type TramoHorarioRecord
+        type TramoHorarioRecord,
+        type RolProfesorRecord
     } from '$lib/services/adminService';
 
     export let isOpen: boolean = false;
@@ -40,11 +42,11 @@
     let actividades: ActividadRecord[] = [];
     let aulas: AulaRecord[] = [];
     let tramosHorarios: TramoHorarioRecord[] = [];
+    let rolesProfesor: RolProfesorRecord[] = [];
 
     const diasNombres = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
     // Opciones estándar para selectores desplegables
-    const opcionesPerfil = ['Tutor', 'Especialista', 'Consultor', 'Orientador', 'PT', 'AL'];
     const opcionesJornada = ['Jornada completa', '2/3 de jornada', '1/2 jornada', '1/3 de jornada'];
     const opcionesCategoria = ['General', 'Lectiva', 'No Lectiva', 'Complementaria', 'Guardia'];
     const opcionesEdificio = ['Principal', 'Secundario', 'Gimnasio', 'Exterior'];
@@ -76,6 +78,7 @@
         errorMessage = '';
         try {
             if (activeTab === 'profesores') {
+                rolesProfesor = await getAdminRolesProfesor();
                 profesores = await getAdminProfesores(selectedCurso);
                 aulas = await getAdminAulas(selectedCurso);
             } else if (activeTab === 'actividades') {
@@ -388,8 +391,8 @@
                         <div class="w-44">
                             <label for="new-prof-perfil" class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-gray-300 mb-1.5">Perfil</label>
                             <select id="new-prof-perfil" bind:value={newProfesor.perfil} class="w-full text-xs p-2.5 rounded-xl border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-semibold focus:ring-2 focus:ring-sky-500">
-                                {#each opcionesPerfil as item}
-                                    <option value={item}>{item}</option>
+                                {#each rolesProfesor as rol}
+                                    <option value={rol.codigo}>{rol.nombre}</option>
                                 {/each}
                             </select>
                         </div>
@@ -453,10 +456,10 @@
                                                 on:change={() => handleSaveProfesorField(p, 'perfil')}
                                                 class="w-full p-2 border border-slate-200 dark:border-gray-700 focus:border-sky-500 rounded-lg text-xs bg-slate-50/50 focus:bg-white dark:bg-gray-900/50 dark:focus:bg-gray-800 dark:text-white font-semibold transition-all focus:outline-hidden cursor-pointer"
                                             >
-                                                {#each opcionesPerfil as item}
-                                                    <option value={item}>{item}</option>
+                                                {#each rolesProfesor as rol}
+                                                    <option value={rol.codigo}>{rol.nombre}</option>
                                                 {/each}
-                                                {#if p.perfil && !opcionesPerfil.includes(p.perfil)}
+                                                {#if p.perfil && !rolesProfesor.some((r) => r.codigo === p.perfil)}
                                                     <option value={p.perfil}>{p.perfil}</option>
                                                 {/if}
                                             </select>

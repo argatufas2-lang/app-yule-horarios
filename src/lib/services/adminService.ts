@@ -223,7 +223,7 @@ export async function deleteAdminTramoHorario(id: number): Promise<void> {
 export async function getAdminRolesProfesor(): Promise<RolProfesorRecord[]> {
     const { data, error } = await supabase
         .from('roles_profesor')
-        .select('*')
+        .select('id, codigo, nombre')
         .order('id', { ascending: true });
 
     if (error) throw new Error(`Error al cargar roles de profesor: ${error.message}`);
