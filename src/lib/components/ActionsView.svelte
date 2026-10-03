@@ -38,7 +38,6 @@
         selectCurso: string;
     }>();
 
-    // Estados de navegación y selección
     export let selectedCurso: string = '2026-2027';
     export let selectedCiclo: 'LH' | 'HH' = 'LH';
     
@@ -46,10 +45,8 @@
     let showDebug: boolean = false;
     let showAdminModal: boolean = false;
 
-    // Control de secuencia determinista de peticiones asíncronas
     let activeRequestId = 0;
 
-    // Estado para el modal de Sesión
     let isSesionModalOpen: boolean = false;
     let selectedCellDia: number | null = null;
     let selectedCellFranja: number | null = null;
@@ -65,9 +62,9 @@
         aula?: string | null;
         rol_aula?: string | null;
         es_lectiva?: boolean;
+        profesor_nombre?: string | null;
     } = {};
 
-    // Listados dinámicos obtenidos de Supabase
     export let profesoresDisponibles: EntityOption[] = [];
     export let aulasDisponibles: EntityOption[] = [];
     export let actividadesDisponibles: Array<{ id: number | string; nombre: string; es_lectiva?: boolean }> = [];
@@ -80,12 +77,10 @@
     let isChangingTab: boolean = false;
     let lastLoadedEntityId: string = '';
 
-    // Tramos horarios y Sesiones dinámicas
     let timeSlots: TimeSlotItem[] = [];
     let teacherScheduleGrid: Record<string, Record<string, GridSessionCell>> = {};
     let teacherSessionsList: Session[] = [];
 
-    // Carga explícita de entidad con control estricto de petición asíncrona
     export async function switchEntity(entityId: string) {
         if (!entityId) {
             teacherScheduleGrid = {};
@@ -130,7 +125,6 @@
         switchEntity(selectedEntityId);
     }
 
-    // Cargar los datos correspondientes según la pestaña y el curso activo
     async function loadDataForCurrentTab() {
         teacherScheduleGrid = {};
         lastLoadedEntityId = '';
@@ -187,12 +181,10 @@
         loadDataForCurrentTab();
     });
 
-    // Lista dinámica para el selector según la pestaña
     $: selectorOptions = activeTab === 'profesorado' 
         ? profesoresDisponibles 
         : aulasDisponibles;
 
-    // Información del elemento seleccionado (Profesor o Aula)
     $: currentTeacher = profesoresDisponibles.find(p => p.id === selectedEntityId) || profesoresDisponibles[0];
     $: currentClassroom = aulasDisponibles.find(a => a.id === selectedEntityId) || aulasDisponibles[0];
 
@@ -205,7 +197,6 @@
         return pClase === cName || pClase === cCode || cName.includes(pClase) || pClase.includes(cName);
     });
 
-    // Evaluación de si el profesor actual tiene jornada completa
     $: isJornadaCompleta = activeTab === 'profesorado' && currentTeacher?.jornada 
         ? formatJornada(currentTeacher.jornada) === 'JC'
         : false;
@@ -243,7 +234,6 @@
         return { minutosLectivos: 0, minutosNoLectivos: 0 };
     })();
 
-    // Cálculo dinámico del resumen de jornada
     $: scheduleSummary = (() => {
         const config = {
             minutosLectivosObjetivo: targetJornadaInfo.minutosLectivos,
@@ -253,7 +243,6 @@
         return calculateScheduleSummary(teacherSessionsList, config, catMap);
     })();
 
-    // Al cambiar de pestaña
     async function handleTabChange(tab: 'profesorado' | 'aulas') {
         if (activeTab === tab) return;
         isChangingTab = true;
@@ -276,7 +265,6 @@
         }
     }
 
-    // Manejadores de eventos de ActionToolbar
     async function handleSelectCurso(event: CustomEvent<string>) {
         selectedCurso = event.detail;
         dispatch('selectCurso', selectedCurso);
@@ -314,7 +302,6 @@
         }
     }
 
-    // Abrir modal de Sesión al hacer clic en una casilla de la cuadrícula
     async function handleCellClick(dayId: number, dayName: string, slot: TimeSlotItem, session?: GridSessionCell) {
         selectedCellDia = dayId;
         let dbFranja = slot.orden;
@@ -326,7 +313,6 @@
         selectedCellDiaNombre = dayName;
         selectedCellFranjaNombre = slot.time;
 
-        // Obtener el tramo correspondiente de Supabase y calcular tiempo máximo real
         const foundSlot = timeSlots.find((ts) => ts.orden === slot.orden);
         maxMinutosFranja = foundSlot?.minutos_maximos || slot.minutos_maximos || 60;
 
@@ -337,14 +323,21 @@
         }
         ajusteParteValor = 'inicio';
 
+        // Extraer el profesor real de la sesión o usar el actual de la vista
+        const profesorSesion = session?.rawData?.profesor_nombre || (activeTab === 'profesorado' ? currentTeacher?.nombre : '');
+
         selectedCellData = session ? {
             id: session.id,
             actividad: session.actividad,
             clase: session.clase,
             aula: session.aula,
             rol_aula: session.rawData?.rol_aula,
-            es_lectiva: session.rawData?.es_lectiva
-        } : {};
+            es_lectiva: session.rawData?.es_lectiva,
+            profesor_nombre: profesorSesion
+        } : {
+            profesor_nombre: activeTab === 'profesorado' ? currentTeacher?.nombre : ''
+        };
+
         isSesionModalOpen = true;
     }
 
@@ -353,16 +346,15 @@
 
         const detail = event.detail || {};
         const profNombre = currentTeacher?.nombre || '';
-        // Forzar que el día venga directamente del evento del modal (y usar selectedCellDia como fallback seguro)
         const targetDia = detail.dia !== undefined && detail.dia !== null ? detail.dia : selectedCellDia;
 
-        if (profNombre && targetDia !== null && selectedCellFranja !== null) {
+        if (targetDia !== null && selectedCellFranja !== null) {
             try {
                 const minVal = detail.minutos !== undefined ? detail.minutos : ajusteMinutosValor;
                 const minutosValidados = Math.max(1, Math.min(minVal, maxMinutosFranja));
 
                 const sessionPayload = {
-                    profesor_nombre: profNombre,
+                    profesor_nombre: activeTab === 'profesorado' ? profNombre : (selectedCellData.profesor_nombre || profNombre),
                     dia: targetDia,
                     franja: selectedCellFranja,
                     actividad: detail.actividad || null,
@@ -378,8 +370,28 @@
                 } else if (detail.actividad) {
                     await createSession(sessionPayload);
                 }
+
+                // Guardar profesores concurrentes / apoyos
+                if (detail.profesoresApoyo && Array.isArray(detail.profesoresApoyo)) {
+                    for (const apoyo of detail.profesoresApoyo) {
+                        if (apoyo.profesor_nombre) {
+                            const apoyoPayload = {
+                                profesor_nombre: apoyo.profesor_nombre,
+                                dia: targetDia,
+                                franja: selectedCellFranja,
+                                actividad: detail.actividad || null,
+                                clase: detail.clase || null,
+                                aula: detail.aula || null,
+                                rol_aula: apoyo.rol_aula || 'PT',
+                                minutos: apoyo.minutos || maxMinutosFranja,
+                                curso_escolar: selectedCurso
+                            };
+                            await createSession(apoyoPayload);
+                        }
+                    }
+                }
             } catch (err) {
-                console.error('Error al guardar la sesión:', err);
+                console.error('Error al guardar la sesión y sus apoyos:', err);
             }
         }
 
@@ -395,7 +407,6 @@
 </script>
 
 <div class="flex flex-col min-h-screen bg-slate-50 dark:bg-gray-900 transition-colors">
-    <!-- Barra de Herramientas Superior Corporativa Ganivet (Oculta en Impresión) -->
     <div class="print:hidden">
         <ActionToolbar
             {selectedCurso}
@@ -415,14 +426,9 @@
         />
     </div>
 
-    <!-- Área de Contenido Principal Ampliada -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-4 space-y-4 print-area print:p-0 print:m-0 print:space-y-1">
-        
-        <!-- Pestañas y Selector Unificados con Botón de Debug (Ocultos en Impresión) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-3 flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
-            
             <div class="flex flex-col md:flex-row md:items-center justify-start gap-4 flex-1">
-                <!-- Pestañas Principales -->
                 <div class="flex items-center space-x-1 shrink-0">
                     <button
                         type="button"
@@ -441,7 +447,6 @@
                     </button>
                 </div>
 
-                <!-- Desplegable Alineado Inmediatamente a Continuación -->
                 <div class="flex items-center space-x-2 w-full md:w-auto flex-1 max-w-2xl">
                     <label for="entitySelector" class="text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
                         {activeTab === 'profesorado' ? 'SELECCIONAR PROFESORADO:' : 'SELECCIONAR AULA / GRUPO:'}
@@ -465,7 +470,6 @@
                 </div>
             </div>
 
-            <!-- Botón Conmutador de Depuración Visual -->
             <button
                 type="button"
                 on:click={() => showDebug = !showDebug}
@@ -476,7 +480,6 @@
             </button>
         </div>
 
-        <!-- Tarjeta de Perfil Alineada Horizontalmente -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 flex items-center justify-center print:border-none print:shadow-none print:bg-transparent print:p-1 print:mb-1">
             {#if activeTab === 'profesorado'}
                 <div class="flex flex-wrap items-center justify-center gap-4 text-center sm:text-left print:gap-2">
@@ -521,7 +524,6 @@
             {/if}
         </div>
 
-        <!-- Renderizado Condicional Desacoplado por Pestaña Activa -->
         {#if activeTab === 'profesorado'}
             <TeacherScheduleGrid
                 teacherId={selectedEntityId}
@@ -543,7 +545,6 @@
             />
         {/if}
 
-        <!-- Bloque de Resumen Inferior -->
         {#if activeTab === 'profesorado'}
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-slate-200 dark:border-gray-700 p-4 space-y-3 print:border-none print:p-0 print:shadow-none print:bg-transparent print:mt-1">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-700 gap-2 print:pb-0.5 print:mb-0.5 print:border-b">
@@ -561,7 +562,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 print:grid-cols-4 print:gap-1.5">
-                    <!-- Horas Lectivas -->
                     <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
                         <div>
                             <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas Lectivas</span>
@@ -573,7 +573,6 @@
                         </div>
                     </div>
 
-                    <!-- Horas No Lectivas -->
                     <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
                         <div>
                             <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Horas No Lectivas</span>
@@ -585,7 +584,6 @@
                         </div>
                     </div>
 
-                    <!-- Total Asignado -->
                     <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
                         <div>
                             <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Total Asignado</span>
@@ -597,7 +595,6 @@
                         </div>
                     </div>
 
-                    <!-- Balance Horario -->
                     <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 border border-slate-200 dark:border-gray-700 flex items-center justify-between print:p-1 print:border print:bg-transparent">
                         <div>
                             <span class="block text-[11px] font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider print:text-[7px]">Balance Horario</span>
@@ -618,7 +615,6 @@
 
     </main>
 
-    <!-- Componente Modal de Administración -->
     <AdminModal
         isOpen={showAdminModal}
         {selectedCurso}
@@ -629,7 +625,6 @@
         }}
     />
 
-    <!-- Componente Modal de Edición de Sesión -->
     <SesionModal
         bind:isOpen={isSesionModalOpen}
         profesorNombre={currentTeacher?.nombre || ''}
@@ -637,6 +632,7 @@
         franja={selectedCellFranja}
         diaNombre={selectedCellDiaNombre}
         franjaNombre={selectedCellFranjaNombre}
+        {selectedCurso}
         sesionData={selectedCellData}
         actividadesDisponibles={actividadesDisponibles}
         aulasDisponibles={aulasDisponibles}
