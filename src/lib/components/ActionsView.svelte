@@ -315,12 +315,31 @@
         }
         ajusteParteValor = 'inicio';
 
-        // En vista de aulas no arrastrar el profesor de la pestaña de profesorado
-        const profesorSesion = session?.rawData?.profesor_nombre || session?.profesor || (activeTab === 'profesorado' ? currentTeacher?.nombre : '');
+        const profesorSesion = activeTab === 'profesorado'
+            ? (currentTeacher?.nombre || '')
+            : (session?.rawData?.profesor_nombre || session?.profesor || '');
 
-        // Extraer la lista de apoyos/concurrentes guardados previamente en rawData
-        const concurrentes = session?.rawData?.sesionesConcurrentes || [];
+        const rawConcurrentes = session?.rawData?.sesionesConcurrentes || [];
+        let concurrentes = Array.isArray(rawConcurrentes) ? [...rawConcurrentes] : [];
+
+        // Si no vienen sesiones concurrentes pero hay una sesión única activa
+        if (concurrentes.length === 0 && session) {
+            concurrentes = [{
+                id: session.id,
+                profesor_nombre: profesorSesion,
+                rol_aula: session.rawData?.rol_aula || 'principal',
+                actividad: session.actividad || '',
+                clase: session.clase || (activeTab === 'aulas' ? (currentClassroom?.nombre || '') : ''),
+                aula: session.aula || (activeTab === 'aulas' ? (currentClassroom?.nombre || '') : ''),
+                minutos: ajusteMinutosValor,
+                es_lectiva: session.rawData?.es_lectiva
+            }];
+        }
+
+        const primerProfesor = concurrentes[0]?.profesor_nombre || profesorSesion;
+
         const apoyosMapeados = concurrentes.slice(1).map((s: any) => ({
+            id: s.id,
             profesor_nombre: s.profesor_nombre,
             rol_aula: s.rol_aula || 'PT',
             minutos: s.minutos || maxMinutosFranja,
@@ -330,21 +349,23 @@
         selectedCellData = session ? {
             id: session.id,
             actividad: session.actividad,
-            clase: session.clase || (activeTab === 'aulas' ? currentClassroom?.nombre : ''),
-            aula: session.aula || (activeTab === 'aulas' ? currentClassroom?.nombre : ''),
+            clase: session.clase || (activeTab === 'aulas' ? (currentClassroom?.nombre || '') : ''),
+            aula: session.aula || (activeTab === 'aulas' ? (currentClassroom?.nombre || '') : ''),
             rol_aula: session.rawData?.rol_aula || 'principal',
             es_lectiva: session.rawData?.es_lectiva,
-            profesor_nombre: profesorSesion,
+            profesor_nombre: primerProfesor,
             profesoresApoyo: apoyosMapeados,
+            sesionesConcurrentes: concurrentes,
             dia: dayId,
             franja: dbFranja,
             minutos: ajusteMinutosValor
         } : {
             actividad: '',
-            clase: activeTab === 'aulas' ? currentClassroom?.nombre : '',
-            aula: activeTab === 'aulas' ? currentClassroom?.nombre : '',
-            profesor_nombre: activeTab === 'profesorado' ? currentTeacher?.nombre : '',
+            clase: activeTab === 'aulas' ? (currentClassroom?.nombre || '') : '',
+            aula: activeTab === 'aulas' ? (currentClassroom?.nombre || '') : '',
+            profesor_nombre: primerProfesor,
             profesoresApoyo: [],
+            sesionesConcurrentes: [],
             dia: dayId,
             franja: dbFranja,
             minutos: maxMinutosFranja
@@ -398,7 +419,11 @@
                                 minutos: apoyo.minutos || maxMinutosFranja,
                                 curso_escolar: selectedCurso
                             };
-                            await createSession(apoyoPayload);
+                            if (apoyo.id) {
+                                await updateSession(apoyo.id, apoyoPayload);
+                            } else {
+                                await createSession(apoyoPayload);
+                            }
                         }
                     }
                 }
@@ -645,6 +670,7 @@
         session={selectedCellData}
         profesoresDisponibles={profesoresDisponibles}
         on:save={handleSaveSession}
+        on:delete={handleDeleteSession}
         on:close={() => isSesionModalOpen = false}
     />
 </div>

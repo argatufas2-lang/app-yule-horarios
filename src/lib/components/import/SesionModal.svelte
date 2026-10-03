@@ -4,11 +4,12 @@
 	import { getAdminProfesores, getAdminRolesProfesor, type ProfesorRecord, type RolProfesorRecord } from '$lib/services/adminService';
 
 	export let isOpen: boolean = false;
-	export let session: StagingSessionRow | null = null;
+	export let session: any = null;
 	export let selectedCurso: string = '2026-2027';
 	export let profesoresDisponibles: any[] = [];
 
 	export interface ProfesorApoyo {
+		id?: string;
 		profesor_nombre: string;
 		rol_aula: string;
 		minutos: number;
@@ -17,7 +18,8 @@
 
 	const dispatch = createEventDispatcher<{
 		close: void;
-		save: StagingSessionRow & { profesoresApoyo?: ProfesorApoyo[] };
+		save: any;
+		delete: { id: string };
 	}>();
 
 	let formData: Partial<StagingSessionRow> = {};
@@ -45,8 +47,14 @@
 
 	$: if (session) {
 		formData = { ...session };
-		if ((session as any).profesoresApoyo) {
-			profesoresApoyo = [...(session as any).profesoresApoyo];
+		if (Array.isArray(session.profesoresApoyo)) {
+			profesoresApoyo = session.profesoresApoyo.map((p: any) => ({
+				id: p.id,
+				profesor_nombre: p.profesor_nombre || '',
+				rol_aula: p.rol_aula || 'PT',
+				minutos: p.minutos || formData.minutos || 45,
+				parte: p.parte || 'inicio'
+			}));
 		} else {
 			profesoresApoyo = [];
 		}
@@ -71,6 +79,10 @@
 	}
 
 	function removeProfesorApoyo(index: number) {
+		const removed = profesoresApoyo[index];
+		if (removed && removed.id) {
+			dispatch('delete', { id: removed.id });
+		}
 		profesoresApoyo = profesoresApoyo.filter((_, i) => i !== index);
 	}
 
@@ -84,7 +96,7 @@
 				...session,
 				...formData,
 				profesoresApoyo
-			} as StagingSessionRow & { profesoresApoyo?: ProfesorApoyo[] });
+			});
 		}
 	}
 </script>
@@ -200,21 +212,26 @@
 				<!-- Módulo: Profesores Concurrentes / Apoyo en esta Sesión -->
 				<div class="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
 					<div class="mb-3 flex items-center justify-between">
-						<h3 class="text-sm font-semibold text-slate-800 dark:text-gray-200">
-							Profesores Concurrentes / Apoyo en esta Sesión
-						</h3>
+						<div>
+							<h3 class="text-sm font-semibold text-slate-800 dark:text-gray-200">
+								Profesores Concurrentes / Apoyo
+							</h3>
+							<p class="text-xs text-slate-500 dark:text-gray-400">
+								Docentes adicionales que intervienen en esta misma celda/franja.
+							</p>
+						</div>
 						<button
 							type="button"
 							on:click={addProfesorApoyo}
 							class="rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-100 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60"
 						>
-							+ Añadir Profesor de Apoyo
+							+ Añadir Apoyo
 						</button>
 					</div>
 
 					{#if profesoresApoyo.length === 0}
 						<p class="text-xs italic text-slate-500 dark:text-gray-400">
-							No hay profesores de apoyo asignados a esta sesión.
+							No hay profesores de apoyo asignados a esta celda.
 						</p>
 					{:else}
 						<div class="space-y-3">
@@ -224,7 +241,7 @@
 										type="button"
 										on:click={() => removeProfesorApoyo(index)}
 										class="absolute right-2 top-2 text-slate-400 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
-										title="Eliminar apoyo"
+										title="Eliminar este profesor de apoyo"
 									>
 										<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -234,7 +251,7 @@
 									<div class="grid grid-cols-2 gap-2 pr-6">
 										<div>
 											<label class="block text-xs font-medium text-slate-600 dark:text-gray-300">
-												Profesor
+												Profesor de Apoyo
 											</label>
 											<select
 												bind:value={apoyo.profesor_nombre}
