@@ -6,7 +6,7 @@
 	export let isOpen: boolean = false;
 	export let session: StagingSessionRow | null = null;
 	export let selectedCurso: string = '2026-2027';
-	export let profesoresDisponibles: ProfesorRecord[] = [];
+	export let profesoresDisponibles: any[] = [];
 
 	export interface ProfesorApoyo {
 		profesor_nombre: string;
@@ -105,14 +105,18 @@
 			<div class="space-y-4">
 				<div>
 					<label for="profesor_nombre" class="block text-sm font-medium text-slate-700 dark:text-gray-300">
-						Profesor
+						Profesor Principal
 					</label>
-					<input
-						type="text"
+					<select
 						id="profesor_nombre"
 						bind:value={formData.profesor_nombre}
 						class="mt-1 block w-full rounded-md border border-slate-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-					/>
+					>
+						<option value="">-- Seleccionar Profesor --</option>
+						{#each profesoresList as prof}
+							<option value={prof.nombre}>{prof.nombre}</option>
+						{/each}
+					</select>
 				</div>
 
 				<div class="grid grid-cols-2 gap-4">

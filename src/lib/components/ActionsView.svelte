@@ -55,15 +55,7 @@
     let maxMinutosFranja: number = 60;
     let ajusteMinutosValor: number = 60;
     let ajusteParteValor: 'inicio' | 'final' = 'inicio';
-    let selectedCellData: {
-        id?: string;
-        actividad?: string | null;
-        clase?: string | null;
-        aula?: string | null;
-        rol_aula?: string | null;
-        es_lectiva?: boolean;
-        profesor_nombre?: string | null;
-    } = {};
+    let selectedCellData: any = null;
 
     export let profesoresDisponibles: EntityOption[] = [];
     export let aulasDisponibles: EntityOption[] = [];
@@ -323,19 +315,39 @@
         }
         ajusteParteValor = 'inicio';
 
-        // Extraer el profesor real de la sesión o usar el actual de la vista
-        const profesorSesion = session?.rawData?.profesor_nombre || (activeTab === 'profesorado' ? currentTeacher?.nombre : '');
+        // En vista de aulas no arrastrar el profesor de la pestaña de profesorado
+        const profesorSesion = session?.rawData?.profesor_nombre || session?.profesor || (activeTab === 'profesorado' ? currentTeacher?.nombre : '');
+
+        // Extraer la lista de apoyos/concurrentes guardados previamente en rawData
+        const concurrentes = session?.rawData?.sesionesConcurrentes || [];
+        const apoyosMapeados = concurrentes.slice(1).map((s: any) => ({
+            profesor_nombre: s.profesor_nombre,
+            rol_aula: s.rol_aula || 'PT',
+            minutos: s.minutos || maxMinutosFranja,
+            parte: 'inicio'
+        }));
 
         selectedCellData = session ? {
             id: session.id,
             actividad: session.actividad,
-            clase: session.clase,
-            aula: session.aula,
-            rol_aula: session.rawData?.rol_aula,
+            clase: session.clase || (activeTab === 'aulas' ? currentClassroom?.nombre : ''),
+            aula: session.aula || (activeTab === 'aulas' ? currentClassroom?.nombre : ''),
+            rol_aula: session.rawData?.rol_aula || 'principal',
             es_lectiva: session.rawData?.es_lectiva,
-            profesor_nombre: profesorSesion
+            profesor_nombre: profesorSesion,
+            profesoresApoyo: apoyosMapeados,
+            dia: dayId,
+            franja: dbFranja,
+            minutos: ajusteMinutosValor
         } : {
-            profesor_nombre: activeTab === 'profesorado' ? currentTeacher?.nombre : ''
+            actividad: '',
+            clase: activeTab === 'aulas' ? currentClassroom?.nombre : '',
+            aula: activeTab === 'aulas' ? currentClassroom?.nombre : '',
+            profesor_nombre: activeTab === 'profesorado' ? currentTeacher?.nombre : '',
+            profesoresApoyo: [],
+            dia: dayId,
+            franja: dbFranja,
+            minutos: maxMinutosFranja
         };
 
         isSesionModalOpen = true;
@@ -345,7 +357,7 @@
         console.log('Guardando datos de la sesión:', event.detail);
 
         const detail = event.detail || {};
-        const profNombre = currentTeacher?.nombre || '';
+        const profNombre = detail.profesor_nombre || currentTeacher?.nombre || '';
         const targetDia = detail.dia !== undefined && detail.dia !== null ? detail.dia : selectedCellDia;
 
         if (targetDia !== null && selectedCellFranja !== null) {
@@ -354,13 +366,13 @@
                 const minutosValidados = Math.max(1, Math.min(minVal, maxMinutosFranja));
 
                 const sessionPayload = {
-                    profesor_nombre: activeTab === 'profesorado' ? profNombre : (selectedCellData.profesor_nombre || profNombre),
+                    profesor_nombre: profNombre,
                     dia: targetDia,
                     franja: selectedCellFranja,
                     actividad: detail.actividad || null,
                     clase: detail.clase || null,
                     aula: detail.aula || null,
-                    rol_aula: detail.rol_aula || null,
+                    rol_aula: detail.rol_aula || 'principal',
                     minutos: minutosValidados,
                     curso_escolar: selectedCurso
                 };
@@ -395,12 +407,14 @@
             }
         }
 
+        isSesionModalOpen = false;
         lastLoadedEntityId = '';
         await switchEntity(selectedEntityId);
     }
 
     function handleDeleteSession(event: CustomEvent<{ id: string }>) {
         console.log('Eliminando sesión ID:', event.detail.id);
+        isSesionModalOpen = false;
         lastLoadedEntityId = '';
         switchEntity(selectedEntityId);
     }
@@ -627,19 +641,10 @@
 
     <SesionModal
         bind:isOpen={isSesionModalOpen}
-        profesorNombre={currentTeacher?.nombre || ''}
-        dia={selectedCellDia}
-        franja={selectedCellFranja}
-        diaNombre={selectedCellDiaNombre}
-        franjaNombre={selectedCellFranjaNombre}
         {selectedCurso}
-        sesionData={selectedCellData}
-        actividadesDisponibles={actividadesDisponibles}
-        aulasDisponibles={aulasDisponibles}
-        maxMinutosFranja={maxMinutosFranja}
-        bind:ajusteMinutos={ajusteMinutosValor}
-        bind:ajusteParte={ajusteParteValor}
+        session={selectedCellData}
+        profesoresDisponibles={profesoresDisponibles}
         on:save={handleSaveSession}
-        on:delete={handleDeleteSession}
+        on:close={() => isSesionModalOpen = false}
     />
 </div>
