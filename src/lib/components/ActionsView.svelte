@@ -361,6 +361,11 @@
         const targetDia = detail.dia !== undefined && detail.dia !== null ? detail.dia : selectedCellDia;
 
         if (targetDia !== null && selectedCellFranja !== null) {
+            if (!detail.actividad) {
+                alert('⚠️ Por favor, selecciona una actividad del desplegable antes de guardar.');
+                return;
+            }
+
             try {
                 const minVal = detail.minutos !== undefined ? detail.minutos : ajusteMinutosValor;
                 const minutosValidados = Math.max(1, Math.min(minVal, maxMinutosFranja));
@@ -369,7 +374,7 @@
                     profesor_nombre: profNombre,
                     dia: targetDia,
                     franja: selectedCellFranja,
-                    actividad: detail.actividad || null,
+                    actividad: detail.actividad,
                     clase: detail.clase || null,
                     aula: detail.aula || null,
                     rol_aula: detail.rol_aula || 'principal',
@@ -381,14 +386,10 @@
 
                 if (detail.id) {
                     await updateSession(detail.id, sessionPayload);
-                } else if (detail.actividad) {
-                    await createSession(sessionPayload);
                 } else {
-                    alert('Por favor, selecciona una actividad obligatoriamente.');
-                    return;
+                    await createSession(sessionPayload);
                 }
 
-                // Guardar profesores concurrentes / apoyos
                 if (detail.profesoresApoyo && Array.isArray(detail.profesoresApoyo)) {
                     for (const apoyo of detail.profesoresApoyo) {
                         if (apoyo.profesor_nombre) {
@@ -396,7 +397,7 @@
                                 profesor_nombre: apoyo.profesor_nombre,
                                 dia: targetDia,
                                 franja: selectedCellFranja,
-                                actividad: detail.actividad || null,
+                                actividad: detail.actividad,
                                 clase: detail.clase || null,
                                 aula: detail.aula || null,
                                 rol_aula: apoyo.rol_aula || 'PT',
@@ -414,11 +415,11 @@
                 lastLoadedEntityId = '';
                 await switchEntity(selectedEntityId);
             } catch (err: any) {
-                console.error('Error al guardar la sesión y sus apoyos:', err);
-                alert('Error al guardar en Supabase: ' + (err.message || JSON.stringify(err)));
+                console.error('Error al guardar la sesión en Supabase:', err);
+                alert('❌ Error al guardar en la base de datos: ' + (err.message || JSON.stringify(err)));
             }
         } else {
-            alert('No se ha podido determinar el día o la franja horaria.');
+            alert('❌ No se ha podido determinar el día o la franja horaria.');
         }
     }
 
