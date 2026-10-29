@@ -28,6 +28,8 @@
 	export let isOpen: boolean = false;
 	export let session: Partial<Session> | null = null;
 	export let selectedCurso: string = '2026-2027';
+	export let diaNombre: string = '';
+	export let franjaNombre: string = '';
 
 	const dispatch = createEventDispatcher<{
 		close: void;
@@ -126,7 +128,7 @@
 		<div class="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-800">
 			<div class="mb-4 flex items-center justify-between border-b pb-3 dark:border-gray-700">
 				<h3 class="text-xl font-bold text-gray-800 dark:text-white">
-					{formData.id ? 'Editar Sesión' : 'Nueva Sesión'}
+					{formData.id ? 'Editar Sesión' : 'Nueva Sesión'}{#if diaNombre || franjaNombre} — {diaNombre} ({franjaNombre}){/if}
 				</h3>
 				<button
 					type="button"
@@ -160,7 +162,7 @@
 					{:else}
 						<select
 							id="actividad_select"
-							value={formData.actividad || ''}
+							bind:value={formData.actividad}
 							on:change={handleActividadChange}
 							required
 							class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
