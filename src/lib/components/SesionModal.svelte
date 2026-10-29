@@ -152,12 +152,19 @@
 	}
 
 	function handleSave() {
-		if (dia === null || franja === null) return;
+		const targetDia = (dia !== null && dia !== undefined) ? dia : (sesionData as any)?.dia;
+		const targetFranja = (franja !== null && franja !== undefined) ? franja : (sesionData as any)?.franja;
+
+		if (targetDia === undefined || targetDia === null || targetFranja === undefined || targetFranja === null) {
+			alert('❌ Error: No se ha podido determinar el día o la franja horaria para guardar la sesión.');
+			return;
+		}
+
 		const minutosValidados = Math.max(1, Math.min(ajusteMinutos, maxMinutosFranja));
 		dispatch('save', {
 			id: sesionData?.id,
-			dia,
-			franja,
+			dia: targetDia,
+			franja: targetFranja,
 			actividad: actividad.trim() || null,
 			clase: tipoLectiva === 'no_lectiva' ? null : (clase.trim() || null),
 			aula: aula.trim() || null,
