@@ -212,8 +212,8 @@
         });
 
         if (matched) {
-            const horasLectivas = Number(matched.objetivo_lectivas_horas);
-            const horasNoLectivas = Number(matched.objetivo_no_lectivas_horas);
+            const horasLectivas = Number((matched as any).objetivo_lectivas_horas);
+            const horasNoLectivas = Number((matched as any).objetivo_no_lectivas_horas);
 
             if (!isNaN(horasLectivas) && !isNaN(horasNoLectivas)) {
                 return {
@@ -652,11 +652,11 @@
 
     <SesionModal
         bind:isOpen={isSesionModalOpen}
-        {selectedCurso}
-        session={selectedCellData}
+        sesionData={selectedCellData}
         diaNombre={selectedCellDiaNombre}
         franjaNombre={selectedCellFranjaNombre}
-        profesoresDisponibles={profesoresDisponibles}
+        {actividadesDisponibles}
+        {aulasDisponibles}
         on:save={handleSaveSession}
         on:close={() => isSesionModalOpen = false}
     />
