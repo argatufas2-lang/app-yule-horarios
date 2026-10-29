@@ -374,13 +374,18 @@
                     aula: detail.aula || null,
                     rol_aula: detail.rol_aula || 'principal',
                     minutos: minutosValidados,
-                    curso_escolar: selectedCurso
+                    curso_escolar: selectedCurso,
+                    grupo_desdoble: detail.grupo_desdoble || null,
+                    fuente: 'manual'
                 };
 
                 if (detail.id) {
                     await updateSession(detail.id, sessionPayload);
                 } else if (detail.actividad) {
                     await createSession(sessionPayload);
+                } else {
+                    alert('Por favor, selecciona una actividad obligatoriamente.');
+                    return;
                 }
 
                 // Guardar profesores concurrentes / apoyos
@@ -396,20 +401,25 @@
                                 aula: detail.aula || null,
                                 rol_aula: apoyo.rol_aula || 'PT',
                                 minutos: apoyo.minutos || maxMinutosFranja,
-                                curso_escolar: selectedCurso
+                                curso_escolar: selectedCurso,
+                                grupo_desdoble: detail.grupo_desdoble || null,
+                                fuente: 'manual'
                             };
                             await createSession(apoyoPayload);
                         }
                     }
                 }
-            } catch (err) {
-                console.error('Error al guardar la sesión y sus apoyos:', err);
-            }
-        }
 
-        isSesionModalOpen = false;
-        lastLoadedEntityId = '';
-        await switchEntity(selectedEntityId);
+                isSesionModalOpen = false;
+                lastLoadedEntityId = '';
+                await switchEntity(selectedEntityId);
+            } catch (err: any) {
+                console.error('Error al guardar la sesión y sus apoyos:', err);
+                alert('Error al guardar en Supabase: ' + (err.message || JSON.stringify(err)));
+            }
+        } else {
+            alert('No se ha podido determinar el día o la franja horaria.');
+        }
     }
 
     function handleDeleteSession(event: CustomEvent<{ id: string }>) {
