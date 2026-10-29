@@ -15,6 +15,7 @@
 		aula?: string | null;
 		rol_aula?: string | null;
 		es_lectiva?: boolean;
+		minutos?: number;
 	} = {};
 
 	export let actividadesDisponibles: Array<{ id: number | string; nombre: string; es_lectiva?: boolean }> = [];
@@ -126,6 +127,7 @@
 
 				actividad = actNombre;
 				clase = tipoLectiva === 'no_lectiva' ? '' : (sesionData.clase || '');
+				ajusteMinutos = sesionData?.minutos !== undefined ? sesionData.minutos : maxMinutosFranja;
 			}
 		} else if (!isOpen) {
 			lastOpenKey = null;
