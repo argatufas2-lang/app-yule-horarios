@@ -16,6 +16,7 @@
     import {
         createSession,
         updateSession,
+        deleteSession,
         getSessionsForTeacher
     } from '$lib/services/primaryService';
     import {
@@ -372,7 +373,7 @@
 
                 const sessionPayload = {
                     profesor_nombre: profNombre,
-                    dia: targetDia,
+                    dia: targetDia + 1,
                     franja: selectedCellFranja,
                     actividad: detail.actividad,
                     clase: detail.clase || null,
@@ -395,7 +396,7 @@
                         if (apoyo.profesor_nombre) {
                             const apoyoPayload = {
                                 profesor_nombre: apoyo.profesor_nombre,
-                                dia: targetDia,
+                                dia: targetDia + 1,
                                 franja: selectedCellFranja,
                                 actividad: detail.actividad,
                                 clase: detail.clase || null,
@@ -423,11 +424,16 @@
         }
     }
 
-    function handleDeleteSession(event: CustomEvent<{ id: string }>) {
-        console.log('Eliminando sesión ID:', event.detail.id);
-        isSesionModalOpen = false;
-        lastLoadedEntityId = '';
-        switchEntity(selectedEntityId);
+    async function handleDeleteSession(event: CustomEvent<{ id: string }>) {
+        try {
+            await deleteSession(event.detail.id);
+            isSesionModalOpen = false;
+            lastLoadedEntityId = '';
+            await switchEntity(selectedEntityId);
+        } catch (err: any) {
+            console.error('Error al eliminar la sesión:', err);
+            alert('❌ Error al eliminar la sesión: ' + (err.message || JSON.stringify(err)));
+        }
     }
 </script>
 
@@ -659,6 +665,7 @@
         {actividadesDisponibles}
         {aulasDisponibles}
         on:save={handleSaveSession}
+        on:delete={handleDeleteSession}
         on:close={() => isSesionModalOpen = false}
     />
 </div>
