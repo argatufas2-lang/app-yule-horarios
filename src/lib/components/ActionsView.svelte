@@ -654,6 +654,8 @@
         bind:isOpen={isSesionModalOpen}
         {selectedCurso}
         session={selectedCellData}
+        diaNombre={selectedCellDiaNombre}
+        franjaNombre={selectedCellFranjaNombre}
         profesoresDisponibles={profesoresDisponibles}
         on:save={handleSaveSession}
         on:close={() => isSesionModalOpen = false}
