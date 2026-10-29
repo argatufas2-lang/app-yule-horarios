@@ -245,7 +245,7 @@
         selectedEntityId = '';
         try {
             await loadDataForCurrentTab();
-        } finally {
+        } fontally {
             isChangingTab = false;
         }
     }
@@ -655,6 +655,7 @@
         sesionData={selectedCellData}
         diaNombre={selectedCellDiaNombre}
         franjaNombre={selectedCellFranjaNombre}
+        maxMinutosFranja={maxMinutosFranja}
         {actividadesDisponibles}
         {aulasDisponibles}
         on:save={handleSaveSession}
