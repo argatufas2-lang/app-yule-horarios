@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { getAdminAulas } from '../services/adminService';
+	import { getAdminAulas, getAdminActividades, type ActividadRecord } from '../services/adminService';
 
 	export let isOpen: boolean = false;
 	export let profesorNombre: string = '';
@@ -62,6 +62,11 @@
 	let loadedAulas: Array<{ id: string; nombre: string }> = [];
 	$: activeAulas = (aulasDisponibles && aulasDisponibles.length > 0) ? aulasDisponibles : loadedAulas;
 
+	let catalogActividades: ActividadRecord[] = [];
+	$: activeActividades = (actividadesDisponibles && actividadesDisponibles.length > 0)
+		? actividadesDisponibles
+		: catalogActividades;
+
 	async function fetchAulasFromSupabase() {
 		try {
 			const data = await getAdminAulas('2026-2027');
@@ -70,6 +75,17 @@
 			}
 		} catch (e) {
 			console.error('Error cargando aulas directamente en SesionModal:', e);
+		}
+	}
+
+	async function fetchActividadesFromSupabase() {
+		try {
+			const data = await getAdminActividades('2026-2027');
+			if (data) {
+				catalogActividades = data;
+			}
+		} catch (e) {
+			console.error('Error cargando actividades directamente en SesionModal:', e);
 		}
 	}
 
@@ -84,6 +100,9 @@
 			if (!aulasDisponibles || aulasDisponibles.length === 0) {
 				fetchAulasFromSupabase();
 			}
+			if (!actividadesDisponibles || actividadesDisponibles.length === 0) {
+				fetchActividadesFromSupabase();
+			}
 
 			if (sesionData) {
 				const actNombre = sesionData.actividad || '';
@@ -93,7 +112,7 @@
 				if (sesionData.es_lectiva !== undefined) {
 					tipoLectiva = sesionData.es_lectiva ? 'lectiva' : 'no_lectiva';
 				} else if (actNombre) {
-					const foundAct = actividadesDisponibles.find(
+					const foundAct = activeActividades.find(
 						(a) => a.nombre.toLowerCase().trim() === actNombre.toLowerCase().trim()
 					);
 					if (foundAct && foundAct.es_lectiva !== undefined) {
@@ -121,10 +140,10 @@
 		}
 	}
 
-	// Filtro de actividades según el tipo activo
-	$: actividadesFiltradas = actividadesDisponibles.filter((act) => {
-		if (act.es_lectiva === undefined) return true;
-		return tipoLectiva === 'lectiva' ? act.es_lectiva : !act.es_lectiva;
+	// Filtro de actividades según el tipo activo (lectiva / no lectiva)
+	$: actividadesFiltradas = activeActividades.filter((act) => {
+		const isLectiva = act.es_lectiva ?? true;
+		return tipoLectiva === 'lectiva' ? isLectiva : !isLectiva;
 	});
 
 	function closeModal() {
@@ -220,26 +239,17 @@
 					<label for="actividad" class="block font-semibold text-slate-700 dark:text-gray-300 mb-1">
 						Actividad / Asignatura ({tipoLectiva === 'lectiva' ? 'Lectiva' : 'No Lectiva'})
 					</label>
-					{#if actividadesFiltradas.length > 0}
-						<select
-							id="actividad"
-							bind:value={actividad}
-							class="w-full bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg p-2.5 text-slate-800 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 font-medium cursor-pointer"
-						>
-							<option value="">-- Seleccionar Actividad --</option>
-							{#each actividadesFiltradas as act}
-								<option value={act.nombre}>{act.nombre}</option>
-							{/each}
-						</select>
-					{:else}
-						<input
-							type="text"
-							id="actividad"
-							bind:value={actividad}
-							placeholder={tipoLectiva === 'lectiva' ? 'Ej. Matematika' : 'Ej. Tutoretza / Guardia'}
-							class="w-full bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg p-2.5 text-slate-800 dark:text-gray-100 focus:ring-2 focus:ring-sky-500"
-						/>
-					{/if}
+					<select
+						id="actividad"
+						bind:value={actividad}
+						required
+						class="w-full bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg p-2.5 text-slate-800 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 font-medium cursor-pointer"
+					>
+						<option value="" disabled selected={!actividad}>-- Seleccionar Actividad --</option>
+						{#each actividadesFiltradas as act}
+							<option value={act.nombre}>{act.nombre}</option>
+						{/each}
+					</select>
 				</div>
 
 				<!-- Grupo / Clase -->
