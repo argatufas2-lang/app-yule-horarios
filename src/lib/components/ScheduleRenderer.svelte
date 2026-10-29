@@ -56,15 +56,16 @@
                         <td class="p-2.5 border-r-2 border-slate-300 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/30 font-bold text-base text-slate-700 dark:text-gray-200 whitespace-nowrap print:p-0.5 print:text-[9px] print:border-r print:border-black">
                             {slot.time}
                         </td>
-                        {#each daysOfWeek as day}
-                            {@const session = getSession(gridData, teacherId, day.id, slot.orden)}
+                        {#each daysOfWeek as day, index}
+                            {@const effectiveDayId = (typeof day.id === 'number' && day.id >= 1 && day.id <= 5 && !daysOfWeek.some(d => d.id === 0)) ? day.id - 1 : (day.id ?? index)}
+                            {@const session = getSession(gridData, teacherId, effectiveDayId, slot.orden)}
                             <td 
                                 class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle transition-colors relative print:p-0.5 print:h-9 print:border-r print:border-black cursor-pointer hover:bg-slate-100/60 dark:hover:bg-gray-700/40 {!session && (isRecreo || isComedor) ? 'bg-emerald-100/70 dark:bg-emerald-950/40' : ''}"
-                                on:click={() => onCellClick(day.id, day.name, slot, session)}
-                                on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && onCellClick(day.id, day.name, slot, session)}
+                                on:click={() => onCellClick(effectiveDayId, day.name, slot, session)}
+                                on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && onCellClick(effectiveDayId, day.name, slot, session)}
                                 role="button"
                                 tabindex="0"
-                                title={showDebug ? `[DEBUG] Día: ${day.id} | Franja: ${slot.orden} | Asignatura: ${session?.actividad || 'Ninguna'} | Clase: ${session?.clase || session?.aula || 'Ninguna'}` : 'Haz clic para editar la sesión'}
+                                title={showDebug ? `[DEBUG] Día: ${effectiveDayId} | Franja: ${slot.orden} | Asignatura: ${session?.actividad || 'Ninguna'} | Clase: ${session?.clase || session?.aula || 'Ninguna'}` : 'Haz clic para editar la sesión'}
                             >
                                 {#if session}
                                     <div class="flex flex-col items-center justify-center space-y-0.5">
@@ -89,7 +90,7 @@
 
                                 {#if showDebug}
                                     <div class="mt-1 text-[9px] font-mono leading-tight bg-amber-100/90 dark:bg-amber-950/90 text-amber-950 dark:text-amber-100 p-1 rounded-sm border border-amber-400/80 text-left space-y-0.5 shadow-xs print:hidden">
-                                        <div><strong class="font-bold">Día:</strong> {day.id} | <strong class="font-bold">Franja:</strong> {slot.orden}</div>
+                                        <div><strong class="font-bold">Día:</strong> {effectiveDayId} | <strong class="font-bold">Franja:</strong> {slot.orden}</div>
                                         <div><strong class="font-bold">Act:</strong> {session?.actividad || '---'}</div>
                                         <div><strong class="font-bold">Clase:</strong> {session?.clase || session?.aula || '---'}</div>
                                         <div class="truncate text-[8px] text-amber-800 dark:text-amber-300"><strong class="font-bold">ID:</strong> {session?.id || 'sin_sesion'}</div>
