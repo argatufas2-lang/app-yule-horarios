@@ -51,20 +51,27 @@
 		es_lectiva: true
 	};
 
-	$: if (session && isOpen) {
-		formData = {
-			...session,
-			profesor_nombre: session.profesor_nombre || '',
-			dia: session.dia ?? 0,
-			franja: session.franja ?? 0,
-			actividad: session.actividad || '',
-			clase: session.clase || '',
-			aula: session.aula || '',
-			grupo_desdoble: session.grupo_desdoble || '',
-			rol_aula: session.rol_aula || 'principal',
-			minutos: session.minutos ?? 45,
-			es_lectiva: session.es_lectiva ?? true
-		};
+	let lastOpenedSession: any = null;
+
+	$: if (isOpen) {
+		if (session !== lastOpenedSession) {
+			formData = {
+				...session,
+				profesor_nombre: session?.profesor_nombre || '',
+				dia: session?.dia ?? 0,
+				franja: session?.franja ?? 0,
+				actividad: session?.actividad || '',
+				clase: session?.clase || '',
+				aula: session?.aula || '',
+				grupo_desdoble: session?.grupo_desdoble || '',
+				rol_aula: session?.rol_aula || 'principal',
+				minutos: session?.minutos ?? 45,
+				es_lectiva: session?.es_lectiva ?? true
+			};
+			lastOpenedSession = session;
+		}
+	} else {
+		lastOpenedSession = null;
 	}
 
 	$: if (isOpen && selectedCurso) {
