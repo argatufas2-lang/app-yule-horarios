@@ -368,7 +368,7 @@
         const targetDia = detail.dia !== undefined && detail.dia !== null ? detail.dia : selectedCellDia;
 
         if (targetDia !== null && selectedCellFranja !== null) {
-            if (!detail.actividad && (!detail.conflictSessionsActualizadas || detail.conflictSessionsActualizadas.length === 0)) {
+            if (!detail.actividad && (!detail.docentesList || detail.docentesList.length === 0)) {
                 alert('⚠️ Por favor, selecciona una actividad antes de guardar.');
                 return;
             }
@@ -391,51 +391,42 @@
                     fuente: 'manual'
                 };
 
-                // 1. Eliminar sesiones indicadas por el usuario en el conflicto
+                // 1. Eliminar las sesiones que fueron descartadas o quitadas
                 if (Array.isArray(detail.conflictSessionsEliminadas) && detail.conflictSessionsEliminadas.length > 0) {
                     for (const idParaBorrar of detail.conflictSessionsEliminadas) {
                         await deleteSession(idParaBorrar);
                     }
                 }
 
-                // 2. Actualizar individualmente todas las sesiones del conflicto corregidas / unificadas
-                if (Array.isArray(detail.conflictSessionsActualizadas) && detail.conflictSessionsActualizadas.length > 0) {
-                    for (const cs of detail.conflictSessionsActualizadas) {
-                        if (cs.id && !detail.conflictSessionsEliminadas?.includes(cs.id)) {
-                            await updateSession(cs.id, {
-                                actividad: cs.actividad,
-                                clase: detail.clase || null,
-                                aula: detail.aula || null,
-                                minutos: minutosValidados
-                            });
+                // 2. Procesar listado completo de profesores editados en el modal
+                if (Array.isArray(detail.docentesList) && detail.docentesList.length > 0) {
+                    for (const doc of detail.docentesList) {
+                        if (!doc.profesor_nombre) continue;
+
+                        const docentePayload = {
+                            profesor_nombre: doc.profesor_nombre,
+                            dia: targetDia,
+                            franja: selectedCellFranja,
+                            actividad: doc.actividad || detail.actividad,
+                            clase: detail.clase || doc.clase || null,
+                            aula: detail.aula || doc.aula || null,
+                            rol_aula: doc.rol_aula || detail.rol_aula || 'principal',
+                            es_lectiva: doc.es_lectiva ?? detail.es_lectiva ?? true,
+                            minutos: doc.minutos || minutosValidados,
+                            curso_escolar: selectedCurso,
+                            fuente: 'manual'
+                        };
+
+                        if (doc.id && !detail.conflictSessionsEliminadas?.includes(doc.id)) {
+                            await updateSession(doc.id, docentePayload);
+                        } else {
+                            await createSession(docentePayload);
                         }
                     }
                 } else if (detail.id) {
                     await updateSession(detail.id, sessionPayload);
                 } else {
                     await createSession(sessionPayload);
-                }
-
-                // 3. Procesar profesores de apoyo adicionales si los hubiera
-                if (detail.profesoresApoyo && Array.isArray(detail.profesoresApoyo)) {
-                    for (const apoyo of detail.profesoresApoyo) {
-                        if (apoyo.profesor_nombre) {
-                            const apoyoPayload = {
-                                profesor_nombre: apoyo.profesor_nombre,
-                                dia: targetDia,
-                                franja: selectedCellFranja,
-                                actividad: detail.actividad,
-                                clase: detail.clase || null,
-                                aula: detail.aula || null,
-                                rol_aula: apoyo.rol_aula || 'PT',
-                                minutos: apoyo.minutos || maxMinutosFranja,
-                                curso_escolar: selectedCurso,
-                                grupo_desdoble: detail.grupo_desdoble || null,
-                                fuente: 'manual'
-                            };
-                            await createSession(apoyoPayload);
-                        }
-                    }
                 }
 
                 isSesionModalOpen = false;

@@ -16,6 +16,8 @@
 		rol_aula?: string | null;
 		es_lectiva?: boolean;
 		minutos?: number;
+		profesor_nombre?: string;
+		profesoresApoyo?: any[];
 	} = {};
 
 	export let actividadesDisponibles: Array<{ id: number | string; nombre: string; es_lectiva?: boolean }> = [];
@@ -23,6 +25,17 @@
 	export let maxMinutosFranja: number = 60;
 	export let ajusteMinutos: number = 60;
 	export let ajusteParte: 'inicio' | 'final' = 'inicio';
+
+	export interface DocenteSession {
+		id?: string;
+		profesor_nombre: string;
+		actividad: string;
+		rol_aula: string;
+		es_lectiva: boolean;
+		minutos: number;
+		clase?: string | null;
+		aula?: string | null;
+	}
 
 	const dispatch = createEventDispatcher<{
 		close: void;
@@ -37,7 +50,7 @@
 			es_lectiva: boolean;
 			minutos?: number;
 			parte?: 'inicio' | 'final';
-			conflictSessionsActualizadas?: Array<{ id: string; profesor_nombre: string; actividad: string }>;
+			docentesList?: DocenteSession[];
 			conflictSessionsEliminadas?: string[];
 		};
 		delete: { id: string };
@@ -62,39 +75,20 @@
 	let aula: string = '';
 	let rol_aula: string = '';
 
+	let docentesList: DocenteSession[] = [];
+	let activeDocenteIndex: number = 0;
+	let sesionesEliminadasIds: string[] = [];
+
 	let conflictSessions: Array<{ id: string; profesor_nombre: string; actividad: string }> = [];
-	let conflictSessionsEliminadas: string[] = [];
 
 	$: tieneConflicto = (() => {
-		if (!conflictSessions || conflictSessions.length < 2) return false;
-
-		const actividadesPorGrupo = new Map<string, Set<string>>();
-
-		conflictSessions.forEach((cs) => {
-			const csAny = cs as any;
-			const grupoKey = (csAny.clase || csAny.rawData?.clase || clase || '')
-				.trim()
-				.toLowerCase();
-			const actNorm = (cs.actividad || '')
-				.trim()
-				.toLowerCase()
-				.replace(/\s+/g, ' ');
-
-			if (actNorm) {
-				if (!actividadesPorGrupo.has(grupoKey)) {
-					actividadesPorGrupo.set(grupoKey, new Set());
-				}
-				actividadesPorGrupo.get(grupoKey)!.add(actNorm);
-			}
-		});
-
-		for (const actividadesSet of actividadesPorGrupo.values()) {
-			if (actividadesSet.size > 1) {
-				return true;
-			}
-		}
-
-		return false;
+		if (!docentesList || docentesList.length < 2) return false;
+		const actividadesSet = new Set(
+			docentesList
+				.map((d) => (d.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
+				.filter(Boolean)
+		);
+		return actividadesSet.size > 1;
 	})();
 
 	let loadedAulas: Array<{ id: string; nombre: string }> = [];
@@ -127,6 +121,27 @@
 		}
 	}
 
+	function syncFieldsFromActiveDocente() {
+		if (!docentesList[activeDocenteIndex]) return;
+		const cur = docentesList[activeDocenteIndex];
+		actividad = cur.actividad || '';
+		rol_aula = cur.rol_aula || '';
+		tipoLectiva = cur.es_lectiva ? 'lectiva' : 'no_lectiva';
+		clase = tipoLectiva === 'no_lectiva' ? '' : (cur.clase || sesionData.clase || '');
+		aula = cur.aula || sesionData.aula || '';
+		ajusteMinutos = cur.minutos || maxMinutosFranja;
+	}
+
+	function updateCurrentDocenteInList() {
+		if (!docentesList[activeDocenteIndex]) return;
+		docentesList[activeDocenteIndex].actividad = actividad;
+		docentesList[activeDocenteIndex].rol_aula = rol_aula;
+		docentesList[activeDocenteIndex].es_lectiva = tipoLectiva === 'lectiva';
+		docentesList[activeDocenteIndex].minutos = ajusteMinutos;
+		docentesList[activeDocenteIndex].clase = tipoLectiva === 'no_lectiva' ? null : clase;
+		docentesList[activeDocenteIndex].aula = aula;
+	}
+
 	// Flag para controlar cuando sincronizar campos locales únicamente al abrir el modal o cambiar de sesión
 	let lastOpenKey: string | null = null;
 
@@ -142,45 +157,88 @@
 				fetchActividadesFromSupabase();
 			}
 
-			if (sesionData) {
-				const actNombre = sesionData.actividad || '';
-				rol_aula = sesionData.rol_aula || '';
-				aula = sesionData.aula || '';
+			sesionesEliminadasIds = [];
+			activeDocenteIndex = 0;
+			const sDataAny = sesionData as any;
+			const rawConflict = sDataAny?.conflictSessions || sDataAny?.rawData?.conflictSessions || [];
 
-				if (sesionData.es_lectiva !== undefined) {
-					tipoLectiva = sesionData.es_lectiva ? 'lectiva' : 'no_lectiva';
-				} else if (actNombre) {
-					const foundAct = activeActividades.find(
-						(a) => a.nombre.toLowerCase().trim() === actNombre.toLowerCase().trim()
-					);
-					if (foundAct && foundAct.es_lectiva !== undefined) {
-						tipoLectiva = foundAct.es_lectiva ? 'lectiva' : 'no_lectiva';
-					} else {
-						tipoLectiva = 'lectiva';
-					}
-				} else {
-					tipoLectiva = 'lectiva';
+			if (Array.isArray(rawConflict) && rawConflict.length > 0) {
+				docentesList = rawConflict.map((cs: any) => ({
+					id: cs.id ? String(cs.id) : undefined,
+					profesor_nombre: cs.profesor_nombre || cs.profesor || cs.rawData?.profesor_nombre || 'Docente',
+					actividad: cs.actividad || cs.rawData?.actividad || sesionData.actividad || '',
+					rol_aula: cs.rawData?.rol_aula || cs.rol_aula || sesionData.rol_aula || '',
+					es_lectiva: cs.rawData?.es_lectiva ?? sesionData.es_lectiva ?? true,
+					minutos: cs.rawData?.minutos ?? sesionData.minutos ?? maxMinutosFranja,
+					clase: cs.rawData?.clase || sesionData.clase || null,
+					aula: cs.rawData?.aula || sesionData.aula || null
+				}));
+			} else if (profesorNombre || sesionData.profesor_nombre) {
+				const pName = profesorNombre || sesionData.profesor_nombre || '';
+				docentesList = [{
+					id: sesionData.id,
+					profesor_nombre: pName,
+					actividad: sesionData.actividad || '',
+					rol_aula: sesionData.rol_aula || '',
+					es_lectiva: sesionData.es_lectiva ?? true,
+					minutos: sesionData.minutos ?? maxMinutosFranja,
+					clase: sesionData.clase || null,
+					aula: sesionData.aula || null
+				}];
+
+				if (Array.isArray(sesionData.profesoresApoyo) && sesionData.profesoresApoyo.length > 0) {
+					sesionData.profesoresApoyo.forEach((apoyo: any) => {
+						if (apoyo.profesor_nombre) {
+							docentesList.push({
+								id: apoyo.id ? String(apoyo.id) : undefined,
+								profesor_nombre: apoyo.profesor_nombre,
+								actividad: apoyo.actividad || sesionData.actividad || '',
+								rol_aula: apoyo.rol_aula || 'PT',
+								es_lectiva: apoyo.es_lectiva ?? sesionData.es_lectiva ?? true,
+								minutos: apoyo.minutos ?? maxMinutosFranja,
+								clase: sesionData.clase || null,
+								aula: sesionData.aula || null
+							});
+						}
+					});
 				}
-
-				actividad = actNombre;
-				clase = tipoLectiva === 'no_lectiva' ? '' : (sesionData.clase || '');
-				ajusteMinutos = sesionData?.minutos !== undefined ? sesionData.minutos : maxMinutosFranja;
-
-				conflictSessionsEliminadas = [];
-				const sDataAny = sesionData as any;
-				const rawConflict = sDataAny?.conflictSessions || sDataAny?.rawData?.conflictSessions || [];
-				if (Array.isArray(rawConflict) && rawConflict.length > 0) {
-					conflictSessions = rawConflict.map((cs: any) => ({
-						id: String(cs.id),
-						profesor_nombre: cs.profesor_nombre || cs.profesor || 'Docente sin nombre',
-						actividad: cs.actividad || ''
-					}));
-				} else {
-					conflictSessions = [];
-				}
+			} else {
+				docentesList = [{
+					id: sesionData.id,
+					profesor_nombre: 'Docente',
+					actividad: sesionData.actividad || '',
+					rol_aula: sesionData.rol_aula || '',
+					es_lectiva: sesionData.es_lectiva ?? true,
+					minutos: sesionData.minutos ?? maxMinutosFranja,
+					clase: sesionData.clase || null,
+					aula: sesionData.aula || null
+				}];
 			}
+
+			syncFieldsFromActiveDocente();
 		} else if (!isOpen) {
 			lastOpenKey = null;
+		}
+	}
+
+	function selectDocenteTab(index: number) {
+		updateCurrentDocenteInList();
+		activeDocenteIndex = index;
+		syncFieldsFromActiveDocente();
+	}
+
+	function removeActiveDocente() {
+		if (docentesList.length === 0) return;
+		const target = docentesList[activeDocenteIndex];
+		if (target && target.id && !sesionesEliminadasIds.includes(target.id)) {
+			sesionesEliminadasIds.push(target.id);
+		}
+		docentesList = docentesList.filter((_, idx) => idx !== activeDocenteIndex);
+		if (activeDocenteIndex >= docentesList.length) {
+			activeDocenteIndex = Math.max(0, docentesList.length - 1);
+		}
+		if (docentesList.length > 0) {
+			syncFieldsFromActiveDocente();
 		}
 	}
 
@@ -190,6 +248,7 @@
 		if (tipo === 'no_lectiva') {
 			clase = '';
 		}
+		updateCurrentDocenteInList();
 	}
 
 	// Filtro de actividades según el tipo activo (lectiva / no lectiva)
@@ -206,20 +265,15 @@
 	function unificarAsignaturaConflictos(nuevaActividad: string) {
 		if (!nuevaActividad) return;
 		actividad = nuevaActividad;
-		conflictSessions = conflictSessions.map((cs) => ({
-			...cs,
+		docentesList = docentesList.map((d) => ({
+			...d,
 			actividad: nuevaActividad
 		}));
 	}
 
-	function eliminarConflictoProfesor(id: string) {
-		conflictSessions = conflictSessions.filter((cs) => cs.id !== id);
-		if (id && !conflictSessionsEliminadas.includes(id)) {
-			conflictSessionsEliminadas.push(id);
-		}
-	}
-
 	function handleSave() {
+		updateCurrentDocenteInList();
+
 		const targetDia = (dia !== null && dia !== undefined) ? dia : (sesionData as any)?.dia;
 		const targetFranja = (franja !== null && franja !== undefined) ? franja : (sesionData as any)?.franja;
 
@@ -228,20 +282,28 @@
 			return;
 		}
 
-		const minutosValidados = Math.max(1, Math.min(ajusteMinutos, maxMinutosFranja));
+		const docentesFinales = docentesList.map((d) => ({
+			...d,
+			clase: d.es_lectiva ? (clase.trim() || null) : null,
+			aula: aula.trim() || null,
+			minutos: Math.max(1, Math.min(d.minutos || maxMinutosFranja, maxMinutosFranja))
+		}));
+
+		const activeDocente = docentesFinales[activeDocenteIndex] || docentesFinales[0];
+
 		dispatch('save', {
-			id: sesionData?.id,
+			id: activeDocente?.id || sesionData?.id,
 			dia: targetDia,
 			franja: targetFranja,
-			actividad: actividad.trim() || null,
+			actividad: activeDocente?.actividad || actividad.trim() || null,
 			clase: tipoLectiva === 'no_lectiva' ? null : (clase.trim() || null),
 			aula: aula.trim() || null,
-			rol_aula: rol_aula.trim() || null,
+			rol_aula: activeDocente?.rol_aula || rol_aula.trim() || null,
 			es_lectiva: tipoLectiva === 'lectiva',
-			minutos: minutosValidados,
+			minutos: activeDocente?.minutos || ajusteMinutos,
 			parte: ajusteParte,
-			conflictSessionsActualizadas: conflictSessions,
-			conflictSessionsEliminadas: conflictSessionsEliminadas
+			docentesList: docentesFinales,
+			conflictSessionsEliminadas: sesionesEliminadasIds
 		});
 		closeModal();
 	}
@@ -288,6 +350,40 @@
 
 			<!-- Body / Form -->
 			<form on:submit|preventDefault={handleSave} class="p-6 space-y-4 text-sm">
+
+				<!-- Pestañas de Profesores si existen 2 o más docentes en la sesión -->
+				{#if docentesList.length > 0}
+					<div class="space-y-2 pb-2 border-b border-slate-200 dark:border-gray-700">
+						<div class="flex items-center justify-between">
+							<span class="text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider">
+								👨‍🏫 Profesores en la franja ({docentesList.length})
+							</span>
+							{#if docentesList.length > 1}
+								<button
+									type="button"
+									on:click={removeActiveDocente}
+									class="px-2 py-1 text-xs font-bold bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 hover:bg-red-200 rounded-md transition-colors"
+									title="Quitar a este docente de la franja"
+								>
+									🗑️ Quitar a {docentesList[activeDocenteIndex]?.profesor_nombre || 'Docente'}
+								</button>
+							{/if}
+						</div>
+
+						<div class="flex flex-wrap gap-1.5 overflow-x-auto pb-1">
+							{#each docentesList as doc, idx}
+								<button
+									type="button"
+									on:click={() => selectDocenteTab(idx)}
+									class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all border flex items-center gap-1.5 {activeDocenteIndex === idx ? 'bg-sky-600 text-white border-sky-600 shadow-xs' : 'bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 border-slate-200 dark:border-gray-600 hover:bg-slate-200'}"
+								>
+									👨‍🏫 {doc.profesor_nombre}
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
+
 				<!-- Panel de Detección y Resolución Manual de Conflictos de Asignatura -->
 				{#if tieneConflicto}
 					<div class="p-3.5 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-600 rounded-xl space-y-3 shadow-xs">
@@ -311,31 +407,22 @@
 						</p>
 
 						<div class="space-y-2 max-h-48 overflow-y-auto pr-1">
-							{#each conflictSessions as cs}
+							{#each docentesList as d, idx}
 								<div class="flex items-center gap-2 bg-white dark:bg-gray-800 p-2.5 rounded-lg border border-amber-200 dark:border-amber-800/80 shadow-xs">
 									<div class="flex-1 min-w-0">
-										<span class="font-bold text-slate-800 dark:text-gray-100 text-xs block truncate" title={cs.profesor_nombre}>
-											👨‍🏫 {cs.profesor_nombre}
+										<span class="font-bold text-slate-800 dark:text-gray-100 text-xs block truncate" title={d.profesor_nombre}>
+											👨‍🏫 {d.profesor_nombre}
 										</span>
 									</div>
 									<select
-										bind:value={cs.actividad}
+										bind:value={d.actividad}
+										on:change={() => { if (idx === activeDocenteIndex) actividad = d.actividad; }}
 										class="bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-md p-1.5 text-xs text-slate-800 dark:text-gray-100 font-semibold focus:ring-2 focus:ring-amber-500"
 									>
 										{#each activeActividades as actOption}
 											<option value={actOption.nombre}>{actOption.nombre}</option>
 										{/each}
 									</select>
-									{#if cs.id}
-										<button
-											type="button"
-											on:click={() => eliminarConflictoProfesor(cs.id)}
-											class="p-1.5 text-red-600 hover:text-red-700 dark:hover:text-red-400 font-bold text-base rounded-md hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
-											title="Eliminar esta sesión conflictiva"
-										>
-											🗑️
-										</button>
-									{/if}
 								</div>
 							{/each}
 						</div>
@@ -373,6 +460,7 @@
 					<select
 						id="actividad"
 						bind:value={actividad}
+						on:change={updateCurrentDocenteInList}
 						required
 						class="w-full bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg p-2.5 text-slate-800 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 font-medium cursor-pointer"
 					>
@@ -401,6 +489,7 @@
 						<select
 							id="clase"
 							bind:value={clase}
+							on:change={updateCurrentDocenteInList}
 							class="w-full bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg p-2.5 text-slate-800 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 font-medium cursor-pointer"
 						>
 							<option value="">-- Seleccionar Grupo / Clase --</option>
@@ -419,6 +508,7 @@
 					<select
 						id="rol_aula"
 						bind:value={rol_aula}
+						on:change={updateCurrentDocenteInList}
 						class="w-full bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg p-2.5 text-slate-800 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 font-medium cursor-pointer"
 					>
 						<option value="">-- Aukeratu Rola / Seleccionar Rol --</option>
@@ -446,6 +536,7 @@
 								min="1"
 								max={maxMinutosFranja}
 								bind:value={ajusteMinutos}
+								on:input={updateCurrentDocenteInList}
 								class="w-full bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg p-2 text-slate-800 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 font-medium"
 							/>
 						</div>
