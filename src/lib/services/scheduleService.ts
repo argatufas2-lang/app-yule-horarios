@@ -390,6 +390,14 @@ export async function fetchSessionsForEntity(
             }
         }
 
+        // Inspeccionar días para verificar si están en Base 1 (1..5) o Base 0 (0..4)
+        const rawDias = filteredData
+            .map((s: any) => Number(s.dia ?? s.day_of_week ?? s.dia_semana))
+            .filter((d: number) => !isNaN(d));
+        const hasZeroInDias = rawDias.includes(0);
+        const hasFiveInDias = rawDias.includes(5);
+        const isBase1Dias = !hasZeroInDias && hasFiveInDias;
+
         // Inspeccionar franjas para detectar si está en base 0 (0..9) o base 1 (1..10)
         const rawFranjas = filteredData
             .map((s: any) => Number(s.franja ?? s.slot ?? s.time_slot_id ?? s.tramo_horario_id ?? s.tramo_id ?? s.orden))
@@ -408,10 +416,12 @@ export async function fetchSessionsForEntity(
             
             if (isNaN(diaNum) || isNaN(franjaNum)) return;
 
-            // Ajuste de día: Normalizar consistentemente a Base 0 (0 = Lunes, 4 = Viernes)
+            // Ajuste de día: Normalizar a Base 0 (0 = Lunes, 4 = Viernes) sólo si el dataset está en Base 1 (1..5)
             let dia = diaNum;
-            if (diaNum >= 1 && diaNum <= 5) {
+            if (isBase1Dias && diaNum >= 1 && diaNum <= 5) {
                 dia = diaNum - 1;
+            } else if (diaNum === 5) {
+                dia = 4; // Asegurar que día 5 se asigne al viernes (Base 0)
             }
 
             // Resolver franja (hora de inicio o base)
