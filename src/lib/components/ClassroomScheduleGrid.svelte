@@ -57,15 +57,20 @@
                             {@const effectiveDayId = (typeof day.id === 'number' && day.id >= 1 && day.id <= 5 && !daysOfWeek.some(d => d.id === 0)) ? day.id - 1 : (day.id ?? index)}
                             {@const session = getSession(gridData, classroomId, effectiveDayId, slot.orden)}
                             <td 
-                                class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle transition-colors relative print:p-0.5 print:h-9 print:border-r print:border-black cursor-pointer hover:bg-slate-100/60 dark:hover:bg-gray-700/40 {!session && (isRecreo || isComedor) ? 'bg-emerald-100/70 dark:bg-emerald-950/40' : ''}"
+                                class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle transition-colors relative print:p-0.5 print:h-9 print:border-r print:border-black cursor-pointer hover:bg-slate-100/60 dark:hover:bg-gray-700/40 {!session && (isRecreo || isComedor) ? 'bg-emerald-100/70 dark:bg-emerald-950/40' : ''} {session?.hasConflict ? 'bg-amber-100/90 dark:bg-amber-950/70 ring-2 ring-amber-500 font-semibold' : ''}"
                                 on:click={() => onCellClick(effectiveDayId, day.name, slot, session)}
                                 on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && onCellClick(effectiveDayId, day.name, slot, session)}
                                 role="button"
                                 tabindex="0"
-                                title={showDebug ? `[DEBUG Aula] Día: ${effectiveDayId} | Slot: ${slot.orden} | Asignatura: ${session?.actividad || '---'} | Especialista: ${session?.profesor || 'Tutor'}` : 'Haz clic para editar la sesión'}
+                                title={session?.hasConflict ? '⚠️ ¡Conflicto de asignaturas detectado! Haz clic para resolver' : (showDebug ? `[DEBUG Aula] Día: ${effectiveDayId} | Slot: ${slot.orden} | Asignatura: ${session?.actividad || '---'} | Especialista: ${session?.profesor || 'Tutor'}` : 'Haz clic para editar la sesión')}
                             >
                                 {#if session}
                                     <div class="flex flex-col items-center justify-center space-y-0.5">
+                                        {#if session.hasConflict}
+                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold text-amber-900 bg-amber-200 dark:bg-amber-800 dark:text-amber-100 rounded border border-amber-400 animate-pulse print:border-black">
+                                                ⚠️ Conflicto de asignaturas
+                                            </span>
+                                        {/if}
                                         <span class="block font-black text-slate-900 dark:text-gray-100 text-sm uppercase tracking-wide print:text-[9px]">
                                             {session.actividad.toUpperCase()}
                                         </span>

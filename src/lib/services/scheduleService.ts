@@ -20,6 +20,13 @@ export interface EntityOption {
     labelText?: string;
 }
 
+export interface ConflictSessionItem {
+    id: string;
+    profesor_nombre: string;
+    actividad: string;
+    rawData: any;
+}
+
 export interface GridSessionCell {
     id?: string;
     actividad: string;
@@ -29,6 +36,8 @@ export interface GridSessionCell {
     apoyoProfesor?: string;
     esTutor?: boolean;
     isEusle?: boolean;
+    hasConflict?: boolean;
+    conflictSessions?: ConflictSessionItem[];
     rawData?: any;
 }
 
@@ -476,6 +485,8 @@ export async function fetchSessionsForEntity(
 
             const cellKey = `${dia}_${slotOrden}`;
 
+            const nuevaActividad = s.actividad || s.materia || s.nombre || 'Asignatura';
+
             if (!cellMap[cellKey]) {
                 let mainProf = '';
                 let supportProf = '';
@@ -486,15 +497,27 @@ export async function fetchSessionsForEntity(
                     mainProf = (activeTab === 'aulas' && isTutorOficial) ? '' : profName;
                 }
 
+                const initialConflictSessions: ConflictSessionItem[] = [];
+                if (!isSupport && profName) {
+                    initialConflictSessions.push({
+                        id: s.id ? String(s.id) : '',
+                        profesor_nombre: profName,
+                        actividad: nuevaActividad,
+                        rawData: s
+                    });
+                }
+
                 cellMap[cellKey] = {
                     id: s.id ? String(s.id) : undefined,
-                    actividad: s.actividad || s.materia || s.nombre || 'Asignatura',
+                    actividad: nuevaActividad,
                     clase: s.clase || s.group_name || '',
                     aula: s.aula || '',
                     profesor: mainProf,
                     apoyoProfesor: supportProf,
                     esTutor: isTutorOficial,
                     isEusle: isEusle,
+                    hasConflict: false,
+                    conflictSessions: initialConflictSessions,
                     rawData: s
                 };
             } else {
@@ -513,6 +536,28 @@ export async function fetchSessionsForEntity(
                         }
                     }
                 } else {
+                    if (profName) {
+                        if (!existing.conflictSessions) {
+                            existing.conflictSessions = [];
+                        }
+                        const yaExisteEnConflictos = existing.conflictSessions.some(cs => cs.id === String(s.id));
+                        if (!yaExisteEnConflictos) {
+                            existing.conflictSessions.push({
+                                id: s.id ? String(s.id) : '',
+                                profesor_nombre: profName,
+                                actividad: nuevaActividad,
+                                rawData: s
+                            });
+                        }
+
+                        // Detección de conflicto si la asignatura difiere
+                        const actExistenteNorm = (existing.actividad || '').trim().toLowerCase();
+                        const actNuevaNorm = (nuevaActividad || '').trim().toLowerCase();
+                        if (actExistenteNorm && actNuevaNorm && actExistenteNorm !== actNuevaNorm) {
+                            existing.hasConflict = true;
+                        }
+                    }
+
                     if (activeTab === 'aulas') {
                         if (!isTutorOficial && profName) {
                             if (!existing.profesor) {
@@ -530,7 +575,7 @@ export async function fetchSessionsForEntity(
                     }
 
                     if (!existing.actividad || existing.actividad === 'Asignatura') {
-                        existing.actividad = s.actividad || s.materia || s.nombre || 'Asignatura';
+                        existing.actividad = nuevaActividad;
                     }
                 }
             }

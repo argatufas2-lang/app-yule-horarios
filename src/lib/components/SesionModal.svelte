@@ -37,6 +37,8 @@
 			es_lectiva: boolean;
 			minutos?: number;
 			parte?: 'inicio' | 'final';
+			conflictSessionsActualizadas?: Array<{ id: string; profesor_nombre: string; actividad: string }>;
+			conflictSessionsEliminadas?: string[];
 		};
 		delete: { id: string };
 	}>();
@@ -59,6 +61,10 @@
 	let clase: string = '';
 	let aula: string = '';
 	let rol_aula: string = '';
+
+	let conflictSessions: Array<{ id: string; profesor_nombre: string; actividad: string }> = [];
+	let conflictSessionsEliminadas: string[] = [];
+	let tieneConflicto: boolean = false;
 
 	let loadedAulas: Array<{ id: string; nombre: string }> = [];
 	$: activeAulas = (aulasDisponibles && aulasDisponibles.length > 0) ? aulasDisponibles : loadedAulas;
@@ -128,6 +134,20 @@
 				actividad = actNombre;
 				clase = tipoLectiva === 'no_lectiva' ? '' : (sesionData.clase || '');
 				ajusteMinutos = sesionData?.minutos !== undefined ? sesionData.minutos : maxMinutosFranja;
+
+				conflictSessionsEliminadas = [];
+				const sDataAny = sesionData as any;
+				const rawConflict = sDataAny?.conflictSessions || sDataAny?.rawData?.conflictSessions || [];
+				if (Array.isArray(rawConflict) && rawConflict.length > 0) {
+					conflictSessions = rawConflict.map((cs: any) => ({
+						id: String(cs.id),
+						profesor_nombre: cs.profesor_nombre || 'Docente sin nombre',
+						actividad: cs.actividad || ''
+					}));
+				} else {
+					conflictSessions = [];
+				}
+				tieneConflicto = sDataAny?.hasConflict || sDataAny?.rawData?.hasConflict || conflictSessions.length > 1;
 			}
 		} else if (!isOpen) {
 			lastOpenKey = null;
@@ -153,6 +173,25 @@
 		dispatch('close');
 	}
 
+	function unificarAsignaturaConflictos(nuevaActividad: string) {
+		if (!nuevaActividad) return;
+		actividad = nuevaActividad;
+		conflictSessions = conflictSessions.map((cs) => ({
+			...cs,
+			actividad: nuevaActividad
+		}));
+		tieneConflicto = false;
+	}
+
+	function eliminarConflictoProfesor(id: string) {
+		conflictSessions = conflictSessions.filter((cs) => cs.id !== id);
+		if (id && !conflictSessionsEliminadas.includes(id)) {
+			conflictSessionsEliminadas.push(id);
+		}
+		const distintas = new Set(conflictSessions.map(cs => cs.actividad.trim().toLowerCase()));
+		tieneConflicto = distintas.size > 1;
+	}
+
 	function handleSave() {
 		const targetDia = (dia !== null && dia !== undefined) ? dia : (sesionData as any)?.dia;
 		const targetFranja = (franja !== null && franja !== undefined) ? franja : (sesionData as any)?.franja;
@@ -173,7 +212,9 @@
 			rol_aula: rol_aula.trim() || null,
 			es_lectiva: tipoLectiva === 'lectiva',
 			minutos: minutosValidados,
-			parte: ajusteParte
+			parte: ajusteParte,
+			conflictSessionsActualizadas: conflictSessions,
+			conflictSessionsEliminadas: conflictSessionsEliminadas
 		});
 		closeModal();
 	}
@@ -307,6 +348,58 @@
 						<option value="Hezitzaile">Hezitzaile</option>
 					</select>
 				</div>
+
+				<!-- Panel de Detección y Resolución Manual de Conflictos de Asignatura -->
+				{#if tieneConflicto || conflictSessions.length > 1}
+					<div class="p-3 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-700 rounded-xl space-y-3">
+						<div class="flex items-center justify-between">
+							<span class="text-xs font-bold text-amber-900 dark:text-amber-200 uppercase tracking-wider flex items-center gap-1.5">
+								⚠️ Conflicto de Asignaturas Detectado
+							</span>
+							{#if actividad}
+								<button
+									type="button"
+									on:click={() => unificarAsignaturaConflictos(actividad)}
+									class="px-2 py-1 text-[11px] font-bold bg-amber-600 hover:bg-amber-700 text-white rounded transition-colors shadow-xs"
+								>
+									Unificar todos a "{actividad}"
+								</button>
+							{/if}
+						</div>
+
+						<p class="text-xs text-amber-800 dark:text-amber-300">
+							Se detectaron diferentes asignaturas asignadas a este grupo en la misma franja. Selecciona la correcta o elimina el registro erróneo:
+						</p>
+
+						<div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+							{#each conflictSessions as cs}
+								<div class="flex items-center gap-2 bg-white dark:bg-gray-800 p-2 rounded-lg border border-amber-200 dark:border-amber-800 text-xs">
+									<div class="flex-1 min-w-0">
+										<span class="font-bold text-slate-800 dark:text-gray-200 block truncate">{cs.profesor_nombre}</span>
+									</div>
+									<select
+										bind:value={cs.actividad}
+										class="bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded p-1 text-xs text-slate-800 dark:text-gray-100 font-medium"
+									>
+										{#each activeActividades as actOption}
+											<option value={actOption.nombre}>{actOption.nombre}</option>
+										{/each}
+									</select>
+									{#if cs.id}
+										<button
+											type="button"
+											on:click={() => eliminarConflictoProfesor(cs.id)}
+											class="p-1 text-red-600 hover:text-red-800 font-bold text-sm rounded hover:bg-red-50 dark:hover:bg-red-950/50"
+											title="Eliminar esta sesión de la base de datos"
+										>
+											🗑️
+										</button>
+									{/if}
+								</div>
+							{/each}
+						</div>
+					</div>
+				{/if}
 
 				<!-- Ajuste Personalizado de Tramo Horario (Integrado en Modal) -->
 				<div class="pt-3 border-t border-slate-200 dark:border-gray-700 space-y-2">
