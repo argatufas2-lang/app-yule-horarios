@@ -531,15 +531,13 @@ export async function fetchSessionsForEntity(
                     });
                 }
 
-                // Detección de conflicto si hay 2 o más asignaturas distintas en la misma franja
+                // Evaluación estricta de asignaturas en la misma franja
                 const distintas = new Set(
                     existing.conflictSessions
                         .map(cs => (cs.actividad || '').trim().toLowerCase())
                         .filter(Boolean)
                 );
-                if (distintas.size > 1) {
-                    existing.hasConflict = true;
-                }
+                existing.hasConflict = distintas.size > 1;
 
                 if (isEusle) {
                     existing.isEusle = true;

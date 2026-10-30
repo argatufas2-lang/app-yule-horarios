@@ -141,7 +141,7 @@
 				if (Array.isArray(rawConflict) && rawConflict.length > 0) {
 					conflictSessions = rawConflict.map((cs: any) => ({
 						id: String(cs.id),
-						profesor_nombre: cs.profesor_nombre || 'Docente sin nombre',
+						profesor_nombre: cs.profesor_nombre || cs.profesor || 'Docente sin nombre',
 						actividad: cs.actividad || ''
 					}));
 				} else {
@@ -263,35 +263,37 @@
 			<form on:submit|preventDefault={handleSave} class="p-6 space-y-4 text-sm">
 				<!-- Panel de Detección y Resolución Manual de Conflictos de Asignatura -->
 				{#if tieneConflicto || conflictSessions.length > 1}
-					<div class="p-3 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-700 rounded-xl space-y-3">
-						<div class="flex items-center justify-between">
+					<div class="p-3.5 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-600 rounded-xl space-y-3 shadow-xs">
+						<div class="flex flex-wrap items-center justify-between gap-2">
 							<span class="text-xs font-bold text-amber-900 dark:text-amber-200 uppercase tracking-wider flex items-center gap-1.5">
-								⚠️ Conflicto de Asignaturas Detectado
+								⚠️ Conflicto de Asignaturas en la Franja
 							</span>
 							{#if actividad}
 								<button
 									type="button"
 									on:click={() => unificarAsignaturaConflictos(actividad)}
-									class="px-2 py-1 text-[11px] font-bold bg-amber-600 hover:bg-amber-700 text-white rounded transition-colors shadow-xs"
+									class="px-2.5 py-1 text-[11px] font-bold bg-amber-600 hover:bg-amber-700 active:scale-95 text-white rounded-lg transition-all shadow-xs"
 								>
-									Unificar todos a "{actividad}"
+									Unificar todas a "{actividad}"
 								</button>
 							{/if}
 						</div>
 
 						<p class="text-xs text-amber-800 dark:text-amber-300">
-							Se detectaron diferentes asignaturas asignadas en la misma franja horaria. Selecciona la correcta o elimina la sesión errónea:
+							Existen diferentes asignaturas asignadas a este grupo en el mismo horario. Selecciona la asignatura adecuada para cada profesor o elimina la asignación errónea:
 						</p>
 
-						<div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+						<div class="space-y-2 max-h-48 overflow-y-auto pr-1">
 							{#each conflictSessions as cs}
-								<div class="flex items-center gap-2 bg-white dark:bg-gray-800 p-2 rounded-lg border border-amber-200 dark:border-amber-800 text-xs">
+								<div class="flex items-center gap-2 bg-white dark:bg-gray-800 p-2.5 rounded-lg border border-amber-200 dark:border-amber-800/80 shadow-xs">
 									<div class="flex-1 min-w-0">
-										<span class="font-bold text-slate-800 dark:text-gray-200 block truncate">{cs.profesor_nombre}</span>
+										<span class="font-bold text-slate-800 dark:text-gray-100 text-xs block truncate" title={cs.profesor_nombre}>
+											👨‍🏫 {cs.profesor_nombre}
+										</span>
 									</div>
 									<select
 										bind:value={cs.actividad}
-										class="bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded p-1 text-xs text-slate-800 dark:text-gray-100 font-medium"
+										class="bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-md p-1.5 text-xs text-slate-800 dark:text-gray-100 font-semibold focus:ring-2 focus:ring-amber-500"
 									>
 										{#each activeActividades as actOption}
 											<option value={actOption.nombre}>{actOption.nombre}</option>
@@ -301,8 +303,8 @@
 										<button
 											type="button"
 											on:click={() => eliminarConflictoProfesor(cs.id)}
-											class="p-1 text-red-600 hover:text-red-800 font-bold text-sm rounded hover:bg-red-50 dark:hover:bg-red-950/50"
-											title="Eliminar esta sesión de la base de datos"
+											class="p-1.5 text-red-600 hover:text-red-700 dark:hover:text-red-400 font-bold text-base rounded-md hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
+											title="Eliminar esta sesión conflictiva"
 										>
 											🗑️
 										</button>
