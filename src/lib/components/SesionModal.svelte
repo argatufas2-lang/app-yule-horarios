@@ -147,7 +147,13 @@
 				} else {
 					conflictSessions = [];
 				}
-				tieneConflicto = sDataAny?.hasConflict || sDataAny?.rawData?.hasConflict || conflictSessions.length > 1;
+
+				const distintasActividades = new Set(
+					conflictSessions
+						.map((cs) => (cs.actividad || '').trim().toLowerCase())
+						.filter(Boolean)
+				);
+				tieneConflicto = distintasActividades.size > 1;
 			}
 		} else if (!isOpen) {
 			lastOpenKey = null;
@@ -188,8 +194,12 @@
 		if (id && !conflictSessionsEliminadas.includes(id)) {
 			conflictSessionsEliminadas.push(id);
 		}
-		const distintas = new Set(conflictSessions.map(cs => cs.actividad.trim().toLowerCase()));
-		tieneConflicto = distintas.size > 1;
+		const distintasActividades = new Set(
+			conflictSessions
+				.map((cs) => (cs.actividad || '').trim().toLowerCase())
+				.filter(Boolean)
+		);
+		tieneConflicto = distintasActividades.size > 1;
 	}
 
 	function handleSave() {
@@ -262,7 +272,7 @@
 			<!-- Body / Form -->
 			<form on:submit|preventDefault={handleSave} class="p-6 space-y-4 text-sm">
 				<!-- Panel de Detección y Resolución Manual de Conflictos de Asignatura -->
-				{#if tieneConflicto || conflictSessions.length > 1}
+				{#if tieneConflicto}
 					<div class="p-3.5 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-600 rounded-xl space-y-3 shadow-xs">
 						<div class="flex flex-wrap items-center justify-between gap-2">
 							<span class="text-xs font-bold text-amber-900 dark:text-amber-200 uppercase tracking-wider flex items-center gap-1.5">
