@@ -390,12 +390,6 @@ export async function fetchSessionsForEntity(
             }
         }
 
-        // Inspeccionar días para detectar si está en base 0 (0..4) o base 1 (1..5)
-        const rawDays = filteredData
-            .map((s: any) => Number(s.dia ?? s.day_of_week ?? s.dia_semana))
-            .filter((d: number) => !isNaN(d));
-        const hasZeroInDays = rawDays.includes(0);
-
         // Inspeccionar franjas para detectar si está en base 0 (0..9) o base 1 (1..10)
         const rawFranjas = filteredData
             .map((s: any) => Number(s.franja ?? s.slot ?? s.time_slot_id ?? s.tramo_horario_id ?? s.tramo_id ?? s.orden))
@@ -414,9 +408,9 @@ export async function fetchSessionsForEntity(
             
             if (isNaN(diaNum) || isNaN(franjaNum)) return;
 
-            // Ajuste de día
+            // Ajuste de día: Normalizar consistentemente a Base 0 (0 = Lunes, 4 = Viernes)
             let dia = diaNum;
-            if (!hasZeroInDays && diaNum >= 1 && diaNum <= 5) {
+            if (diaNum >= 1 && diaNum <= 5) {
                 dia = diaNum - 1;
             }
 
