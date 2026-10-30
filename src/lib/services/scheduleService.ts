@@ -407,6 +407,8 @@ export async function fetchSessionsForEntity(
         const maxFranjaDataset = rawFranjas.length > 0 ? Math.max(...rawFranjas) : 0;
         const isBase1Franjas = !rawFranjas.includes(0) && (hasTenInFranjas || maxFranjaDataset > 9);
 
+        const hasZeroInDays = filteredData.some((s: any) => Number(s.dia ?? s.day_of_week ?? s.dia_semana) === 0);
+
         filteredData.forEach((s: any) => {
             const rawDia = s.dia ?? s.day_of_week ?? s.dia_semana;
             const rawFranja = s.franja ?? s.slot ?? s.time_slot_id ?? s.tramo_horario_id ?? s.tramo_id ?? s.orden;
@@ -416,10 +418,14 @@ export async function fetchSessionsForEntity(
             
             if (isNaN(diaNum) || isNaN(franjaNum)) return;
 
-            // Normalización estricta a Base 0 (0 = Lunes, 4 = Viernes)
+            // Normalización corregida a Base 0 (0 = Lunes, 4 = Viernes)
             let dia = diaNum;
-            if (diaNum >= 1 && diaNum <= 5) {
-                dia = diaNum - 1;
+            if (diaNum === 5) {
+                dia = 4;
+            } else if (diaNum >= 1 && diaNum <= 4) {
+                if (!hasZeroInDays) {
+                    dia = diaNum - 1;
+                }
             }
 
             // Resolver franja (hora de inicio o base)
