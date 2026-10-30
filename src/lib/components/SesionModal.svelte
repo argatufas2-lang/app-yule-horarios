@@ -65,13 +65,37 @@
 	let conflictSessions: Array<{ id: string; profesor_nombre: string; actividad: string }> = [];
 	let conflictSessionsEliminadas: string[] = [];
 
-	$: tieneConflicto =
-		conflictSessions.length > 1 &&
-		new Set(
-			conflictSessions
-				.map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
-				.filter(Boolean)
-		).size > 1;
+	$: tieneConflicto = (() => {
+		if (!conflictSessions || conflictSessions.length < 2) return false;
+
+		const actividadesPorGrupo = new Map<string, Set<string>>();
+
+		conflictSessions.forEach((cs) => {
+			const csAny = cs as any;
+			const grupoKey = (csAny.clase || csAny.rawData?.clase || clase || '')
+				.trim()
+				.toLowerCase();
+			const actNorm = (cs.actividad || '')
+				.trim()
+				.toLowerCase()
+				.replace(/\s+/g, ' ');
+
+			if (actNorm) {
+				if (!actividadesPorGrupo.has(grupoKey)) {
+					actividadesPorGrupo.set(grupoKey, new Set());
+				}
+				actividadesPorGrupo.get(grupoKey)!.add(actNorm);
+			}
+		});
+
+		for (const actividadesSet of actividadesPorGrupo.values()) {
+			if (actividadesSet.size > 1) {
+				return true;
+			}
+		}
+
+		return false;
+	})();
 
 	let loadedAulas: Array<{ id: string; nombre: string }> = [];
 	$: activeAulas = (aulasDisponibles && aulasDisponibles.length > 0) ? aulasDisponibles : loadedAulas;

@@ -570,12 +570,36 @@ export async function fetchSessionsForEntity(
         // Asegurar la evaluación precisa de conflictos para cada celda
         Object.values(cellMap).forEach((cell) => {
             if (cell.conflictSessions && cell.conflictSessions.length > 1) {
-                const distintasActividades = new Set(
-                    cell.conflictSessions
-                        .map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
-                        .filter(Boolean)
-                );
-                cell.hasConflict = distintasActividades.size > 1;
+                // Agrupar por grupo/clase si existen múltiples sesiones
+                const actividadesPorGrupo = new Map<string, Set<string>>();
+
+                cell.conflictSessions.forEach((cs) => {
+                    const grupoKey = (cs.rawData?.clase || cs.rawData?.aula || cell.clase || cell.aula || '')
+                        .trim()
+                        .toLowerCase();
+                    const actNorm = (cs.actividad || '')
+                        .trim()
+                        .toLowerCase()
+                        .replace(/\s+/g, ' ');
+
+                    if (actNorm) {
+                        if (!actividadesPorGrupo.has(grupoKey)) {
+                            actividadesPorGrupo.set(grupoKey, new Set());
+                        }
+                        actividadesPorGrupo.get(grupoKey)!.add(actNorm);
+                    }
+                });
+
+                // Hay conflicto si en algún grupo/clase coinciden 2 o más asignaturas distintas
+                let hayConflictoAsignatura = false;
+                for (const actividadesSet of actividadesPorGrupo.values()) {
+                    if (actividadesSet.size > 1) {
+                        hayConflictoAsignatura = true;
+                        break;
+                    }
+                }
+
+                cell.hasConflict = hayConflictoAsignatura;
             } else {
                 cell.hasConflict = false;
             }
