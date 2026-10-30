@@ -328,6 +328,9 @@
             parte: 'inicio'
         }));
 
+        const cellConflicts = session?.conflictSessions || session?.rawData?.conflictSessions || [];
+        const cellHasConflict = session?.hasConflict || session?.rawData?.hasConflict || cellConflicts.length > 1;
+
         selectedCellData = session ? {
             id: session.id,
             actividad: session.actividad,
@@ -339,7 +342,10 @@
             profesoresApoyo: apoyosMapeados,
             dia: dayId,
             franja: dbFranja,
-            minutos: ajusteMinutosValor
+            minutos: ajusteMinutosValor,
+            hasConflict: cellHasConflict,
+            conflictSessions: cellConflicts,
+            rawData: session.rawData
         } : {
             actividad: '',
             clase: activeTab === 'aulas' ? currentClassroom?.nombre : '',
@@ -385,7 +391,26 @@
                     fuente: 'manual'
                 };
 
-                if (detail.id) {
+                // 1. Procesar eliminaciones explícitas de sesiones del conflicto
+                if (Array.isArray(detail.conflictSessionsEliminadas) && detail.conflictSessionsEliminadas.length > 0) {
+                    for (const idParaBorrar of detail.conflictSessionsEliminadas) {
+                        await deleteSession(idParaBorrar);
+                    }
+                }
+
+                // 2. Procesar actualizaciones de asignaturas de las sesiones del conflicto
+                if (Array.isArray(detail.conflictSessionsActualizadas) && detail.conflictSessionsActualizadas.length > 0) {
+                    for (const cs of detail.conflictSessionsActualizadas) {
+                        if (cs.id && !detail.conflictSessionsEliminadas?.includes(cs.id)) {
+                            await updateSession(cs.id, {
+                                actividad: cs.actividad,
+                                clase: detail.clase || null,
+                                aula: detail.aula || null,
+                                minutos: minutosValidados
+                            });
+                        }
+                    }
+                } else if (detail.id) {
                     await updateSession(detail.id, sessionPayload);
                 } else {
                     await createSession(sessionPayload);

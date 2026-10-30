@@ -493,10 +493,10 @@ export async function fetchSessionsForEntity(
                 }
 
                 const initialConflictSessions: ConflictSessionItem[] = [];
-                if (!isSupport && profName) {
+                if (s.id) {
                     initialConflictSessions.push({
-                        id: s.id ? String(s.id) : '',
-                        profesor_nombre: profName,
+                        id: String(s.id),
+                        profesor_nombre: profName || 'Docente sin nombre',
                         actividad: nuevaActividad,
                         rawData: s
                     });
@@ -518,6 +518,29 @@ export async function fetchSessionsForEntity(
             } else {
                 const existing = cellMap[cellKey];
 
+                if (!existing.conflictSessions) {
+                    existing.conflictSessions = [];
+                }
+
+                if (s.id && !existing.conflictSessions.some(cs => cs.id === String(s.id))) {
+                    existing.conflictSessions.push({
+                        id: String(s.id),
+                        profesor_nombre: profName || 'Docente sin nombre',
+                        actividad: nuevaActividad,
+                        rawData: s
+                    });
+                }
+
+                // Detección de conflicto si hay 2 o más asignaturas distintas en la misma franja
+                const distintas = new Set(
+                    existing.conflictSessions
+                        .map(cs => (cs.actividad || '').trim().toLowerCase())
+                        .filter(Boolean)
+                );
+                if (distintas.size > 1) {
+                    existing.hasConflict = true;
+                }
+
                 if (isEusle) {
                     existing.isEusle = true;
                 }
@@ -531,28 +554,6 @@ export async function fetchSessionsForEntity(
                         }
                     }
                 } else {
-                    if (profName) {
-                        if (!existing.conflictSessions) {
-                            existing.conflictSessions = [];
-                        }
-                        const yaExisteEnConflictos = existing.conflictSessions.some(cs => cs.id === String(s.id));
-                        if (!yaExisteEnConflictos) {
-                            existing.conflictSessions.push({
-                                id: s.id ? String(s.id) : '',
-                                profesor_nombre: profName,
-                                actividad: nuevaActividad,
-                                rawData: s
-                            });
-                        }
-
-                        // Detección de conflicto si la asignatura difiere
-                        const actExistenteNorm = (existing.actividad || '').trim().toLowerCase();
-                        const actNuevaNorm = (nuevaActividad || '').trim().toLowerCase();
-                        if (actExistenteNorm && actNuevaNorm && actExistenteNorm !== actNuevaNorm) {
-                            existing.hasConflict = true;
-                        }
-                    }
-
                     if (activeTab === 'aulas') {
                         if (!isTutorOficial && profName) {
                             if (!existing.profesor) {
