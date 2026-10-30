@@ -150,10 +150,10 @@
 
 				const distintasActividades = new Set(
 					conflictSessions
-						.map((cs) => (cs.actividad || '').trim().toLowerCase())
+						.map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
 						.filter(Boolean)
 				);
-				tieneConflicto = distintasActividades.size > 1;
+				tieneConflicto = conflictSessions.length > 1 && distintasActividades.size > 1;
 			}
 		} else if (!isOpen) {
 			lastOpenKey = null;
@@ -196,10 +196,10 @@
 		}
 		const distintasActividades = new Set(
 			conflictSessions
-				.map((cs) => (cs.actividad || '').trim().toLowerCase())
+				.map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
 				.filter(Boolean)
 		);
-		tieneConflicto = distintasActividades.size > 1;
+		tieneConflicto = conflictSessions.length > 1 && distintasActividades.size > 1;
 	}
 
 	function handleSave() {
