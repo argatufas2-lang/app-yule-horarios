@@ -64,7 +64,14 @@
 
 	let conflictSessions: Array<{ id: string; profesor_nombre: string; actividad: string }> = [];
 	let conflictSessionsEliminadas: string[] = [];
-	let tieneConflicto: boolean = false;
+
+	$: tieneConflicto =
+		conflictSessions.length > 1 &&
+		new Set(
+			conflictSessions
+				.map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
+				.filter(Boolean)
+		).size > 1;
 
 	let loadedAulas: Array<{ id: string; nombre: string }> = [];
 	$: activeAulas = (aulasDisponibles && aulasDisponibles.length > 0) ? aulasDisponibles : loadedAulas;
@@ -147,13 +154,6 @@
 				} else {
 					conflictSessions = [];
 				}
-
-				const distintasActividades = new Set(
-					conflictSessions
-						.map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
-						.filter(Boolean)
-				);
-				tieneConflicto = conflictSessions.length > 1 && distintasActividades.size > 1;
 			}
 		} else if (!isOpen) {
 			lastOpenKey = null;
@@ -186,7 +186,6 @@
 			...cs,
 			actividad: nuevaActividad
 		}));
-		tieneConflicto = false;
 	}
 
 	function eliminarConflictoProfesor(id: string) {
@@ -194,12 +193,6 @@
 		if (id && !conflictSessionsEliminadas.includes(id)) {
 			conflictSessionsEliminadas.push(id);
 		}
-		const distintasActividades = new Set(
-			conflictSessions
-				.map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
-				.filter(Boolean)
-		);
-		tieneConflicto = conflictSessions.length > 1 && distintasActividades.size > 1;
 	}
 
 	function handleSave() {

@@ -531,14 +531,6 @@ export async function fetchSessionsForEntity(
                     });
                 }
 
-                // Evaluación estricta: solo hay conflicto si hay 2 o más sesiones Y 2 o más asignaturas DISTINTAS
-                const distintasActividades = new Set(
-                    existing.conflictSessions
-                        .map(cs => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
-                        .filter(Boolean)
-                );
-                existing.hasConflict = existing.conflictSessions.length > 1 && distintasActividades.size > 1;
-
                 if (isEusle) {
                     existing.isEusle = true;
                 }
@@ -572,6 +564,20 @@ export async function fetchSessionsForEntity(
                         existing.actividad = nuevaActividad;
                     }
                 }
+            }
+        });
+
+        // Asegurar la evaluación precisa de conflictos para cada celda
+        Object.values(cellMap).forEach((cell) => {
+            if (cell.conflictSessions && cell.conflictSessions.length > 1) {
+                const distintasActividades = new Set(
+                    cell.conflictSessions
+                        .map((cs) => (cs.actividad || '').trim().toLowerCase().replace(/\s+/g, ' '))
+                        .filter(Boolean)
+                );
+                cell.hasConflict = distintasActividades.size > 1;
+            } else {
+                cell.hasConflict = false;
             }
         });
 
