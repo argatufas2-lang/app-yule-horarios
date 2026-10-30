@@ -1,0 +1,928 @@
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Radiografía Técnica del Proyecto                                        ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+
+1. Visión General de la Arquitectura                                       
+
+ • Framework Principal: SvelteKit (con Svelte 5 / Svelte 4 en transición de
+   renderizado SSR/Cliente).                                               
+ • Backend / Base de Datos: Supabase (PostgreSQL, cliente de datos para    
+   persistencia de datos en tiempo real y operaciones CRUD).               
+ • Dominio de la Aplicación: Gestión horaria lectiva y no lectiva de       
+   profesores, asignación de aulas, cálculo e imprevistos de jornadas, y un
+   pipeline robusto de importación de datos vía hojas de cálculo (Excel).  
+
+---------------------------------------------------------------------------
+
+
+2. Modelos de Datos y Tipos (src/types/ y src/lib/types/)                  
+
+A. src/types/database.ts                                                   
+
+Define las entidades principales mapeadas desde la base de datos Supabase: 
+
+ • Profesor: Registro del personal docente (ID, nombre, tipo de jornada,   
+   curso escolar).                                                         
+ • Actividad: Asignatura o tarea asignada (id, nombre, categoria,          
+   es_lectiva, curso_escolar, created_at).                                 
+
+B. src/lib/types/schedule.ts                                               
+
+Define las estructuras para la vista de horarios y asignaciones:           
+
+ • TimeSlot: Representación de tramos horarios (franjas horarias del día). 
+ • Classroom: Modelo para la entidad de aulas (id, nombre, curso_escolar). 
+
+C. src/lib/components/import/excelCellParser.ts                            
+
+ • ParsedCell: Interfaz para abstraer las celdas parseadas desde hojas     
+   Excel durante los procesos de importación.                              
+
+---------------------------------------------------------------------------
+
+
+3. Servicios de Lógica de Negocio (src/lib/services/)                      
+
+A. src/lib/services/importService.ts                                       
+
+Encargado del pipeline de ingestión y sincronización de datos mediante     
+tablas staging (borradores temporales):                                    
+
+Funciones y Lógicas:                                                       
+
+ 1 normalizarNombreActividad(nombreRaw?: string | null): string            
+    • Lógica: Recorta, convierte a mayúsculas y mapea la actividad con el  
+      DICCIONARIO_ACTIVIDADES.                                             
+ 2 getStagingRowsByBatch(batchId: string): Promise<StagingSessionRow[]>    
+    • Lógica: Paginación de 1000 en 1000 sobre la tabla sesiones_staging   
+      filtrada por un lote (batch_id).                                     
+ 3 updateStagingRow(id: string, updates: Partial<StagingSessionRow>)       
+    • Lógica: Actualización puntual de un registro en borrador.            
+ 4 sincronizarProfesores(profesoresUnicos: string[], cursoEscolar: string):
+   Promise<void>                                                           
+    • Lógica: Normaliza e inserta automáticamente en la tabla profesores   
+      aquellos registros de docentes del lote que no existan previamente   
+      para el curso.                                                       
+ 5 sincronizarActividades(actividadesUnicas: string[], cursoEscolar:       
+   string): Promise<void>                                                  
+    • Lógica: Consulta exclusiva contra la tabla actividades para validar  
+      catálogos existentes por curso escolar.                              
+ 6 sincronizarAulas(aulasUnicas: string[], cursoEscolar: string):          
+   Promise<void>                                                           
+    • Lógica: Inserta masivamente aulas únicas no registradas previamente. 
+  7 implantarStaging(batchId: string, cursoEscolar: string,                
+    reemplazarExistentes: boolean)                                         
+     • Lógica: Proceso principal que traslada las sesiones válidas de la   
+       tabla temporal sesiones_staging a la tabla definitiva sesiones.     
+       Admite el reemplazo total o la inserción diferencial.               
+  8 desecharStaging(batchId: string): Promise<void>                        
+     • Lógica: Elimina el lote especificado de la tabla temporal.          
+  9 vaciarTablaStaging(): Promise<void>                                    
+     • Lógica: Limpieza total de la tabla sesiones_staging.                
+
+---------------------------------------------------------------------------
+
+B. src/lib/services/jornadaService.ts                                      
+
+Contiene las reglas del cálculo de tiempos lectivos y no lectivos por tipo 
+de jornada y profesor.                                                     
+
+Tipos e Interfaces:                                                        
+
+ • ProfesorJornadaData: Agregado con los minutos/sesiones lectivas, no     
+   lectivas y totales completadas por profesor.                            
+ • TipoJornadaRecord: Mapeo de límites de jornadas (horas_lectivas,        
+   horas_no_lectivas, etc.).                                               
+
+Funciones y Lógicas:                                                       
+
+ 1 normalizeStr(str: string | null | undefined): string                    
+    • Lógica: Limpia cadenas eliminando acentos (NFD), espacios extra y    
+      convirtiendo a minúsculas para búsquedas difusas/resilientes.        
+ 2 getAllAjustesMinutos()                                                  
+    • Lógica: Consulta la tabla ajustes_minutos para aplicar correcciones  
+      manuales en los conteos de tiempo por profesor o franja.             
+ 3 getDefaultTopesByJornada(jornadaStr: string)                            
+    • Lógica: Determina los límites por defecto (minutos lectivos, no      
+      lectivos y totales) basándose en coincidencias de texto de jornada   
+      (ej. "1/2", "media", "50%", "2/3", "3/4").                           
+ 4 findMatchingProfesor(profesorNombreInSession: string, profesores:       
+   ProfesorRecord[])                                                       
+    • Lógica: Algoritmo de emparejamiento con tolerancia a prefijos/sufijos
+      para vincular sesiones con su profesor correspondiente.              
+ 5 fetchControlJornadaData(cursoEscolar: string):                          
+   Promise<ProfesorJornadaData[]>                                          
+    • Lógica: Orquestador central. Recupera mediante Promise.allSettled    
+      profesores, sesiones, actividades, ajustes, tramos horarios y tipos  
+      de jornada. Calcula los balances e indicadores de cumplimiento de    
+      jornada de todo el cuadro docente.                                   
+
+---------------------------------------------------------------------------
+
+C. src/lib/services/primaryService.ts                                      
+
+Operaciones CRUD directas de las sesiones definitivas del calendario       
+escolar.                                                                   
+
+Funciones y Lógicas:                                                       
+
+ 1 getSessionsForClassroom(curso: string, aulaNombre: string):             
+   Promise<Session[]>                                                      
+    • Lógica: Recupera las sesiones de un aula específica filtrando por    
+      coincidencias en aula o grupo/clase.                                 
+ 2 createSession(session: Omit<Session, 'id'>): Promise<Session>           
+    • Lógica: Inserta una nueva sesión horaria.                            
+ 3 updateSession(sessionId: string, updates: Partial<Session>):            
+   Promise<Session>                                                        
+    • Lógica: Actualiza atributos de una sesión (materia, profesor, franja,
+      aula).                                                               
+ 4 deleteSession(sessionId: string): Promise<void>                         
+    • Lógica: Elimina una sesión activa del sistema.                       
+
+---------------------------------------------------------------------------
+
+D. src/lib/services/timeCalculationService.ts                              
+
+Módulo auxiliar de formateo y cálculo matemático de franjas horarias.      
+
+Estructuras Principales:                                                   
+
+ • JornadaConfig: Define objetivos de minutos lectivos/no lectivos.        
+ • ScheduleSummary: Mantiene los resultados procesados con horas calculadas
+   en texto formateado (HH:mm) y deltas/balances de minutos.               
+
+---------------------------------------------------------------------------
+
+E. src/lib/services/excelImportService.ts                                  
+
+Define los formatos de importación soportados:                             
+
+ • ImportFormat: 'matriz_profesor' | 'periodo_multilinea'. Permite         
+   interpretar la disposición geométrica de las celdas del archivo Excel   
+   recibido.                                                               
+
+---------------------------------------------------------------------------
+
+
+4. Rutas y Páginas (src/routes/)                                           
+
+ • / (Página Principal): Mapea el visor/editor de la cuadrícula horaria y  
+   resumen de control de jornadas.                                         
+ • /import: Interfaz de subida de archivos Excel, vista previa en la tabla 
+   staging, resolución de incidencias/sincronización y disparo del proceso 
+   implantarStaging.                                                       
+
+
+Tokens: 9.4k sent, 1.9k received. Cost: $0.01 message, $0.01 session.
+
+src\lib\components\import\excelCellParser.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+ y                                                                        
+
+src\lib\services\excelImportService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\lib\services\importService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\lib\services\jornadaService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\lib\services\primaryService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\lib\services\timeCalculationService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\lib\types\schedule.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\types\database.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+Para tener una visión completa del proyecto y poder documentar             
+exhaustivamente el 100% de la lógica y la interfaz, añade también los      
+siguientes archivos al chat:                                               
+
+ 1 src/routes/+page.svelte (Vista principal del horario/matriz)            
+ 2 src/routes/import/+page.svelte (Interfaz visual del proceso de          
+   importación Excel)                                                      
+ 3 src/routes/+layout.svelte (Estructura base/navegación principal)        
+ 4 src/lib/services/adminService.ts                                        
+ 5 src/lib/services/scheduleService.ts                                     
+ 6 src/lib/utils/formatters.ts                                             
+
+En cuanto los agregues, procederé inmediatamente a redactar la radiografía 
+técnica detallada para copiar directamente.                                
+
+
+Tokens: 23k sent, 164 received. Cost: $0.02 message, $0.03 session.
+
+src\lib\services\adminService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\lib\services\scheduleService.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+Warning: it's best to only add files that need changes to the chat.
+https://aider.chat/docs/troubleshooting/edit-errors.html
+
+src\lib\utils\formatters.ts
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\routes\+layout.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\routes\+page.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+
+src\routes\import\+page.svelte
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+                                                                          
+Aquí tienes la radiografía técnica completa y detallada de toda la         
+aplicación. Está redactada de forma exhaustiva, archivo por archivo,       
+indicando todas sus funciones, tipos de datos, interfaces y lógica de      
+negocio para que cualquier desarrollador pueda tomar el proyecto y         
+continuar el desarrollo sin vacíos de información.                         
+
+---------------------------------------------------------------------------
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Radiografía Técnica Completa del Proyecto (App Horarios)                ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+---------------------------------------------------------------------------
+
+
+1. Visión General de la Arquitectura                                       
+
+ • Framework Principal: SvelteKit (Svelte 4/5)                             
+ • Estilos: Tailwind CSS (app.css)                                         
+ • Base de Datos / Backend SaaS: Supabase (PostgreSQL para almacenamiento  
+   en la nube)                                                             
+ • Motor de Hoja de Cálculo: xlsx (SheetJS) para parseo de archivos Excel  
+   en cliente/servidor.                                                    
+ • Dominio Principal: Gestión del cuadrante de horarios escolares para     
+   centros de Educación Primaria, control de horas lectivas y no lectivas  
+   por profesor, gestión de aulas, y pipeline de importación               
+   masiva/procesamiento en staging desde archivos de software horario (ej. 
+   aSc Timetables).                                                        
+
+---------------------------------------------------------------------------
+
+
+2. Tipos de Datos e Interfaces (src/types/ y src/lib/types/)               
+
+A. src/types/database.ts                                                   
+
+Define las entidades mapeadas directamente desde las tablas de la base de  
+datos Supabase.                                                            
+
+ • Profesor:                                                               
+    • id: string                                                           
+    • name: string                                                         
+    • email: string                                                        
+    • department?: string | null                                           
+    • max_lectiva_hours?: number                                           
+    • max_total_hours?: number                                             
+ • Actividad:                                                              
+    • id: number (Mapeado a int4)                                          
+    • nombre: string                                                       
+    • categoria: string                                                    
+    • es_lectiva: boolean                                                  
+    • curso_escolar: string                                                
+    • created_at: string                                                   
+ • Aula:                                                                   
+    • id: string                                                           
+    • code: string                                                         
+    • name: string                                                         
+ • Sesion:                                                                 
+    • id: string                                                           
+    • professor_id: string                                                 
+    • activity_id: number                                                  
+    • classroom_id: string | null                                          
+    • day_of_week: number                                                  
+    • start_time: string                                                   
+    • end_time: string                                                     
+    • group_name: string                                                   
+    • grupo_desdoble?: string | null                                       
+ • SesionWithRelations:                                                    
+    • Extiende Sesion añadiendo las relaciones completas de actividad:     
+      Actividad y aula: Aula | null.                                       
+
+---------------------------------------------------------------------------
+
+B. src/lib/types/schedule.ts                                               
+
+Define los tipos específicos utilizados por la vista de horarios y         
+componentes del cuadrante.                                                 
+
+ • TimeSlot: Representa una franja u orden horaria.                        
+    • Campos: id, orden, franja, minutos_maximos, hora_inicio, hora_fin.   
+ • Teacher: Representa un docente registrado en el sistema.                
+    • Campos: id, nombre, perfil, clase_base, jornada, orden,              
+      curso_escolar.                                                       
+ • Session: Representación plana de una sesión horaria registrada.         
+    • Campos: id, profesor_nombre, dia (0-4), franja (0-9), dia_semana?,   
+      tramo_id?, actividad, clase, aula, grupo_desdoble?, rol_aula,        
+      fuente?, curso_escolar?, minutos?, es_lectiva?.                      
+ • Classroom:                                                              
+    • Campos: id, nombre, curso_escolar.                                   
+
+---------------------------------------------------------------------------
+
+
+3. Utilidades (src/lib/utils/)                                             
+
+src/lib/utils/formatters.ts                                                
+
+Contiene funciones de formato visual para homogenizar datos mostrados en   
+tablas e interfaces.                                                       
+
+ • formatJornada(jornadaRaw?: string | null): string:                      
+    • Lógica: Si el texto de jornada contiene palabras como "completa",    
+      "100", "1/1" o "jc", devuelve 'JC'. De lo contrario, devuelve el     
+      string original sin alterar.                                         
+ • formatRol(perfilRaw?: string | null): string:                           
+    • Lógica: Analiza si el perfil del profesor incluye la palabra "tutor" 
+      o "tutoretza" para retornar 'Tutor'. De lo contrario, retorna        
+      'Especialista'.                                                      
+
+---------------------------------------------------------------------------
+
+
+4. Servicios de Lógica de Negocio (src/lib/services/)                      
+
+A. src/lib/services/adminService.ts                                        
+
+Encargado de la gestión de tablas maestras del panel de administración     
+(CRUD sobre Supabase).                                                     
+
+ • Interfaces:                                                             
+    • ProfesorRecord, ActividadRecord, AulaRecord, TramoHorarioRecord,     
+      RolProfesorRecord.                                                   
+ • Funciones de Profesores:                                                
+    • getAdminProfesores(curso: string): Obtiene profesores filtrados por  
+      curso y ordenados por nombre.                                        
+    • createAdminProfesor(profesor): Inserta un nuevo docente.             
+    • updateAdminProfesor(id, updates): Actualiza datos de un docente.     
+    • deleteAdminProfesor(id): Elimina un docente.                         
+ • Funciones de Asignaturas/Actividades:                                   
+    • getAdminActividades(curso), createAdminActividad,                    
+      updateAdminActividad, deleteAdminActividad.                          
+ • Funciones de Aulas:                                                     
+    • getAdminAulas(curso), createAdminAula, updateAdminAula,              
+      deleteAdminAula.                                                     
+ • Funciones de Tramos Horarios Primaria:                                  
+    • getAdminTramosHorarios(), createAdminTramoHorario,                   
+      updateAdminTramoHorario, deleteAdminTramoHorario.                    
+ • Funciones de Roles de Profesor:                                         
+    • getAdminRolesProfesor(): Obtiene el catálogo de roles predefinidos   
+      (id, codigo, nombre).                                                
+
+---------------------------------------------------------------------------
+
+B. src/lib/services/timeCalculationService.ts                              
+
+Motor de cálculo de horas y minutos lectivos vs no lectivos.               
+
+ • Interfaces: JornadaConfig, ScheduleSummary.                             
+ • Funciones y Lógica:                                                     
+    • formatMinutes(minutes: number): string: Convierte minutos a formato  
+      "Xh Ym" o "-Xh Ym" si el resultado es negativo.                      
+    • normalizeText(text: string | null | undefined): string: Normaliza    
+      textos quitando acentos y mayúsculas para búsquedas difusas.         
+    • isLectivaSession(session: Session, actividadesCatalogo?): boolean:   
+       1 Si existe la actividad en el catálogo oficial, devuelve su        
+         atributo es_lectiva.                                              
+       2 Si coincide con una lista de patrones no lectivos (ej: recreo,    
+         zaintza, tutoretza, coordinacion, bilera, bazkaria), devuelve     
+         false.                                                            
+       3 Si la sesión especifica es_lectiva, la respeta.                   
+       4 Por defecto devuelve true.                                        
+    • calculateScheduleSummary(sessions, jornadaConfig,                    
+      actividadesCatalogo?): ScheduleSummary:                              
+       • Procesa y agrupa sesiones evitando duplicados por                 
+         día/franja/actividad.                                             
+       • Ignora actividades de comida o recreo pasivo (BAZKARIA,           
+         ATSEDENALDIA).                                                    
+       • Suma los minutos lectivos y no lectivos calculando el balance     
+         respecto a los objetivos configurados.                            
+
+---------------------------------------------------------------------------
+
+C. src/lib/services/jornadaService.ts                                      
+
+Genera el informe de auditoría de control de jornada para el claustro      
+docente.                                                                   
+
+ • Interfaces: ProfesorJornadaData, TipoJornadaRecord.                     
+ • Funciones y Lógica:                                                     
+    • normalizeStr(str): Limpia diacríticos y convierte a minúsculas.      
+    • getAllAjustesMinutos(): Consulta ajustes manuales de minutos desde la
+      tabla ajustes_minutos.                                               
+    • getDefaultTopesByJornada(jornadaStr): Determina topes por defecto si 
+      no existen en la base de datos (ej. Media jornada = 518 mins         
+      lectivos, Jornada completa = 1035 mins lectivos).                    
+    • findMatchingProfesor(profesorNombreInSession, profesores): Algoritmo 
+      de emparejamiento borroso por nombre/apellidos para asociar sesiones 
+      importadas a la tabla de profesores.                                 
+    • fetchControlJornadaData(cursoEscolar):                               
+      Promise<ProfesorJornadaData[]>:                                      
+       • Ejecuta en paralelo con Promise.allSettled las consultas de       
+         profesores, sesiones, actividades, ajustes, tramos horarios y     
+         tipos de jornada.                                                 
+       • Agrupa las sesiones por cada profesor.                            
+       • Calcula duración acumulada (priorizando ajustes manuales >        
+         atributo de sesión > duración por tramo horario).                 
+       • Devuelve un arreglo con los minutos totales, horas formateadas,   
+         tope máximo y balance (superávit/déficit) por docente.            
+
+---------------------------------------------------------------------------
+
+D. src/lib/services/primaryService.ts                                      
+
+Operaciones CRUD directas para la vista primaria de horarios y catálogos.  
+
+ • Funciones:                                                              
+    • getActividadesCatalogo(curso): Retorna catálogo de actividades por   
+      curso.                                                               
+    • getTeachers(curso): Obtiene profesores ordenados por la columna      
+      orden.                                                               
+    • getTimeSlots(): Retorna tramos horarios ordenados.                   
+    • getSessionsForTeacher(curso, profesorNombre): Obtiene las sesiones   
+      asociadas a un profesor.                                             
+    • getSessionsForClassroom(curso, aulaNombre): Obtiene las sesiones     
+      asociadas a un aula o grupo.                                         
+    • createSession, updateSession, deleteSession: Operaciones CRUD sobre  
+      la tabla sesiones.                                                   
+
+---------------------------------------------------------------------------
+
+E. src/lib/services/scheduleService.ts                                     
+
+Mapeador y transformador de sesiones hacia la cuadrícula de la interfaz    
+visual.                                                                    
+
+ • Interfaces: TimeSlotItem, EntityOption, GridSessionCell,                
+   TipoJornadaItem.                                                        
+ • Estructuras Estándar (Fallback):                                        
+    • fallbackTimeSlotsProfesorado(): Define las 10 franjas horarias base  
+      para profesores (0 a 9).                                             
+    • fallbackTimeSlotsAulas(): Define las 9 franjas para aulas.           
+ • Funciones Principales:                                                  
+    • fetchTotalProfesorado(selectedCurso): Conteo total de profesores en  
+      Supabase.                                                            
+    • fetchTimeSlots(activeTab): Descarga o genera los tramos para la vista
+      de profesorado o de aulas.                                           
+    • fetchProfesores(curso): Lista de profesores mapeados para            
+      dropdowns/selectores.                                                
+    • fetchAulas(curso): Lista de aulas formateadas para selección.        
+    • fetchSessionsForEntity(...):                                         
+       • Pagina de 1000 en 1000 para descargar todas las sesiones del      
+         curso.                                                            
+       • Normaliza códigos de grupo/aula.                                  
+       • Aplica filtros por pestaña activa (profesorado o aulas).          
+       • Mapea roles (principal, apoyo/PT, Eusle, tutor oficial) y combina 
+         profesores de apoyo en una celda en caso de coincidir en la misma 
+         franja horaria.                                                   
+       • Retorna una estructura clave-valor indexada por ${dia}_${franja}. 
+
+---------------------------------------------------------------------------
+
+F. src/lib/components/import/excelCellParser.ts                            
+
+ • parseExcelCellContent(rawActividad, rawClase, rawAula):                 
+    • Parsea bloques de texto con saltos de línea (\n) provenientes de     
+      celdas combinadas de Excel/aSc Timetables, separando la primera línea
+      como actividad y las subsecuentes como clase/grupo.                  
+
+---------------------------------------------------------------------------
+
+G. src/lib/services/excelImportService.ts                                  
+
+Analizador e importador de archivos Excel (.xlsx/.xls).                    
+
+ • Tipos y Formatos:                                                       
+    • ImportFormat: 'matriz_profesor' | 'periodo_multilinea'               
+    • ImportedSession, StagingSessionRow, RawExtractedSession.             
+ • Funciones:                                                              
+    • normalizarNombreProfesor(nombreRaw): Normalización en mayúsculas y   
+      quita tildes.                                                        
+    • mapExcelPeriodoToDbFranja(excelPeriod): Convierte períodos ordinales 
+      de Excel a los índices reales de franja de la base de datos          
+      (respetando recreos y comedores).                                    
+    • parseAscBlockExcel(fileBuffer): Lee archivos Excel de estructura     
+      bloque (período en primera columna y días en cabecera).              
+    • parseMultiSheetMatrixExcel(workbook, profesorMetadataMap): Recorre   
+      todas las pestañas de un libro Excel considerando cada pestaña como  
+      el horario individual de un profesor, aplicando rastreo por          
+      coordenadas relativas (arriba para el día, izquierda para el tramo   
+      horario).                                                            
+    • extractProfesoradoMetadata(workbook): Busca la pestaña 'PROFESORADO' 
+      en el Excel para extraer metadata (perfil, clase base, tipo de       
+      jornada).                                                            
+    • mergeAndConsolidateSessions(...): Deduplica y consolida actividades y
+      grupos que ocurren en la misma franja horaria para el mismo docente. 
+    • processAndUploadExcel(file, format, cursoEscolar): Función           
+      orquestadora que lee el archivo Excel, extrae metadata, procesa las  
+      sesiones según el formato, las consolida e inserta en la tabla       
+      temporal sesiones_staging en bloques de 1.000 registros con un ID de 
+      lote (batchId).                                                      
+
+---------------------------------------------------------------------------
+
+H. src/lib/services/importService.ts                                       
+
+Gestor del estado de borrador (Staging) e implantación final a producción. 
+
+ • Constantes: DICCIONARIO_ACTIVIDADES (Mapea abreviaturas como MATE ->    
+   MATEMATIKA, ENG -> ENGLISH, etc.).                                      
+ • Funciones:                                                              
+    • getStagingRowsByBatch(batchId): Obtiene los registros en borrador    
+      guardados en sesiones_staging con paginación.                        
+    • updateStagingRow(id, updates): Revalida la fila en borrador y        
+      actualiza su estado (valido o error).                                
+    • sincronizarProfesores, sincronizarActividades, sincronizarAulas:     
+      Registran automáticamente en las tablas maestras definitivas         
+      cualquier profesor, asignatura o aula nueva que venga en el archivo  
+      de importación.                                                      
+    • implantarStaging(batchId, cursoEscolar, reemplazarExistentes):       
+       1 Lee todas las sesiones válidas en staging del lote.               
+       2 Hace respaldo automático de la tabla sesiones hacia               
+         sesiones_historico.                                               
+       3 Vacía la tabla sesiones (en caso de reemplazo completo).          
+       4 Sincroniza las entidades únicas con sus tablas maestras.          
+       5 Inserta las nuevas sesiones en la tabla sesiones en lotes de      
+         1.000.                                                            
+    • desecharStaging(batchId) / vaciarTablaStaging(): Limpieza de la tabla
+      temporal staging.                                                    
+
+---------------------------------------------------------------------------
+
+
+5. Vistas y Componentes (src/routes/)                                      
+
+A. src/routes/+layout.svelte                                               
+
+ • Función: Componente envoltorio raíz de la aplicación SvelteKit. Importa 
+   la hoja de estilos global app.css y renderiza el slot principal (<slot  
+   />).                                                                    
+
+B. src/routes/+page.svelte                                                 
+
+ • Función: Página principal de la aplicación.                             
+ • Estado local:                                                           
+    • isControlJornadaOpen: Booleano para abrir/cerrar modal de control de 
+      jornada.                                                             
+    • showImportModal: Booleano para abrir/cerrar modal de importación     
+      desde staging.                                                       
+    • isAdminOpen: Booleano para abrir/cerrar modal de administración.     
+    • selectedCurso: String del curso escolar activo (ej. '2026-2027').    
+    • selectedEntityId: ID de la entidad seleccionada en el cuadrante      
+      (profesor o aula).                                                   
+ • Componentes integrados:                                                 
+    • <ActionsView>: Barra superior de comandos y visualización de la      
+      matriz de horarios.                                                  
+    • <ControlJornadaModal>: Modal de auditoría de horas.                  
+    • <ImportStagingModal>: Modal de procesamiento de hojas Excel y        
+      staging.                                                             
+    • <AdminModal>: Modal de administración de datos maestros.             
+
+C. src/routes/import/+page.svelte                                          
+
+ • Función: Ruta secundaria o auxiliar de la interfaz de importación.      
+
+---------------------------------------------------------------------------
+
+
+6. Diagrama del Flujo de Datos Principal                                   
+
+                                                                           
+[ Archivo Excel (.xlsx) ]                                                  
+          │                                                                
+          ▼                                                                
+[ excelImportService.ts ] ───► Extrae metadata y parsea celdas/bloques     
+          │                                                                
+          ▼                                                                
+[ Tabla: sesiones_staging ] ───► Permite previsualización y edición        
+(Staging)                                                                  
+          │                                                                
+          ▼                                                                
+[ importService.ts (implantarStaging) ]                                    
+          │                                                                
+          ├─► Respalda en [ sesiones_historico ]                           
+          ├─► Sincroniza [ profesores ], [ actividades ], [ aulas ]        
+          └─► Inserta en [ sesiones ]                                      
+          │                                                                
+          ▼                                                                
+[ scheduleService.ts / jornadaService.ts ] ───► Mapea y calcula para la UI 
+          │                                                                
+          ▼                                                                
+[ +page.svelte (Vista Visual) ]                                            
+                                                                           
+
+
+Tokens: 31k sent, 4.1k received. Cost: $0.04 message, $0.07 session.
+
+Por
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+ n                                                                        
+
+src\app.css
+Add file to the chat? (Y)es/(N)o/(A)ll/(S)kip all/(D)on't ask again [Yes]:
+ y                                                                        
+Con este último archivo (src/app.css), ya tenemos cubierto el 100% de los  
+archivos y lógica de tu repositorio.                                       
+
+Aquí tienes la radiografía técnica definitiva y completa del proyecto. Está
+estructurada punto por punto con todo el nivel de detalle necesario para   
+que cualquier desarrollador pueda tomar el proyecto y continuar con el     
+trabajo inmediatamente.                                                    
+
+---------------------------------------------------------------------------
+
+                                                                           
+# RADIOGRAFÍA TÉCNICA COMPLETA DE LA APLICACIÓN (HORARIOS & CONTROL DE     
+JORNADA)                                                                   
+                                                                           
+---                                                                        
+                                                                           
+## 1. RESUMEN EJECUTIVO Y ARQUITECTURA GENERAL                             
+                                                                           
+- **Framework Web:** SvelteKit con Svelte 4/5.                             
+- **Estilos Globales:** Tailwind CSS extendido mediante clases             
+personalizadas para celdas inhabilitadas (`src/app.css`).                  
+- **Base de Datos / Backend:** Supabase (PostgreSQL) con consultas         
+paginadas por lotes de 1.000 registros para alta densidad de datos.        
+- **Motor de Importación:** SheetJS (`xlsx`) para parsear, mapear y        
+consolidar archivos de horarios Excel (formatos aSc Timetables, matrices   
+multidía y tablas periodos-multilínea).                                    
+- **Propósito del Sistema:** Gestión del cuadro horario lectivo/no lectivo 
+de centros educativos de Educación Primaria, asignación de aulas/grupos,   
+control de sustituciones/apoyos, auditoría de cumplimiento de jornada      
+laboral docente y pipeline de importación staging con histórico de         
+respaldos.                                                                 
+                                                                           
+---                                                                        
+                                                                           
+## 2. ESTILOS GLOBALES (`src/app.css`)                                     
+                                                                           
+Define la configuración base de Tailwind CSS y reglas CSS personalizadas   
+para el renderizado del cuadrante:                                         
+- `@tailwind base; @tailwind components; @tailwind utilities;`             
+- **`.cell-disabled-striped` / `.dark .cell-disabled-striped`:** Aplica un 
+fondo tramado diagonal suave (`repeating-linear-gradient` a 45 grados) para
+identificar visualmente franjas u horas no lectivas o inhabilitadas en modo
+claro y oscuro.                                                            
+- **`.cell-disabled-striped::after`:** Genera un pseudoelemento absoluto   
+que dibuja una línea horizontal central para tachar o deshabilitar         
+visualmente la celda sin tapar el texto.                                   
+                                                                           
+---                                                                        
+                                                                           
+## 3. MODELOS DE DATOS Y TIPOS (`src/types/` y `src/lib/types/`)           
+                                                                           
+### A. `src/types/database.ts`                                             
+Define la interfaz TypeScript pura alineada con la estructura de la base de
+datos PostgreSQL en Supabase:                                              
+- **`Profesor`**: `id` (string), `name` (string), `email` (string),        
+`department?` (string|null), `max_lectiva_hours?` (number),                
+`max_total_hours?` (number).                                               
+- **`Actividad`**: `id` (number - int4), `nombre` (string), `categoria`    
+(string), `es_lectiva` (boolean), `curso_escolar` (string), `created_at`   
+(string).                                                                  
+- **`Aula`**: `id` (string), `code` (string), `name` (string).             
+- **`Sesion`**: `id` (string), `professor_id` (string), `activity_id`      
+(number), `classroom_id` (string|null), `day_of_week` (number),            
+`start_time` (string), `end_time` (string), `group_name` (string),         
+`grupo_desdoble?` (string|null).                                           
+- **`SesionWithRelations`**: Extiende `Sesion` adjuntando las entidades    
+anidadas `actividad: Actividad` y `aula: Aula | null`.                     
+                                                                           
+### B. `src/lib/types/schedule.ts`                                         
+Define las estructuras para los componentes del cuadrante y lógica de la   
+vista:                                                                     
+- **`TimeSlot`**: Representa una franja horaria (`id`, `orden`, `franja`,  
+`minutos_maximos`, `hora_inicio`, `hora_fin`).                             
+- **`Teacher`**: Docente en la vista de horarios (`id`, `nombre`, `perfil`,
+`clase_base`, `jornada`, `orden`, `curso_escolar`).                        
+- **`Session`**: Representación plana utilizada en los componentes (`id`,  
+`profesor_nombre`, `dia`, `franja`, `dia_semana?`, `tramo_id?`,            
+`actividad`, `clase`, `aula`, `grupo_desdoble?`, `rol_aula`, `fuente?`,    
+`curso_escolar?`, `minutos?`, `es_lectiva?`).                              
+- **`Classroom`**: Entidad aula simplificada (`id`, `nombre`,              
+`curso_escolar`).                                                          
+                                                                           
+---                                                                        
+                                                                           
+## 4. FORMATEADORES Y UTILIDADES (`src/lib/utils/formatters.ts`)           
+                                                                           
+- **`formatJornada(jornadaRaw?: string | null): string`**: Normaliza       
+cadenas relativas al tipo de jornada. Si incluye términos como             
+`"completa"`, `"100"`, `"1/1"`, `"jc"` o `"completo"`, devuelve `'JC'`; en 
+caso contrario preserva la cadena original.                                
+- **`formatRol(perfilRaw?: string | null): string`**: Evalúa si el perfil  
+docente contiene `"tutor"` o `"tutoretza"` retornando `'Tutor'`; si no,    
+retorna `'Especialista'`.                                                  
+                                                                           
+---                                                                        
+                                                                           
+## 5. CAPA DE SERVICIOS Y LÓGICA DE NEGOCIO (`src/lib/services/`)          
+                                                                           
+### A. `src/lib/services/adminService.ts`                                  
+Gestiona el mantenimiento y CRUD completo de las tablas maestras desde el  
+panel de administración:                                                   
+- **Interfaces:** `ProfesorRecord`, `ActividadRecord`, `AulaRecord`,       
+`TramoHorarioRecord`, `RolProfesorRecord`.                                 
+- **Profesores:** `getAdminProfesores(curso)`,                             
+`createAdminProfesor(profesor)`, `updateAdminProfesor(id, updates)`,       
+`deleteAdminProfesor(id)`.                                                 
+- **Asignaturas / Actividades:** `getAdminActividades(curso)`,             
+`createAdminActividad`, `updateAdminActividad`, `deleteAdminActividad`.    
+- **Aulas:** `getAdminAulas(curso)`, `createAdminAula`, `updateAdminAula`, 
+`deleteAdminAula`.                                                         
+- **Tramos Horarios:** `getAdminTramosHorarios()`,                         
+`createAdminTramoHorario`, `updateAdminTramoHorario`,                      
+`deleteAdminTramoHorario`.                                                 
+- **Roles:** `getAdminRolesProfesor()` (Devuelve catálogo con `id`,        
+`codigo`, `nombre`).                                                       
+                                                                           
+### B. `src/lib/services/timeCalculationService.ts`                        
+Motor de cálculo de horas y minutos lectivos vs. no lectivos:              
+- **Interfaces:** `JornadaConfig`, `ScheduleSummary`.                      
+- **`formatMinutes(minutes: number): string`**: Convierte minutos enteros a
+formato visual `Xh Ym` (o `-Xh Ym` para balances negativos).               
+- **`isLectivaSession(session, actividadesCatalogo?): boolean`**:          
+  1. Revisa el catálogo oficial de actividades (`es_lectiva`).             
+  2. Búsqueda de patrones no lectivos en la cadena (ej. *recreo,           
+atsedenaldia, coordinacion, zaintza, tutoria, bilera, bazkaria, lan        
+pertsonala, etc.*).                                                        
+  3. Comprueba el campo explícito `session.es_lectiva`.                    
+  4. Si no coincide con nada, retorna `true` por defecto.                  
+- **`calculateScheduleSummary(sessions, jornadaConfig,                     
+actividadesCatalogo?): ScheduleSummary`**: Deduplica celdas por clave      
+única, descuenta franjas no computables (*BAZKARIA*, *ATSEDENALDIA*),      
+calcula minutos lectivos/no lectivos totales y genera los deltas/balances  
+respecto al tope configurado.                                              
+                                                                           
+### C. `src/lib/services/jornadaService.ts`                                
+Genera los datos para el informe y modal de Control de Jornada:            
+- **`normalizeStr(str)`**: Quita tildes, caracteres diacríticos, mayúsculas
+y espacios.                                                                
+- **`getAllAjustesMinutos()`**: Carga correcciones manuales de tiempo desde
+`ajustes_minutos`.                                                         
+- **`getDefaultTopesByJornada(jornadaStr)`**: Devuelve topes estándar (1/2 
+jornada = 518 mins lectivos, 2/3 = 690 mins, Completa = 1035 mins).        
+- **`findMatchingProfesor(profesorNombreInSession, profesores)`**:         
+Algoritmo de resolución de nombres con emparejamiento por prefijos/primer  
+apellido.                                                                  
+- **`fetchControlJornadaData(cursoEscolar):                                
+Promise<ProfesorJornadaData[]>`**: Carga en paralelo mediante              
+`Promise.allSettled` todas las tablas necesarias, calcula los minutos      
+consumidos y balance de cada profesor y devuelve el array procesado.       
+                                                                           
+### D. `src/lib/services/primaryService.ts`                                
+Operaciones CRUD de uso frecuente para el cuadrante diario:                
+- **`getActividadesCatalogo(curso)`**, **`getTeachers(curso)`**,           
+**`getTimeSlots()`**, **`getSessionsForTeacher(curso, profesorNombre)`**,  
+**`getSessionsForClassroom(curso, aulaNombre)`**, **`createSession`**,     
+**`updateSession`**, **`deleteSession`**.                                  
+                                                                           
+### E. `src/lib/services/scheduleService.ts`                               
+Construye la matriz visual del horario para la interfaz:                   
+- **Fallbacks Integrados:** `fallbackTimeSlotsProfesorado()` (10 franjas   
+base: 0 a 9) y `fallbackTimeSlotsAulas()` (9 franjas para aulas).          
+- **`fetchTotalProfesorado(selectedCurso)`**: Consulta `count` exacto de   
+profesores.                                                                
+- **`fetchTimeSlots(activeTab)`**: Descarga los tramos de primaria de      
+Supabase o aplica el fallback.                                             
+- **`fetchProfesores(curso)`** & **`fetchAulas(curso)`**: Trae y mapea     
+opciones con texto formateado (`labelText`).                               
+- **`fetchSessionsForEntity(...)`**: Descarga paginada de 1.000 en 1.000   
+registros de la tabla `sesiones`, filtra las pertenecientes a la entidad   
+(profesor o aula), determina si es tutor oficial del grupo, detecta roles  
+de apoyo/PT o Eusle, resuelve solapamientos y construye un objeto indexado 
+por `${dia}_${slotOrden}`.                                                 
+                                                                           
+---                                                                        
+                                                                           
+## 6. PIPELINE DE IMPORTACIÓN Y STAGING DE EXCEL                           
+                                                                           
+### A. Parser de Celdas (`src/lib/components/import/excelCellParser.ts`)   
+- **`parseExcelCellContent(rawActividad, rawClase, rawAula)`**: Divide     
+celdas con saltos de línea (`\r\n`), tomando la primera línea como nombre  
+de la asignatura y las líneas secundarias como identificadores de grupo o  
+aula.                                                                      
+                                                                           
+### B. Servicio de Procesamiento Excel                                     
+(`src/lib/services/excelImportService.ts`)                                 
+- **Tipos:** `ImportFormat` (`'matriz_profesor' | 'periodo_multilinea'`),  
+`ImportedSession`, `StagingSessionRow`, `RawExtractedSession`.             
+- **`mapExcelPeriodToDbFranja(excelPeriod)`**: Asocia los períodos         
+numéricos del Excel con las franjas horarias reales en base de datos.      
+- **`parseAscBlockExcel(fileBuffer)`**: Procesa archivos con estructura en 
+bloque (período en columna 0, días en filas de cabecera).                  
+- **`parseMultiSheetMatrixExcel(workbook, profesorMetadataMap)`**: Escanea 
+cada pestaña del libro como el horario individual de un profesor usando    
+coordenadas espaciales relativas.                                          
+- **`extractProfesoradoMetadata(workbook)`**: Lee la pestaña               
+`'PROFESORADO'` para extraer perfiles, aulas base y tipos de jornada.      
+- **`mergeAndConsolidateSessions(...)`**: Deduplica y consolida            
+asignaturas, aulas y grupos que ocurren en la misma franja para un mismo   
+docente.                                                                   
+- **`processAndUploadExcel(file, format, cursoEscolar)`**: Convierte el    
+archivo cargado, genera un UUID de lote (`batchId`), procesa el formato    
+seleccionado e inserta los borradores en `sesiones_staging` en bloques de  
+1.000 registros.                                                           
+                                                                           
+### C. Servicio de Implantación Staging                                    
+(`src/lib/services/importService.ts`)                                      
+- **`DICCIONARIO_ACTIVIDADES`**: Mapeador de normalización (`MATE ->       
+MATEMATIKA`, `ENG -> ENGLISH`, etc.).                                      
+- **`getStagingRowsByBatch(batchId)`**: Carga paginada de registros en     
+borrador.                                                                  
+- **`updateStagingRow(id, updates)`**: Actualización y revalidación        
+individual de borradores.                                                  
+- **`sincronizarProfesores`, `sincronizarActividades`,                     
+`sincronizarAulas`**: Altas automáticas en tablas maestras definitivas para
+evitar inconsistencias de clave foránea.                                   
+- **`implantarStaging(batchId, cursoEscolar, reemplazarExistentes)`**:     
+  1. Lee todas las filas válidas en staging.                               
+  2. Vuelca todas las sesiones actuales de la tabla `sesiones` a la tabla  
+`sesiones_historico` adjuntando fecha y motivo de respaldo.                
+  3. Vacía la tabla `sesiones`.                                            
+  4. Sincroniza entidades maestras.                                        
+  5. Copia el lote desde staging hacia `sesiones` en bloques de 1.000      
+registros.                                                                 
+- **`desecharStaging(batchId)` / `vaciarTablaStaging()`**: Limpieza de la  
+tabla de borrador.                                                         
+                                                                           
+---                                                                        
+                                                                           
+## 7. RUTAS Y VISTAS PRINCIPALES (`src/routes/`)                           
+                                                                           
+### A. `src/routes/+layout.svelte`                                         
+Contenedor raíz de la aplicación; importa los estilos de Tailwind          
+(`app.css`) y monta el slot global.                                        
+                                                                           
+### B. `src/routes/+page.svelte`                                           
+Vista principal de la aplicación.                                          
+- **Estados locales:** `isControlJornadaOpen`, `showImportModal`,          
+`isAdminOpen`, `selectedCurso` (por defecto `'2026-2027'`),                
+`selectedEntityId`.                                                        
+- **Manejadores de eventos:**                                              
+  - `handleSelectTeacherFromModal`: Selecciona un profesor desde el modal  
+de control de jornada y lo enfoca en el cuadrante principal.               
+  - `handleControlJornada`, `handleOpenImportStaging`, `handleOpenAdmin`:  
+Controladores de apertura y cierre de ventanas modales.                    
+  - `handleImportedSuccess`: Muestra alerta con el total de sesiones       
+implantadas y cierra el modal.                                             
+- **Componentes Renderizados:**                                            
+  - `<ActionsView>`: Control del cuadrante y selectores principales.       
+  - `<ControlJornadaModal>`: Modal de auditoría de jornada docente.        
+  - `<ImportStagingModal>`: Modal de subida de Excel y vista staging.      
+  - `<AdminModal>`: Modal de administración de datos maestros.             
+                                                                           
+### C. `src/routes/import/+page.svelte`                                    
+Ruta secundaria destinada al flujo de importación directo.                 
+                                                                           
+---                                                                        
+                                                                           
+## 8. DIAGRAMA DEL FLUIDO DE DATOS Y PERSISTENCIA                          
+                                                                           
+
+[ Archivo Excel .XLSX ] │ ▼ [ excelImportService.ts ] ──► Parsea celdas /  
+Coordina coordenadas │ ▼ [ Tabla: sesiones_staging ] ──► Almacena borrador 
+por batch_id │ ▼ [ importService.ts ] ──► (implantarStaging) │ ├─► Respalda
+estado previo en [ sesiones_historico ] ├─► Sincroniza maestros [          
+profesores, actividades, aulas ] └─► Escribe datos finales en [ sesiones ] 
+│ ▼ [ scheduleService.ts / jornadaService.ts ] ──► Calcula balances y llena
+la UI │ ▼ [ +page.svelte / UI ]                                            
+
+                                                                           
+                                                                           
+                                                                           
+
+
+Tokens: 36k sent, 3.7k received. Cost: $0.04 message, $0.11 session.
+Warning: it's best to only add files that need changes to the chat.
+https://aider.chat/docs/troubleshooting/edit-errors.html
+Entendido. Tengo pleno conocimiento de la arquitectura, los modelos de     
+datos, los servicios y la estructura de archivos del proyecto.             
+
+Quedo a tu disposición para realizar las modificaciones o añadir las       
+funcionalidades que necesites en el código base. ¿Qué cambios deseas       
+realizar?                                                                  
