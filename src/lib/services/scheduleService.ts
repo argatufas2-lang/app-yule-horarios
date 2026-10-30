@@ -399,22 +399,13 @@ export async function fetchSessionsForEntity(
             }
         }
 
-        // Inspeccionar días para verificar si están en Base 1 (1..5) o Base 0 (0..4)
-        const rawDias = filteredData
-            .map((s: any) => Number(s.dia ?? s.day_of_week ?? s.dia_semana))
-            .filter((d: number) => !isNaN(d));
-        const hasZeroInDias = rawDias.includes(0);
-        const hasFiveInDias = rawDias.includes(5);
-        const isBase1Dias = !hasZeroInDias && hasFiveInDias;
-
         // Inspeccionar franjas para detectar si está en base 0 (0..9) o base 1 (1..10)
         const rawFranjas = filteredData
             .map((s: any) => Number(s.franja ?? s.slot ?? s.time_slot_id ?? s.tramo_horario_id ?? s.tramo_id ?? s.orden))
             .filter((f: number) => !isNaN(f));
-        const hasZeroInFranjas = rawFranjas.includes(0);
         const hasTenInFranjas = rawFranjas.includes(10);
         const maxFranjaDataset = rawFranjas.length > 0 ? Math.max(...rawFranjas) : 0;
-        const isBase1Franjas = !hasZeroInFranjas && (hasTenInFranjas || maxFranjaDataset > 9);
+        const isBase1Franjas = !rawFranjas.includes(0) && (hasTenInFranjas || maxFranjaDataset > 9);
 
         filteredData.forEach((s: any) => {
             const rawDia = s.dia ?? s.day_of_week ?? s.dia_semana;
@@ -425,12 +416,10 @@ export async function fetchSessionsForEntity(
             
             if (isNaN(diaNum) || isNaN(franjaNum)) return;
 
-            // Ajuste de día: Normalizar a Base 0 (0 = Lunes, 4 = Viernes) sólo si el dataset está en Base 1 (1..5)
+            // Normalización estricta a Base 0 (0 = Lunes, 4 = Viernes)
             let dia = diaNum;
-            if (isBase1Dias && diaNum >= 1 && diaNum <= 5) {
+            if (diaNum >= 1 && diaNum <= 5) {
                 dia = diaNum - 1;
-            } else if (diaNum === 5) {
-                dia = 4; // Asegurar que día 5 se asigne al viernes (Base 0)
             }
 
             // Resolver franja (hora de inicio o base)

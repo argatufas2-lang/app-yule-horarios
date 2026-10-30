@@ -373,7 +373,7 @@
 
                 const sessionPayload = {
                     profesor_nombre: profNombre,
-                    dia: targetDia + 1,
+                    dia: targetDia,
                     franja: selectedCellFranja,
                     actividad: detail.actividad,
                     clase: detail.clase || null,
@@ -396,7 +396,7 @@
                         if (apoyo.profesor_nombre) {
                             const apoyoPayload = {
                                 profesor_nombre: apoyo.profesor_nombre,
-                                dia: targetDia + 1,
+                                dia: targetDia,
                                 franja: selectedCellFranja,
                                 actividad: detail.actividad,
                                 clase: detail.clase || null,

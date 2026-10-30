@@ -54,7 +54,7 @@
                             {slot.time}
                         </td>
                         {#each daysOfWeek as day, index}
-                            {@const effectiveDayId = (typeof day.id === 'number' && day.id >= 1 && day.id <= 5 && !daysOfWeek.some(d => d.id === 0)) ? day.id - 1 : (day.id ?? index)}
+                            {@const effectiveDayId = day.id ?? index}
                             {@const session = getSession(gridData, classroomId, effectiveDayId, slot.orden)}
                             <td 
                                 class="p-1.5 border-r-2 border-slate-300 dark:border-gray-600 h-16 align-middle transition-colors relative print:p-0.5 print:h-9 print:border-r print:border-black cursor-pointer hover:bg-slate-100/60 dark:hover:bg-gray-700/40 {!session && (isRecreo || isComedor) ? 'bg-emerald-100/70 dark:bg-emerald-950/40' : ''} {session?.hasConflict ? 'bg-amber-100/90 dark:bg-amber-950/70 ring-2 ring-amber-500 font-semibold' : ''}"
